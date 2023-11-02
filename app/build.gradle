@@ -32,7 +32,7 @@ javafx {
 
 application {
     // Define the main class for the application.
-    mainClass = 'cse.project.team.App'
+    mainClass = 'App'
 }
 
 tasks.named('test') {

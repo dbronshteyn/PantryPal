@@ -1,4 +1,3 @@
-package cse.project.team;
 
 public class RecipeTracker {
     public String getGreeting() {
