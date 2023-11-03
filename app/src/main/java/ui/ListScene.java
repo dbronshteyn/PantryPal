@@ -17,11 +17,11 @@ public class ListScene extends Application {
 
         // Create UI components
         Button btnListRecipes = new Button("List All Recipes");
-        btnListRecipes.setOnAction(e -> listRecipes());
+        // btnListRecipes.setOnAction(e -> listRecipes());
 
         Button btnAddRecipe = new Button("Add New Recipe");
         // Add action to navigate to Add Recipe screen (not implemented in this example)
-        btnAddRecipe.setOnAction(e -> addRecipe());
+        // btnAddRecipe.setOnAction(e -> addRecipe());
 
         Button btnExit = new Button("Exit");
         btnExit.setOnAction(e -> primaryStage.close());
@@ -39,20 +39,8 @@ public class ListScene extends Application {
         primaryStage.show();
     }
 
-    private void listRecipes() {
-        // Display a list from top to buttom of all recipes
-
-        // Code to display the list of recipes
-
-        
-
-    }
-
-    private void addRecipe() {
-        // Code to display the add recipe form
-    }
-
     public static void main(String[] args) {
         launch(args);
     }
 }
+
