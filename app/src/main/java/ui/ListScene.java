@@ -40,9 +40,11 @@ public class ListScene extends Application {
     }
 
     private void listRecipes() {
+        // Display a list from top to buttom of all recipes
+
         // Code to display the list of recipes
 
-        // Example of how to get the list of recipes from the recipe manager
+        
 
     }
 
