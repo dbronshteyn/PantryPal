@@ -1,39 +1,42 @@
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.geometry.Insets;
-import javafx.scene.text.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import java.util.Date;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+public class Recipe {
+    private String title;
+    private String instructions;
+    private Date dateCreated;
 
-public class Recipe extends HBox {
-    private Text title;
+    public Recipe(String title, String instructions, Date dateCreated) {
+        this.title = title;
+        this.instructions = instructions;
+        this.dateCreated = dateCreated;
+    }
 
-    Recipe(String title) {
-        // this.setPrefSize(800, 20);
-        // this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;
-        // -fx-font-weight: bold;");
-        this.title = new Text(title);
-        this.getChildren().add(this.title);
+    public String getTitle() {
+        return this.title;
+    }
+
+    public String getInstructions() {
+        return this.instructions;
+    }
+
+    public Date getDateCreated() {
+        return this.dateCreated;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    @Override
+    public String toString() {
+        return this.title;
     }
 }
