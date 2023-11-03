@@ -40,7 +40,7 @@ public class OpenAIManager {
         return response;
     }
 
-    // Generate getters and setters for all fields
+    // Getters and Setters
     public ChatGPT getChatGPT() {
         return chatGPT;
     }
