@@ -39,4 +39,45 @@ public class OpenAIManager {
         getChatGPTResponse(prompt, maxTokens);
         return response;
     }
+
+    // Generate getters and setters for all fields
+    public ChatGPT getChatGPT() {
+        return chatGPT;
+    }
+
+    public void setChatGPT(ChatGPT chatGPT) {
+        this.chatGPT = chatGPT;
+    }
+
+    public Whisper getWhisper() {
+        return whisper;
+    }
+
+    public void setWhisper(Whisper whisper) {
+        this.whisper = whisper;
+    }
+
+    public File getAudioFile() {
+        return audioFile;
+    }
+
+    public void setAudioFile(File audioFile) {
+        this.audioFile = audioFile;
+    }
+
+    public int getMaxTokens() {
+        return maxTokens;
+    }
+
+    public void setMaxTokens(int maxTokens) {
+        this.maxTokens = maxTokens;
+    }
+
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(String prompt) {
+        this.prompt = prompt;
+    }
 }
