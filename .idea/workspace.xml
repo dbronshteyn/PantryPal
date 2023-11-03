@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2921cbf7-7369-4700-8ba9-b0ce294ef98a" name="Changes" comment="Finished the ChatGPT class and created the OpenAIManager class. workspace.xml is also updated." />
+    <list default="true" id="2921cbf7-7369-4700-8ba9-b0ce294ef98a" name="Changes" comment="Finished the ChatGPT class and created the OpenAIManager class. workspace.xml is also updated.">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/gradle.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/gradle.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -83,7 +86,7 @@
       <updated>1698965652313</updated>
       <workItem from="1698965653588" duration="361000" />
       <workItem from="1698966066323" duration="326000" />
-      <workItem from="1699030761991" duration="1060000" />
+      <workItem from="1699030761991" duration="1434000" />
     </task>
     <task id="LOCAL-00001" summary="Finished the ChatGPT class and created the OpenAIManager class. workspace.xml is also updated.">
       <option name="closed" value="true" />
