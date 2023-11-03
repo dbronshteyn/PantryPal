@@ -25,6 +25,9 @@ dependencies {
     implementation 'com.google.guava:guava:31.1-jre'
 
     implementation 'org.json:json:20211205'
+
+    // Use Mockito for mocking in tests. I was researching that many use Mockito for testing
+    //implementation group: 'org.mockito', name: 'mockito-core', version: '5.7.0'
 }
 
 javafx {
