@@ -29,6 +29,8 @@ import java.awt.event.*;
 
 import java.util.List;
 
+import backend.RecipeList;
+
 import backend.Recipe;
 
 
@@ -48,7 +50,7 @@ public class SceneController extends BorderPane {
         recipeScene.displayRecipe(recipe);
     }
 
-    public void displayRecipeList(List<Recipe> recipes) {
+    public void displayRecipeList(RecipeList recipes) {
         listScene.displayRecipeList(recipes);
     }
 }

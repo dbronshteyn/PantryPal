@@ -28,6 +28,7 @@ import javafx.scene.control.ScrollPane;
 import javax.swing.*;
 
 import backend.Recipe;
+import backend.RecipeList;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -64,10 +65,10 @@ public class ListScene extends VBox {
         //this.setStyle("-fx-background-color: #F0F8FF;");
     }
 
-    public void displayRecipeList(List<Recipe> recipes) {
+    public void displayRecipeList(RecipeList recipes) {
         if (recipes != null) {
             this.getChildren().clear();
-            for (Recipe recipe : recipes) {
+            for (Recipe recipe : recipes.getRecipes()) {
                 this.getChildren().add(new RecipeInListUI(recipe, this.sceneController));
             }
         }
