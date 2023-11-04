@@ -23,37 +23,53 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.scene.control.ScrollPane;
 
 import javax.swing.*;
+
+import backend.Recipe;
+
 import java.awt.*;
 import java.awt.event.*;
 
+import java.util.List;
 
-class ListScene extends VBox {
 
-    public class RecipeUI extends HBox {
-        private Text title;
+public class ListScene extends VBox {
 
-        RecipeUI(String title) {
+    SceneController sceneController;
+    ScrollPane scroller;
+
+    public class RecipeInListUI extends HBox {
+        RecipeInListUI(Recipe recipe, SceneController sceneController) {
             //this.setPrefSize(800, 20);
             //this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;");
-            this.title = new Text(title);
-            this.getChildren().add(this.title);
+            Label title = new Label(recipe.getTitle());
+            this.getChildren().add(title);
+            Button detailButton = new Button("View Details");
+            detailButton.setOnAction(e -> {
+                sceneController.displayRecipeDetails(recipe);
+            });
+            this.getChildren().add(detailButton);
         }
     }
 
-    private Stage primaryStage;
-
-    ListScene(Stage primaryStage) {
+    ListScene(SceneController sceneController) {
+        this.sceneController = sceneController;
         this.setSpacing(5);
         this.setPrefSize(500, 560);
+        scroller = new ScrollPane(this);
+        scroller.setFitToWidth(true);
+        scroller.setFitToHeight(true);
         //this.setStyle("-fx-background-color: #F0F8FF;");
-        this.primaryStage = primaryStage;
-        addRecipe("test 1");
     }
 
-    public void addRecipe(String title) {
-        RecipeUI recipe = new RecipeUI(title);
-        this.getChildren().add(recipe);
+    public void displayRecipeList(List<Recipe> recipes) {
+        this.getChildren().clear();
+        for (Recipe recipe : recipes) {
+            this.getChildren().add(new RecipeInListUI(recipe, this.sceneController));
+        }
+        sceneController.setCenter(scroller);
+        sceneController.setTop(new Label("Recipes"));
     }
 }

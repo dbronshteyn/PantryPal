@@ -27,16 +27,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import java.util.List;
+
+import backend.Recipe;
+
 
 public class SceneController extends BorderPane {
 
     ListScene listScene;
+    RecipeScene recipeScene;
 
-    public SceneController(Stage primaryStage) {
-        listScene = new ListScene(primaryStage);
-        ScrollPane scroller = new ScrollPane(listScene);
-        scroller.setFitToWidth(true);
-        scroller.setFitToHeight(true);
-        this.setCenter(scroller);
+    public SceneController() {
+        listScene = new ListScene(this);
+        //listScene.displayRecipeList(null);
+
+        recipeScene = new RecipeScene(this);
+    }
+
+    public void displayRecipeDetails(Recipe recipe) {
+        recipeScene.displayRecipe(recipe);
+    }
+
+    public void displayRecipeList(List<Recipe> recipes) {
+        listScene.displayRecipeList(recipes);
     }
 }
