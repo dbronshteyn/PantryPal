@@ -22,9 +22,10 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();
 
-        List<Recipe> recipes = new ArrayList<>();
-        recipes.add(new Recipe("Pasta", "Boil water, add pasta, add sauce", new Date()));
-        recipes.add(new Recipe("Pizza", "Buy pizza, heat oven, put pizza in oven", new Date()));
+        List<Recipe> testList = new ArrayList<>();
+        testList.add(new Recipe("Pasta", "Boil water, add pasta, add sauce", new Date()));
+        testList.add(new Recipe("Pizza", "Buy pizza, heat oven, put pizza in oven", new Date()));
+        RecipeList recipes = new RecipeList(testList);
         root.displayRecipeList(recipes);
     }
 
