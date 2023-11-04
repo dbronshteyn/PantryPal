@@ -65,9 +65,11 @@ public class ListScene extends VBox {
     }
 
     public void displayRecipeList(List<Recipe> recipes) {
-        this.getChildren().clear();
-        for (Recipe recipe : recipes) {
-            this.getChildren().add(new RecipeInListUI(recipe, this.sceneController));
+        if (recipes != null) {
+            this.getChildren().clear();
+            for (Recipe recipe : recipes) {
+                this.getChildren().add(new RecipeInListUI(recipe, this.sceneController));
+            }
         }
         sceneController.setCenter(scroller);
         sceneController.setTop(new Label("Recipes"));

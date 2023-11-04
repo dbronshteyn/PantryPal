@@ -36,19 +36,17 @@ import java.util.List;
 
 class RecipeScene extends Label {
 
-    // public class RecipeInListUI extends HBox {
-    //     RecipeInListUI(Recipe recipe, SceneController sceneController) {
-    //         //this.setPrefSize(800, 20);
-    //         //this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;");
-    //         Label title = new Label(recipe.getTitle());
-    //         this.getChildren().add(title);
-    //         Button detailButton = new Button("View Details");
-    //         detailButton.setOnAction(e -> {
-    //             sceneController.displayRecipeDetails(recipe);
-    //         });
-    //         this.getChildren().add(detailButton);
-    //     }
-    // }
+    public class RecipeSceneTopBar extends HBox {
+        RecipeSceneTopBar(Recipe recipe, SceneController sceneController) {
+            Label title = new Label(recipe.getTitle());
+            this.getChildren().add(title);
+            Button backButton = new Button("Back");
+            backButton.setOnAction(e -> {
+                sceneController.displayRecipeList(null);
+            });
+            this.getChildren().add(backButton);
+        }
+    }
 
     SceneController sceneController;
 
@@ -61,6 +59,6 @@ class RecipeScene extends Label {
     public void displayRecipe(Recipe recipe) {
         this.setText(recipe.getInstructions());
         sceneController.setCenter(this);
-        sceneController.setTop(new Label(recipe.getTitle()));
+        sceneController.setTop(new RecipeSceneTopBar(recipe, sceneController));
     }
 }
