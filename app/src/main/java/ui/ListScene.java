@@ -1,46 +1,59 @@
 package ui;
 
-import backend.RecipeList;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.geometry.Insets;
+import javafx.scene.text.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
-public class ListScene extends Application {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
-    private RecipeList recipeManager;
 
-    @Override
-    public void start(Stage primaryStage) {
-        recipeManager = new RecipeList(); // Initialize your recipe manager here
+class ListScene extends VBox {
 
-        // Create UI components
-        Button btnListRecipes = new Button("List All Recipes");
-        // btnListRecipes.setOnAction(e -> listRecipes());
+    public class RecipeUI extends HBox {
+        private Text title;
 
-        Button btnAddRecipe = new Button("Add New Recipe");
-        // Add action to navigate to Add Recipe screen (not implemented in this example)
-        // btnAddRecipe.setOnAction(e -> addRecipe());
-
-        Button btnExit = new Button("Exit");
-        btnExit.setOnAction(e -> primaryStage.close());
-
-        // Layout
-        VBox layout = new VBox(10);
-        layout.getChildren().addAll(btnListRecipes, btnAddRecipe, btnExit);
-
-        // Scene
-        Scene scene = new Scene(layout, 300, 250);
-
-        // Stage
-        primaryStage.setTitle("Recipe Application");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        RecipeUI(String title) {
+            //this.setPrefSize(800, 20);
+            //this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;");
+            this.title = new Text(title);
+            this.getChildren().add(this.title);
+        }
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    private Stage primaryStage;
+
+    ListScene(Stage primaryStage) {
+        this.setSpacing(5);
+        this.setPrefSize(500, 560);
+        //this.setStyle("-fx-background-color: #F0F8FF;");
+        this.primaryStage = primaryStage;
+        addRecipe("test 1");
+    }
+
+    public void addRecipe(String title) {
+        RecipeUI recipe = new RecipeUI(title);
+        this.getChildren().add(recipe);
     }
 }
-
