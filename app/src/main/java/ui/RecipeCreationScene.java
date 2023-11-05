@@ -49,13 +49,13 @@ class RecipeCreationScene extends VBox {
     
     public class AudioRecorder {
 
-        String audioFilePath;
+        File audioFile;
         ToggleButton recordButton;
         AudioFormat audioFormat;
         TargetDataLine targetDataLine;
 
-        AudioRecorder(String audioFilePath, ToggleButton recordButton) {
-            this.audioFilePath = audioFilePath;
+        AudioRecorder(File audioFile, ToggleButton recordButton) {
+            this.audioFile = audioFile;
             this.recordButton = recordButton;
             this.audioFormat = new AudioFormat(
                 44100,
@@ -93,11 +93,10 @@ class RecipeCreationScene extends VBox {
                 targetDataLine.start();
                 AudioInputStream audioInputStream = new AudioInputStream(
                         targetDataLine);
-                File audioFile = new File(audioFilePath);
                 AudioSystem.write(
                         audioInputStream,
                         AudioFileFormat.Type.WAVE,
-                        audioFile);
+                        this.audioFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -109,7 +108,7 @@ class RecipeCreationScene extends VBox {
         }
     }
 
-    RecipeCreationScene(SceneController sceneController, String ingredientsAudioFile) {
+    RecipeCreationScene(SceneController sceneController, File ingredientsAudioFile) {
         this.sceneController = sceneController;
 
         Button cancelButton = new Button("Cancel");
@@ -118,7 +117,6 @@ class RecipeCreationScene extends VBox {
         });
         this.getChildren().add(cancelButton);
 
-        //Button recordIngredientsButton = new Button("Record Ingredients");
         ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
         this.audioRecorder = new AudioRecorder(ingredientsAudioFile, recordIngredientsButton);
         this.setSpacing(5);

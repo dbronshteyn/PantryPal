@@ -10,6 +10,8 @@ import ui.SceneController;
 import java.util.ArrayList;
 import java.util.Date;
 
+import java.io.File;
+
 public class Main extends Application {
 
     static final int WINDOW_WIDTH = 950;
@@ -17,7 +19,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        SceneController root = new SceneController("ingredients.wav");
+        SceneController root = new SceneController(new File("ingredients.wav"));
         primaryStage.setTitle("PantryPal");
         primaryStage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();

@@ -40,7 +40,7 @@ public class SceneController extends BorderPane {
     RecipeScene recipeScene;
     RecipeCreationScene recipeCreationScene;
 
-    public SceneController(String ingredientsAudioFile) {
+    public SceneController(File ingredientsAudioFile) {
         listScene = new ListScene(this);
         recipeScene = new RecipeScene(this);
         recipeCreationScene = new RecipeCreationScene(this, ingredientsAudioFile);
