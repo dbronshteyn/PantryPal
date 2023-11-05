@@ -12,22 +12,15 @@ import org.json.JSONObject;
 public class ChatGPT {
 
     private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
-    private static final String API_KEY = "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";
     private static final String MODEL = "text-davinci-003";
 
-    /*
-     * This code was just so that we can create a ChatGPT object in the future if
-     * needed. It is not necessary for the code to work. More to scale if needed.
-     */
-    boolean isInitialized = false;
+    String apiKey;
 
-    public ChatGPT() {
-        this.isInitialized = true;
+    public ChatGPT(String apiKey) {
+        this.apiKey = apiKey;
     }
 
-    public String generateText(String prompt, int maxTokens) {
-
-        // Create a request body which you will pass into request object
+    public String generateText(String prompt, int maxTokens) throws IOException {
         JSONObject requestBody = new JSONObject();
         requestBody.put("model", MODEL);
         requestBody.put("prompt", prompt);
@@ -37,25 +30,20 @@ public class ChatGPT {
         HttpClient client = HttpClient.newHttpClient();
         String responseBody = "";
 
-        // Create the request object
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(API_ENDPOINT))
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + API_KEY)
+                    .header("Authorization", "Bearer " + this.apiKey)
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
                     .build();
-
             HttpResponse<String> response = client.send(
                     request,
                     HttpResponse.BodyHandlers.ofString());
-
-            // Process the response
             responseBody = response.body();
-
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            return null; // or handle error appropriately
+            throw new IOException("Error sending ChatGPT request");
         }
 
         JSONObject responseJson = new JSONObject(responseBody);
