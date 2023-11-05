@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -42,8 +43,11 @@ public class RecipeCreatorTest {
         }
 
         @Override
-        public String transcribeAudio(File audioFile) {
+        public String transcribeAudio(File audioFile) throws IOException {
             assertNotNull(audioFile);
+            if (!audioFile.getName().equals("ingredients.wav")) {
+                throw new IOException("Invalid file");
+            }
             return "Ingredient 1 and ingredient 2";
         }
     }
@@ -70,6 +74,13 @@ public class RecipeCreatorTest {
     void testCreateRecipeWithNullFile() {
         assertThrows(Throwable.class, () -> {
             recipeCreator.createRecipe(null);
+        });
+    }
+
+    @Test
+    void testCreateRecipeWithInvalidFile() {
+        assertThrows(IOException.class, () -> {
+            recipeCreator.createRecipe(new File("nonexistent.wav"));
         });
     }
 
