@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -12,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import backend.RecipeCreator;
 
 import java.io.File;
+import java.io.IOException;
 
 
 public class RecipeCreatorTest {
@@ -62,4 +64,13 @@ public class RecipeCreatorTest {
             fail();
         }
     }
+
+    
+    @Test
+    void testCreateRecipeWithNullFile() {
+        assertThrows(Throwable.class, () -> {
+            recipeCreator.createRecipe(null);
+        });
+    }
+
 }
