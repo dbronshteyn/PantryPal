@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.json.JSONException;
 
-
 public class RecipeCreator {
 
     private final int MAX_TOKENS = 300;
@@ -22,6 +21,11 @@ public class RecipeCreator {
     public RecipeCreator() {
         this.chatGPT = new ChatGPT(API_KEY);
         this.whisper = new Whisper(API_KEY);
+    }
+
+    public RecipeCreator(ChatGPT chatGPT, Whisper whisper) {
+        this.chatGPT = chatGPT;
+        this.whisper = whisper;
     }
 
     public Recipe createRecipe(File ingredientsAudioFile) throws IOException {
