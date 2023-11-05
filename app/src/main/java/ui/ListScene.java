@@ -55,6 +55,17 @@ public class ListScene extends VBox {
         }
     }
 
+    public class ListSceneTopBar extends HBox {
+        ListSceneTopBar(SceneController sceneController) {
+            this.getChildren().add(new Label("Recipes"));
+            Button newRecipeButton = new Button("New Recipe");
+            newRecipeButton.setOnAction(e -> {
+                sceneController.displayRecipeCreationScene();
+            });
+            this.getChildren().add(newRecipeButton);
+        }
+    }
+
     ListScene(SceneController sceneController) {
         this.sceneController = sceneController;
         this.setSpacing(5);
@@ -62,6 +73,7 @@ public class ListScene extends VBox {
         scroller = new ScrollPane(this);
         scroller.setFitToWidth(true);
         scroller.setFitToHeight(true);
+
         //this.setStyle("-fx-background-color: #F0F8FF;");
     }
 
@@ -73,6 +85,6 @@ public class ListScene extends VBox {
             }
         }
         sceneController.setCenter(scroller);
-        sceneController.setTop(new Label("Recipes"));
+        sceneController.setTop(new ListSceneTopBar(this.sceneController));
     }
 }

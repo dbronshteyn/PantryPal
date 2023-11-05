@@ -38,12 +38,12 @@ public class SceneController extends BorderPane {
 
     ListScene listScene;
     RecipeScene recipeScene;
+    RecipeCreationScene recipeCreationScene;
 
-    public SceneController() {
+    public SceneController(String ingredientsAudioFile) {
         listScene = new ListScene(this);
-        //listScene.displayRecipeList(null);
-
         recipeScene = new RecipeScene(this);
+        recipeCreationScene = new RecipeCreationScene(this, ingredientsAudioFile);
     }
 
     public void displayRecipeDetails(Recipe recipe) {
@@ -52,5 +52,9 @@ public class SceneController extends BorderPane {
 
     public void displayRecipeList(RecipeList recipes) {
         listScene.displayRecipeList(recipes);
+    }
+
+    public void displayRecipeCreationScene() {
+        recipeCreationScene.displayRecipeCreationScene();
     }
 }
