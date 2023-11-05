@@ -32,7 +32,7 @@ import java.util.List;
 import backend.RecipeList;
 
 import backend.Recipe;
-import backend.RecipeCreator;
+import backend.Controller;
 
 
 public class SceneController extends BorderPane {
@@ -41,10 +41,10 @@ public class SceneController extends BorderPane {
     RecipeScene recipeScene;
     RecipeCreationScene recipeCreationScene;
 
-    public SceneController(RecipeCreator recipeCreator, File ingredientsAudioFile) {
+    public SceneController(Controller controller, File ingredientsAudioFile) {
         listScene = new ListScene(this);
         recipeScene = new RecipeScene(this);
-        recipeCreationScene = new RecipeCreationScene(this, recipeCreator, ingredientsAudioFile);
+        recipeCreationScene = new RecipeCreationScene(this, controller, ingredientsAudioFile);
     }
 
     public void displayRecipeDetails(Recipe recipe) {

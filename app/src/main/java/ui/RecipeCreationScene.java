@@ -38,7 +38,7 @@ import backend.Recipe;
 import java.awt.*;
 import java.awt.event.*;
 
-import backend.RecipeCreator;
+import backend.Controller;
 
 import java.util.List;
 
@@ -110,7 +110,7 @@ class RecipeCreationScene extends VBox {
         }
     }
 
-    RecipeCreationScene(SceneController sceneController, RecipeCreator recipeCreator, File ingredientsAudioFile) {
+    RecipeCreationScene(SceneController sceneController, Controller controller, File ingredientsAudioFile) {
         this.sceneController = sceneController;
 
         Button cancelButton = new Button("Cancel");
@@ -134,11 +134,7 @@ class RecipeCreationScene extends VBox {
 
         completedButton = new Button("Generate Recipe");
         completedButton.setOnAction(e -> {
-            try {
-                recipeCreator.createRecipe(ingredientsAudioFile);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+            controller.createAndShowRecipe(ingredientsAudioFile);
         });
         this.getChildren().add(completedButton);
     }

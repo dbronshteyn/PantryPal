@@ -19,16 +19,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        SceneController root = new SceneController(new RecipeCreator(), new File("ingredients.wav"));
+        File ingredientsAudioFile = new File("ingredients.wav");
+        Controller controller = new Controller();
+        SceneController sceneController = new SceneController(controller, ingredientsAudioFile);
         primaryStage.setTitle("PantryPal");
-        primaryStage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
+        primaryStage.setScene(new Scene(sceneController, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();
-
-        List<Recipe> testList = new ArrayList<>();
-        testList.add(new Recipe("Pasta", "Boil water, add pasta, add sauce", new Date()));
-        testList.add(new Recipe("Pizza", "Buy pizza, heat oven, put pizza in oven", new Date()));
-        RecipeList recipes = new RecipeList(testList);
-        root.displayRecipeList(recipes);
+        controller.initialize(sceneController);
     }
 
     public static void main(String[] args) {
