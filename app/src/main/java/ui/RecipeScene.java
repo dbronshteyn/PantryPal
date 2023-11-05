@@ -27,6 +27,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javax.swing.*;
 
 import backend.Recipe;
+import backend.RecipeList;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -48,6 +49,25 @@ class RecipeScene extends Label {
         }
     }
 
+    public class NewlyCreatedRecipeSceneTopBar extends HBox {
+        NewlyCreatedRecipeSceneTopBar(Recipe recipe, SceneController sceneController, RecipeList recipeList) {
+            Label title = new Label(recipe.getTitle());
+            this.getChildren().add(title);
+            Button cancelButton = new Button("Cancel");
+            cancelButton.setOnAction(e -> {
+                sceneController.displayRecipeList(null);
+            });
+            this.getChildren().add(cancelButton);
+
+            Button saveButton = new Button("Save");
+            saveButton.setOnAction(e -> {
+                recipeList.addRecipe(recipe);
+                sceneController.displayRecipeList(recipeList);
+            });
+            this.getChildren().add(saveButton);
+        }
+    }
+
     SceneController sceneController;
 
     RecipeScene(SceneController sceneController) {
@@ -60,5 +80,11 @@ class RecipeScene extends Label {
         this.setText(recipe.getInstructions());
         sceneController.setCenter(this);
         sceneController.setTop(new RecipeSceneTopBar(recipe, sceneController));
+    }
+
+    public void displayNewlyCreatedRecipe(Recipe recipe, RecipeList recipeList) {
+        this.setText(recipe.getInstructions());
+        sceneController.setCenter(this);
+        sceneController.setTop(new NewlyCreatedRecipeSceneTopBar(recipe, sceneController, recipeList));
     }
 }

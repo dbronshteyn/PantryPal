@@ -24,7 +24,7 @@ public class Controller {
     public void createAndShowRecipe(File ingredientsAudioFile) {
         try {
             Recipe recipe = this.recipeCreator.createRecipe(ingredientsAudioFile);
-            this.sceneController.displayRecipeDetails(recipe);
+            this.sceneController.displayNewlyCreatedRecipe(recipe, this.recipeList);
         } catch (IOException e) {
             e.printStackTrace();
         }
