@@ -7,12 +7,14 @@ import ui.SceneController;
 
 public class Controller {
 
+    private static final String API_KEY = "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";
+
     RecipeCreator recipeCreator;
     RecipeList recipeList;
     SceneController sceneController;
 
     Controller() {
-        this.recipeCreator = new RecipeCreator();
+        this.recipeCreator = new RecipeCreator(new ChatGPT(API_KEY), new Whisper(API_KEY));
         this.recipeList = new RecipeList(); // or load from file if it exists
     }
 

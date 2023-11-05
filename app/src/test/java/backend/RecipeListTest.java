@@ -9,7 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RecipeListTest {
+class RecipeListTest {
     private RecipeList recipeList;
 
     @BeforeEach
@@ -18,7 +18,7 @@ public class RecipeListTest {
     }
 
     @Test
-    public void testAddRecipe_SortedCorrectly() {
+    void testAddRecipe_SortedCorrectly() {
         // Assume Recipe class has a constructor that takes title, instructions, and
         // dateCreated
         Recipe recipe1 = new Recipe("Recipe1", "Instructions1", new Date(System.currentTimeMillis() - 10000)); // Older
@@ -35,7 +35,7 @@ public class RecipeListTest {
     }
 
     @Test
-    public void testRemoveRecipe() {
+    void testRemoveRecipe() {
         Recipe recipe1 = new Recipe("Recipe1", "Instructions1", new Date());
         recipeList.addRecipe(recipe1);
         assertEquals(1, recipeList.getRecipes().size(), "Recipe list should have 1 recipe before removal.");
@@ -45,7 +45,7 @@ public class RecipeListTest {
     }
 
     @Test
-    public void testGetRecipes_ImmutableList() {
+    void testGetRecipes_ImmutableList() {
         Recipe recipe1 = new Recipe("Recipe1", "Instructions1", new Date());
         recipeList.addRecipe(recipe1);
 
@@ -68,7 +68,7 @@ public class RecipeListTest {
      */
 
     @Test
-    public void testGetRecipes_SortedCorrectly() {
+    void testGetRecipes_SortedCorrectly() {
         // Assume Recipe class has a constructor that takes title, instructions, and
         // dateCreated
         Recipe recipe1 = new Recipe("Recipe1", "Instructions1", new Date(System.currentTimeMillis() - 10000)); // Older

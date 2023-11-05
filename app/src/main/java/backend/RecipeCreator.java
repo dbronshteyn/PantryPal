@@ -9,19 +9,17 @@ import java.util.List;
 
 import org.json.JSONException;
 
-
 public class RecipeCreator {
 
     private final int MAX_TOKENS = 300;
     private final String PROMPT = "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a recipe with the following ingredients: %s";
-    private static final String API_KEY = "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";
 
     private ChatGPT chatGPT;
     private Whisper whisper;
 
-    public RecipeCreator() {
-        this.chatGPT = new ChatGPT(API_KEY);
-        this.whisper = new Whisper(API_KEY);
+    public RecipeCreator(ChatGPT chatGPT, Whisper whisper) {
+        this.chatGPT = chatGPT;
+        this.whisper = whisper;
     }
 
     public Recipe createRecipe(File ingredientsAudioFile) throws IOException {
