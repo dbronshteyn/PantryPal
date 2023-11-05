@@ -38,6 +38,8 @@ import backend.Recipe;
 import java.awt.*;
 import java.awt.event.*;
 
+import backend.Controller;
+
 import java.util.List;
 
 
@@ -49,34 +51,29 @@ class RecipeCreationScene extends VBox {
     
     public class AudioRecorder {
 
-        String audioFilePath;
+        File audioFile;
         ToggleButton recordButton;
         AudioFormat audioFormat;
         TargetDataLine targetDataLine;
-        Thread t;
 
-        AudioRecorder(String audioFilePath, ToggleButton recordButton) {
-            this.audioFilePath = audioFilePath;
+        AudioRecorder(File audioFile, ToggleButton recordButton) {
+            this.audioFile = audioFile;
             this.recordButton = recordButton;
+            this.audioFormat = new AudioFormat(
+                44100,
+                16,
+                1,
+                true,
+                false);
         }
 
         public void recordAudio() {
-            // implement this part
-            // make sure to save the resulting audio file to this.audioFilePath   
-            // i also added the recordButton to this class, so when the recording 
-            // starts you can do recordButton.setText("Stop Recording");
-            
-            audioFormat = getAudioFormat();
-
             this.recordButton.setText("Stop Recording");
-
             Thread t = new Thread(
                 new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            startRecording();
-                        } catch (Exception e) {}
+                        startRecording();
                     }
                 }
             );
@@ -88,56 +85,22 @@ class RecipeCreationScene extends VBox {
             this.recordButton.setText("Start Recording");
         }
 
-        private AudioFormat getAudioFormat() {
-            // the number of samples of audio per second.
-            // 44100 represents the typical sample rate for CD-quality audio.
-            float sampleRate = 44100;
-
-            // the number of bits in each sample of a sound that has been digitized.
-            int sampleSizeInBits = 16;
-
-            // the number of audio channels in this format (1 for mono, 2 for stereo).
-            int channels = 2;
-
-            // whether the data is signed or unsigned.
-            boolean signed = true;
-
-            // whether the audio data is stored in big-endian or little-endian order.
-            boolean bigEndian = false;
-
-            return new AudioFormat(
-                    sampleRate,
-                    sampleSizeInBits,
-                    channels,
-                    signed,
-                    bigEndian);
-        }
-
         private void startRecording() {
             try {
-                // the format of the TargetDataLine
                 DataLine.Info dataLineInfo = new DataLine.Info(
-                        TargetDataLine.class,
-                        audioFormat);
-                // the TargetDataLine used to capture audio data from the microphone
+                    TargetDataLine.class,
+                    audioFormat);
                 targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
                 targetDataLine.open(audioFormat);
                 targetDataLine.start();
-                //recordingLabel.setVisible(true);
-
-                // the AudioInputStream that will be used to write the audio data to a file
                 AudioInputStream audioInputStream = new AudioInputStream(
                         targetDataLine);
-
-                // the file that will contain the audio data
-                File audioFile = new File(audioFilePath);
                 AudioSystem.write(
                         audioInputStream,
                         AudioFileFormat.Type.WAVE,
-                        audioFile);
-                //recordingLabel.setVisible(false);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                        this.audioFile);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -147,7 +110,7 @@ class RecipeCreationScene extends VBox {
         }
     }
 
-    RecipeCreationScene(SceneController sceneController, String ingredientsAudioFile) {
+    RecipeCreationScene(SceneController sceneController, Controller controller, File ingredientsAudioFile) {
         this.sceneController = sceneController;
 
         Button cancelButton = new Button("Cancel");
@@ -156,7 +119,6 @@ class RecipeCreationScene extends VBox {
         });
         this.getChildren().add(cancelButton);
 
-        //Button recordIngredientsButton = new Button("Record Ingredients");
         ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
         this.audioRecorder = new AudioRecorder(ingredientsAudioFile, recordIngredientsButton);
         this.setSpacing(5);
@@ -172,13 +134,10 @@ class RecipeCreationScene extends VBox {
 
         completedButton = new Button("Generate Recipe");
         completedButton.setOnAction(e -> {
-            System.out.println("should generate a recipe now");
-            // want to make this call some recipe generator on the backend
-
-
+            controller.createAndShowRecipe(ingredientsAudioFile);
         });
         this.getChildren().add(completedButton);
-}
+    }
 
     public void displayRecipeCreationScene() {
         sceneController.setTop(new Label("Create a Recipe"));

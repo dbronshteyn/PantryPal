@@ -7,28 +7,14 @@ import org.json.JSONObject;
 
 public class Whisper {
     private static final String API_ENDPOINT = "https://api.openai.com/v1/audio/transcriptions";
-    private static final String TOKEN = "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";
     private static final String MODEL = "whisper-1";
 
-    public Whisper() {
-        // Constructor, if needed for future enhancements.
+    String apiKey;
+
+    public Whisper(String apiKey) {
+        this.apiKey = apiKey;
     }
 
-    /*
-     * You should only be calling this method "transcribeAudio" in the following
-     * example:
-     * 
-     *  Whisper whisper = new Whisper()
-     * File audioFile = new File("path/to/your/audiofile.mp3");
-     * 
-     * try {
-     * String transcription = whisper.transcribeAudio(audioFile);
-     * System.out.println("Transcription Result: " + transcription);
-     * } catch (Exception e) {
-     * System.err.println("An error occurred during transcription.");
-     * e.printStackTrace();
-     * }
-     */
     public String transcribeAudio(File audioFile) throws IOException, JSONException {
         HttpURLConnection connection = null;
         try {
@@ -39,7 +25,7 @@ public class Whisper {
 
             String boundary = "Boundary-" + System.currentTimeMillis();
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-            connection.setRequestProperty("Authorization", "Bearer " + TOKEN);
+            connection.setRequestProperty("Authorization", "Bearer " + this.apiKey);
 
             OutputStream outputStream = connection.getOutputStream();
             writeParameterToOutputStream(outputStream, "model", MODEL, boundary);
@@ -49,7 +35,6 @@ public class Whisper {
             outputStream.close();
 
             int responseCode = connection.getResponseCode();
-
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return handleSuccessResponse(connection);
             } else {
