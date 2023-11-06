@@ -34,7 +34,6 @@ import backend.RecipeList;
 import backend.Recipe;
 import backend.Controller;
 
-
 public class SceneController extends BorderPane {
 
     ListScene listScene;
@@ -42,9 +41,14 @@ public class SceneController extends BorderPane {
     RecipeCreationScene recipeCreationScene;
 
     public SceneController(Controller controller, File ingredientsAudioFile) {
+        this.setStyle("-fx-background-color: #e7ffe6;"); // Setting the background color
+
         listScene = new ListScene(this);
         recipeScene = new RecipeScene(this);
         recipeCreationScene = new RecipeCreationScene(this, controller, ingredientsAudioFile);
+
+        // If you want to show the list scene by default
+        this.setCenter(listScene);
     }
 
     public void displayRecipeDetails(Recipe recipe) {

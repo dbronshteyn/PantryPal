@@ -1,90 +1,96 @@
 package ui;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
-import javafx.scene.text.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-
-import javax.swing.*;
-
+import javafx.geometry.Pos;
+import javafx.scene.text.Font;
 import backend.Recipe;
 import backend.RecipeList;
 
-import java.awt.*;
-import java.awt.event.*;
+class RecipeScene extends VBox {
 
-import java.util.List;
-
-
-class RecipeScene extends Label {
+    SceneController sceneController;
+    Label instructionsLabel;
 
     public class RecipeSceneTopBar extends HBox {
         RecipeSceneTopBar(Recipe recipe, SceneController sceneController) {
+            this.setAlignment(Pos.CENTER_LEFT);
+            this.setPadding(new Insets(10, 10, 10, 10));
+            this.setSpacing(10);
+            this.setStyle("-fx-background-color: #c6ecc6;");
+
             Label title = new Label(recipe.getTitle());
-            this.getChildren().add(title);
-            Button backButton = new Button("Back");
-            backButton.setOnAction(e -> {
-                sceneController.displayRecipeList(null);
-            });
-            this.getChildren().add(backButton);
+            title.setFont(new Font("Arial", 20));
+
+            Button backButton = createStyledButton("Back");
+            backButton.setOnAction(e -> sceneController.displayRecipeList(null));
+
+            this.getChildren().addAll(backButton, title);
         }
     }
 
     public class NewlyCreatedRecipeSceneTopBar extends HBox {
         NewlyCreatedRecipeSceneTopBar(Recipe recipe, SceneController sceneController, RecipeList recipeList) {
-            Label title = new Label(recipe.getTitle());
-            this.getChildren().add(title);
-            Button cancelButton = new Button("Cancel");
-            cancelButton.setOnAction(e -> {
-                sceneController.displayRecipeList(null);
-            });
-            this.getChildren().add(cancelButton);
+            this.setAlignment(Pos.CENTER_LEFT);
+            this.setPadding(new Insets(10, 10, 10, 10));
+            this.setSpacing(10);
+            this.setStyle("-fx-background-color: #c6ecc6;");
 
-            Button saveButton = new Button("Save");
+            Label title = new Label(recipe.getTitle());
+            title.setFont(new Font("Arial", 20));
+
+            Button cancelButton = createStyledButton("Cancel");
+            cancelButton.setOnAction(e -> sceneController.displayRecipeList(null));
+
+            Button saveButton = createStyledButton("Save");
             saveButton.setOnAction(e -> {
                 recipeList.addRecipe(recipe);
                 sceneController.displayRecipeList(recipeList);
             });
-            this.getChildren().add(saveButton);
+
+            this.getChildren().addAll(cancelButton, title, saveButton);
         }
     }
 
-    SceneController sceneController;
-
     RecipeScene(SceneController sceneController) {
         this.sceneController = sceneController;
-        //this.setPrefSize(500, 560);
-        //this.setStyle("-fx-background-color: #F0F8FF;");
+        this.setSpacing(10);
+        this.setAlignment(Pos.CENTER);
+        this.setPadding(new Insets(10, 10, 10, 10));
+        this.setStyle("-fx-background-color: #e7ffe6;");
+
+        instructionsLabel = new Label();
+        instructionsLabel.setWrapText(true);
+        instructionsLabel.setFont(new Font("Arial", 14));
+
+        this.getChildren().add(instructionsLabel);
     }
 
     public void displayRecipe(Recipe recipe) {
-        this.setText(recipe.getInstructions());
+        instructionsLabel.setText(recipe.getInstructions());
         sceneController.setCenter(this);
         sceneController.setTop(new RecipeSceneTopBar(recipe, sceneController));
     }
 
     public void displayNewlyCreatedRecipe(Recipe recipe, RecipeList recipeList) {
-        this.setText(recipe.getInstructions());
+        instructionsLabel.setText(recipe.getInstructions());
         sceneController.setCenter(this);
         sceneController.setTop(new NewlyCreatedRecipeSceneTopBar(recipe, sceneController, recipeList));
+    }
+
+    private Button createStyledButton(String text) {
+        Button button = new Button(text);
+        button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
+        button.setFont(new Font("Arial", 14));
+        button.setPadding(new Insets(5, 15, 5, 15));
+
+        // Hover effect
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #8cc68c; -fx-text-fill: #000000;"));
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;"));
+
+        return button;
     }
 }
