@@ -32,23 +32,25 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
-
 import backend.Recipe;
-
 import java.awt.*;
 import java.awt.event.*;
-
 import backend.Controller;
-
 import java.util.List;
 
-
+/**
+ * The RecipeCreationScene class is resposnible for the UI components of 
+ * creating a recipe by allowing the user to record audio for inputting ingredients.
+ */
 class RecipeCreationScene extends VBox {
 
     SceneController sceneController;
     AudioRecorder audioRecorder;
     Button completedButton;
     
+    /**
+     * The AudioRecorder class allows the user to record inputted audio.
+     */
     public class AudioRecorder {
 
         File audioFile;
@@ -56,6 +58,11 @@ class RecipeCreationScene extends VBox {
         AudioFormat audioFormat;
         TargetDataLine targetDataLine;
 
+        /**
+         * Constructor for the AudioRecorder class.
+         * @param audioFile     The file where we want to save the recorded audio.
+         * @param recordButton  The button that allows the user to record audio.
+         */
         AudioRecorder(File audioFile, ToggleButton recordButton) {
             this.audioFile = audioFile;
             this.recordButton = recordButton;
@@ -67,6 +74,9 @@ class RecipeCreationScene extends VBox {
                 false);
         }
 
+        /**
+         * Allows the user to begin recording audio when the "Record" button is pressed.
+         */
         public void recordAudio() {
             this.recordButton.setText("Stop Recording");
             Thread t = new Thread(
@@ -80,11 +90,18 @@ class RecipeCreationScene extends VBox {
             t.start();
         }
 
+        /**
+         * Allows the user to stop recording audio when the "Stop" button is pressed.
+         */
         public void stopRecordingAudio() {
             stopRecording();
             this.recordButton.setText("Start Recording");
         }
 
+        /**
+         * Initiates the process of recording audio. 
+         * Sets up the audio recording parameters and captures audio data from the microphone.
+         */
         private void startRecording() {
             try {
                 DataLine.Info dataLineInfo = new DataLine.Info(
@@ -104,13 +121,27 @@ class RecipeCreationScene extends VBox {
             }
         }
 
+
+        /**
+         * This method is used to stop the audio recording process.
+         * Stops and closes the data line.
+         */
         private void stopRecording() {
             targetDataLine.stop();
             targetDataLine.close();
         }
     }
 
-    RecipeCreationScene(SceneController sceneController, Controller controller, File ingredientsAudioFile) {
+
+    /**
+     * Constructor for the RecipeCreationScene class.
+     * @param sceneController        The controller for managing scenes.
+     * @param controller             The backend controller.
+     * @param ingredientsAudioFile   The file used to store recorded audio for the input ingredients.
+     */
+    
+    
+     RecipeCreationScene(SceneController sceneController, Controller controller, File ingredientsAudioFile) {
         this.sceneController = sceneController;
 
         Button cancelButton = new Button("Cancel");
@@ -139,6 +170,9 @@ class RecipeCreationScene extends VBox {
         this.getChildren().add(completedButton);
     }
 
+    /**
+     * Display the recipe creation scene with title and content.
+     */
     public void displayRecipeCreationScene() {
         sceneController.setTop(new Label("Create a Recipe"));
         sceneController.setCenter(this);

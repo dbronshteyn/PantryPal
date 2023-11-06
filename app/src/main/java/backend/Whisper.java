@@ -5,6 +5,14 @@ import java.net.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * The Whisper class provides an interface for transcribing audio using OpenAI Whisper.
+ * 
+ * It enables the user to submit an audio file for transcription and receives the transcribed text in response.
+ * 
+ * This class requires an API key for authentication to use the OpenAI service.
+ */
+
 public class Whisper {
     private static final String API_ENDPOINT = "https://api.openai.com/v1/audio/transcriptions";
     private static final String MODEL = "whisper-1";
@@ -14,6 +22,14 @@ public class Whisper {
     public Whisper(String apiKey) {
         this.apiKey = apiKey;
     }
+
+    /**
+     * Transcribes a provided audio file and returns the transcribed text.
+     * @param audioFile Audio file to be transcribed.
+     * @return Transcribed text from the audio file.
+     * @throws IOException If any issues arise with I/O operation.
+     * @throws JSONException If any issues arise with parsing JSON response.
+     */
 
     public String transcribeAudio(File audioFile) throws IOException, JSONException {
         HttpURLConnection connection = null;

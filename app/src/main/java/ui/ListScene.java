@@ -35,12 +35,19 @@ import java.awt.event.*;
 
 import java.util.List;
 
-
+/**
+ * The ListScene class is the UI part responsible for dispalying 
+ * and managing thelist of generated recipes.
+ */
 public class ListScene extends VBox {
 
     SceneController sceneController;
     ScrollPane scroller;
-
+    
+    /**
+     * The RecipeInListUI class is a class that is resposible for the component
+    * of displaying individual recipe entries from the bigger recipe list.
+    */
     public class RecipeInListUI extends HBox {
         RecipeInListUI(Recipe recipe, SceneController sceneController) {
             //this.setPrefSize(800, 20);
@@ -54,7 +61,10 @@ public class ListScene extends VBox {
             this.getChildren().add(detailButton);
         }
     }
-
+    /**
+    * The ListSceneTopBar class is a class that  the top bar of the recipe list scene,
+    * providing navigation options for managing recipes.
+    */
     public class ListSceneTopBar extends HBox {
         ListSceneTopBar(SceneController sceneController) {
             this.getChildren().add(new Label("Recipes"));
@@ -76,6 +86,7 @@ public class ListScene extends VBox {
 
         //this.setStyle("-fx-background-color: #F0F8FF;");
     }
+ 
 
     public void displayRecipeList(RecipeList recipes) {
         if (recipes != null) {

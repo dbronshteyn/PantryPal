@@ -9,6 +9,14 @@ import java.net.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * The ChatGPT class provides an interface to interact with ChatGPT.
+ * 
+ * It allows you to submit a prompt to ChatGPT and generates a response.
+ * 
+ * This class requires an API key to use the OpenAI service.
+ */
+
 public class ChatGPT {
 
     private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
