@@ -17,9 +17,11 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class RecipeCreatorTest {
+class RecipeCreatorTest {
 
     private RecipeCreator recipeCreator;
+
+    private static final String API_KEY = "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";
 
     class ChatGPTMock extends ChatGPT {
 
@@ -84,4 +86,20 @@ public class RecipeCreatorTest {
         });
     }
 
+    /*
+     * Integration test for recipe creation feature
+     */
+    @Test
+    void testCreateRecipeStory() throws IOException {
+        ChatGPT chatGPT = new ChatGPT(API_KEY);
+        Whisper whisper = new Whisper(API_KEY);
+        RecipeCreator recipeCreator = new RecipeCreator(chatGPT, whisper);
+        Recipe recipe = recipeCreator.createRecipe(new File("../recipe-creator-story-test.wav"));
+        assertNotNull(recipe);
+        assertNotNull(recipe.getTitle()); // chatGPT isn't determintic, so we can't test for a specific title
+        assertTrue(recipe.getTitle().length() > 5);
+        assertNotNull(recipe.getInstructions());
+        assertTrue(recipe.getInstructions().length() > 100); // make sure recipe body is reasonably long
+        assertNotNull(recipe.getDateCreated());
+    }
 }
