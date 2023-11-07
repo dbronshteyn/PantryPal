@@ -4,6 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.text.Font;
@@ -167,9 +168,12 @@ class RecipeCreationScene extends VBox {
     }
 
     public void displayRecipeCreationScene() {
-        // Assuming that the SceneController can set the top and center regions of the
-        // BorderPane
-        sceneController.setTop(new Label("Create a Recipe")); // You can customize this as needed
+        Label label = new Label("Create a Recipe");
+        label.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().add(label);
+        sceneController.setTop(hbox);
         sceneController.setCenter(this);
     }
 }
