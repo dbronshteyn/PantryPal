@@ -1,53 +1,29 @@
 package ui;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
-import javafx.scene.text.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.geometry.Pos;
+import javafx.scene.text.Font;
 
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.TargetDataLine;
-import javax.swing.*;
-import backend.Recipe;
-import java.awt.*;
-import java.awt.event.*;
+import javax.sound.sampled.*;
+import java.io.File;
+
 import backend.Controller;
-import java.util.List;
 
 /**
- * The RecipeCreationScene class is resposnible for the UI components of 
- * creating a recipe by allowing the user to record audio for inputting ingredients.
+ * The RecipeCreationScene class is responsible for the UI components of
+ * creating a recipe by allowing the user to record audio for inputting
+ * ingredients.
  */
 class RecipeCreationScene extends VBox {
 
     SceneController sceneController;
     AudioRecorder audioRecorder;
     Button completedButton;
-    
+
     /**
      * The AudioRecorder class allows the user to record inputted audio.
      */
@@ -60,34 +36,29 @@ class RecipeCreationScene extends VBox {
 
         /**
          * Constructor for the AudioRecorder class.
-         * @param audioFile     The file where we want to save the recorded audio.
-         * @param recordButton  The button that allows the user to record audio.
+         *
+         * @param audioFile    The file where we want to save the recorded audio.
+         * @param recordButton The button that allows the user to record audio.
          */
         AudioRecorder(File audioFile, ToggleButton recordButton) {
             this.audioFile = audioFile;
             this.recordButton = recordButton;
             this.audioFormat = new AudioFormat(
-                44100,
-                16,
-                1,
-                true,
-                false);
+                    AudioFormat.Encoding.PCM_SIGNED,
+                    44100,
+                    16,
+                    2,
+                    4,
+                    44100,
+                    false);
         }
 
         /**
          * Allows the user to begin recording audio when the "Record" button is pressed.
          */
         public void recordAudio() {
-            this.recordButton.setText("Stop Recording");
-            Thread t = new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        startRecording();
-                    }
-                }
-            );
-            t.start();
+            Thread recordingThread = new Thread(this::startRecording);
+            recordingThread.start();
         }
 
         /**
@@ -95,32 +66,25 @@ class RecipeCreationScene extends VBox {
          */
         public void stopRecordingAudio() {
             stopRecording();
-            this.recordButton.setText("Start Recording");
         }
 
         /**
-         * Initiates the process of recording audio. 
-         * Sets up the audio recording parameters and captures audio data from the microphone.
+         * Initiates the process of recording audio.
+         * Sets up the audio recording parameters and captures audio data from the
+         * microphone.
          */
         private void startRecording() {
             try {
-                DataLine.Info dataLineInfo = new DataLine.Info(
-                    TargetDataLine.class,
-                    audioFormat);
+                DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
                 targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
                 targetDataLine.open(audioFormat);
                 targetDataLine.start();
-                AudioInputStream audioInputStream = new AudioInputStream(
-                        targetDataLine);
-                AudioSystem.write(
-                        audioInputStream,
-                        AudioFileFormat.Type.WAVE,
-                        this.audioFile);
+                AudioInputStream audioInputStream = new AudioInputStream(targetDataLine);
+                AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, audioFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
 
         /**
          * This method is used to stop the audio recording process.
@@ -132,49 +96,80 @@ class RecipeCreationScene extends VBox {
         }
     }
 
-
     /**
      * Constructor for the RecipeCreationScene class.
-     * @param sceneController        The controller for managing scenes.
-     * @param controller             The backend controller.
-     * @param ingredientsAudioFile   The file used to store recorded audio for the input ingredients.
+     *
+     * @param sceneController      The controller for managing scenes.
+     * @param ingredientsAudioFile The file used to store recorded audio for the
+     *                             input ingredients.
      */
-    
-    
-     RecipeCreationScene(SceneController sceneController, Controller controller, File ingredientsAudioFile) {
+    RecipeCreationScene(SceneController sceneController, Controller controller, File ingredientsAudioFile) {
         this.sceneController = sceneController;
+        this.setSpacing(10);
+        this.setPadding(new Insets(20, 20, 20, 20));
+        this.setAlignment(Pos.TOP_CENTER);
+        this.setStyle("-fx-background-color: #e7ffe6;");
 
-        Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(e -> {
-            sceneController.displayRecipeList(null);
-        });
+        Button cancelButton = createStyledButton("Cancel");
+        cancelButton.setOnAction(e -> sceneController.displayRecipeList(null));
         this.getChildren().add(cancelButton);
 
         ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
         this.audioRecorder = new AudioRecorder(ingredientsAudioFile, recordIngredientsButton);
-        this.setSpacing(5);
         recordIngredientsButton.setOnAction(e -> {
             if (recordIngredientsButton.isSelected()) {
                 audioRecorder.recordAudio();
+                recordIngredientsButton.setText("Stop Recording");
             } else {
                 audioRecorder.stopRecordingAudio();
+                recordIngredientsButton.setText("Record Ingredients");
             }
-
         });
-        this.getChildren().add(recordIngredientsButton);
+        this.getChildren().add(createStyledToggleButton(recordIngredientsButton));
 
-        completedButton = new Button("Generate Recipe");
-        completedButton.setOnAction(e -> {
+        Button completeButton = createStyledButton("Generate Recipe");
+        completeButton.setOnAction(e -> {
             controller.createAndShowRecipe(ingredientsAudioFile);
         });
-        this.getChildren().add(completedButton);
+        this.getChildren().add(completeButton);
     }
 
-    /**
-     * Display the recipe creation scene with title and content.
-     */
+    private Button createStyledButton(String text) {
+        Button button = new Button(text);
+        button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
+        button.setFont(new Font("Arial", 14));
+        button.setPadding(new Insets(10, 20, 10, 20));
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #8cc68c; -fx-text-fill: #000000;"));
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;"));
+        return button;
+    }
+
+    private ToggleButton createStyledToggleButton(ToggleButton toggleButton) {
+        toggleButton.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
+        toggleButton.setFont(new Font("Arial", 14));
+        toggleButton.setPadding(new Insets(10, 20, 10, 20));
+        toggleButton.setOnMouseEntered(e -> {
+            if (!toggleButton.isSelected())
+                toggleButton.setStyle("-fx-background-color: #8cc68c; -fx-text-fill: #000000;");
+        });
+        toggleButton.setOnMouseExited(e -> {
+            if (!toggleButton.isSelected())
+                toggleButton.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
+        });
+        toggleButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                toggleButton.setStyle("-fx-background-color: #6fa06b; -fx-text-fill: #000000;");
+            } else {
+                toggleButton.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
+            }
+        });
+        return toggleButton;
+    }
+
     public void displayRecipeCreationScene() {
-        sceneController.setTop(new Label("Create a Recipe"));
+        // Assuming that the SceneController can set the top and center regions of the
+        // BorderPane
+        sceneController.setTop(new Label("Create a Recipe")); // You can customize this as needed
         sceneController.setCenter(this);
     }
 }

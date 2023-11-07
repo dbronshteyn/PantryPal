@@ -6,6 +6,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "backend.Main",
+            "projectName": "app",
+            "vmArgs": "--module-path '/Users/danielbronshteyn/Desktop/CSE110/cse-110-project-team-17/app/lib' --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
             "name": "ListScene",
             "request": "launch",
             "mainClass": "ui.ListScene",
@@ -33,6 +41,5 @@
             "projectName": "app",
             "vmArgs": "--module-path '/Users/danielbronshteyn/Desktop/CSE110/cse-110-project-team-17/app/lib' --add-modules javafx.controls,javafx.fxml"
         }
-
     ]
 }

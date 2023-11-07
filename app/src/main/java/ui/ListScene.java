@@ -34,68 +34,90 @@ import java.awt.*;
 import java.awt.event.*;
 
 import java.util.List;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
-/**
- * The ListScene class is the UI part responsible for dispalying 
- * and managing thelist of generated recipes.
- */
+// import font
+import javafx.scene.text.Font;
+
 public class ListScene extends VBox {
 
     SceneController sceneController;
     ScrollPane scroller;
-    
-    /**
-     * The RecipeInListUI class is a class that is resposible for the component
-    * of displaying individual recipe entries from the bigger recipe list.
-    */
+
     public class RecipeInListUI extends HBox {
         RecipeInListUI(Recipe recipe, SceneController sceneController) {
-            //this.setPrefSize(800, 20);
-            //this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;");
+            this.setSpacing(10);
+            this.setAlignment(Pos.CENTER_LEFT);
+            this.setPadding(new Insets(10, 10, 10, 10));
+
             Label title = new Label(recipe.getTitle());
-            this.getChildren().add(title);
-            Button detailButton = new Button("View Details");
+            title.setFont(new Font("Arial", 16));
+            title.setWrapText(true);
+
+            Button detailButton = createStyledButton("View Details");
             detailButton.setOnAction(e -> {
                 sceneController.displayRecipeDetails(recipe);
             });
-            this.getChildren().add(detailButton);
+
+            this.getChildren().addAll(title, detailButton);
+            this.setStyle("-fx-background-color: #e7ffe6; -fx-border-color: #a3d9a5; -fx-border-width: 0.5;");
         }
     }
-    /**
-    * The ListSceneTopBar class is a class that  the top bar of the recipe list scene,
-    * providing navigation options for managing recipes.
-    */
+
     public class ListSceneTopBar extends HBox {
         ListSceneTopBar(SceneController sceneController) {
-            this.getChildren().add(new Label("Recipes"));
-            Button newRecipeButton = new Button("New Recipe");
+            this.setAlignment(Pos.CENTER);
+            this.setPadding(new Insets(10, 10, 10, 10));
+            this.setSpacing(10);
+
+            Label recipesLabel = new Label("Recipes");
+            recipesLabel.setFont(new Font("Arial", 20));
+
+            Button newRecipeButton = createStyledButton("New Recipe");
             newRecipeButton.setOnAction(e -> {
                 sceneController.displayRecipeCreationScene();
             });
-            this.getChildren().add(newRecipeButton);
+
+            this.getChildren().addAll(recipesLabel, newRecipeButton);
+            this.setStyle("-fx-background-color: #c6ecc6;");
         }
     }
 
     ListScene(SceneController sceneController) {
         this.sceneController = sceneController;
         this.setSpacing(5);
+        this.setPadding(new Insets(10, 10, 10, 10));
         this.setPrefSize(500, 560);
         scroller = new ScrollPane(this);
         scroller.setFitToWidth(true);
         scroller.setFitToHeight(true);
 
-        //this.setStyle("-fx-background-color: #F0F8FF;");
+        this.setStyle("-fx-background-color: #e7ffe6;");
     }
- 
 
     public void displayRecipeList(RecipeList recipes) {
         if (recipes != null) {
             this.getChildren().clear();
             for (Recipe recipe : recipes.getRecipes()) {
-                this.getChildren().add(new RecipeInListUI(recipe, this.sceneController));
+                RecipeInListUI recipeEntry = new RecipeInListUI(recipe, this.sceneController);
+                this.getChildren().add(recipeEntry);
             }
         }
         sceneController.setCenter(scroller);
         sceneController.setTop(new ListSceneTopBar(this.sceneController));
+    }
+
+    private Button createStyledButton(String text) {
+        Button button = new Button(text);
+        button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
+        button.setFont(new Font("Arial", 14));
+        button.setPadding(new Insets(5, 15, 5, 15));
+
+        // Hover effect
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #8cc68c; -fx-text-fill: #000000;"));
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;"));
+
+        return button;
     }
 }
