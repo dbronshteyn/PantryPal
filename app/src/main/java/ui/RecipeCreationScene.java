@@ -13,7 +13,6 @@ import javax.sound.sampled.*;
 import java.io.File;
 
 import backend.Controller;
-import backend.Recipe;
 
 /**
  * The RecipeCreationScene class is responsible for the UI components of
@@ -25,23 +24,6 @@ class RecipeCreationScene extends VBox {
     SceneController sceneController;
     AudioRecorder audioRecorder;
     Button completedButton;
-
-    public class RecipeCreationTopBar extends HBox {
-        RecipeCreationTopBar() {
-            this.setAlignment(Pos.CENTER_LEFT);
-            this.setPadding(new Insets(10, 10, 10, 10));
-            this.setSpacing(10);
-            this.setStyle("-fx-background-color: #c6ecc6;");
-
-            Button cancelButton = createStyledButton("Cancel");
-            cancelButton.setOnAction(e -> sceneController.displayRecipeList(null));
-            this.getChildren().add(cancelButton);
-
-            Label title = new Label("Create a Recipe");
-            title.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
-            this.getChildren().add(title);
-        }
-    }
 
     /**
      * The AudioRecorder class allows the user to record inputted audio.
@@ -129,6 +111,10 @@ class RecipeCreationScene extends VBox {
         this.setAlignment(Pos.TOP_CENTER);
         this.setStyle("-fx-background-color: #e7ffe6;");
 
+        Button cancelButton = createStyledButton("Cancel");
+        cancelButton.setOnAction(e -> sceneController.displayRecipeList(null));
+        this.getChildren().add(cancelButton);
+
         ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
         this.audioRecorder = new AudioRecorder(ingredientsAudioFile, recordIngredientsButton);
         recordIngredientsButton.setOnAction(e -> {
@@ -182,7 +168,12 @@ class RecipeCreationScene extends VBox {
     }
 
     public void displayRecipeCreationScene() {
-        sceneController.setTop(new RecipeCreationTopBar());
+        Label label = new Label("Create a Recipe");
+        label.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().add(label);
+        sceneController.setTop(hbox);
         sceneController.setCenter(this);
     }
 }

@@ -18,7 +18,7 @@ class RecipeScene extends VBox {
     Label instructionsLabel;
 
     public class RecipeSceneTopBar extends HBox {
-        RecipeSceneTopBar(Recipe recipe) {
+        RecipeSceneTopBar(Recipe recipe, SceneController sceneController) {
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
             this.setSpacing(10);
@@ -76,7 +76,7 @@ class RecipeScene extends VBox {
     public void displayRecipe(Recipe recipe) {
         instructionsLabel.setText(recipe.getInstructions());
         sceneController.setCenter(this);
-        sceneController.setTop(new RecipeSceneTopBar(recipe));
+        sceneController.setTop(new RecipeSceneTopBar(recipe, sceneController));
     }
 
     public void displayNewlyCreatedRecipe(Recipe recipe, RecipeList recipeList) {
