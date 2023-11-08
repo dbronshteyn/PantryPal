@@ -4,6 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.text.Font;
@@ -12,6 +13,7 @@ import javax.sound.sampled.*;
 import java.io.File;
 
 import backend.Controller;
+import backend.Recipe;
 
 /**
  * The RecipeCreationScene class is responsible for the UI components of
@@ -23,6 +25,23 @@ class RecipeCreationScene extends VBox {
     SceneController sceneController;
     AudioRecorder audioRecorder;
     Button completedButton;
+
+    public class RecipeCreationTopBar extends HBox {
+        RecipeCreationTopBar() {
+            this.setAlignment(Pos.CENTER_LEFT);
+            this.setPadding(new Insets(10, 10, 10, 10));
+            this.setSpacing(10);
+            this.setStyle("-fx-background-color: #c6ecc6;");
+
+            Button cancelButton = createStyledButton("Cancel");
+            cancelButton.setOnAction(e -> sceneController.displayRecipeList(null));
+            this.getChildren().add(cancelButton);
+
+            Label title = new Label("Create a Recipe");
+            title.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
+            this.getChildren().add(title);
+        }
+    }
 
     /**
      * The AudioRecorder class allows the user to record inputted audio.
@@ -110,10 +129,6 @@ class RecipeCreationScene extends VBox {
         this.setAlignment(Pos.TOP_CENTER);
         this.setStyle("-fx-background-color: #e7ffe6;");
 
-        Button cancelButton = createStyledButton("Cancel");
-        cancelButton.setOnAction(e -> sceneController.displayRecipeList(null));
-        this.getChildren().add(cancelButton);
-
         ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
         this.audioRecorder = new AudioRecorder(ingredientsAudioFile, recordIngredientsButton);
         recordIngredientsButton.setOnAction(e -> {
@@ -167,9 +182,7 @@ class RecipeCreationScene extends VBox {
     }
 
     public void displayRecipeCreationScene() {
-        // Assuming that the SceneController can set the top and center regions of the
-        // BorderPane
-        sceneController.setTop(new Label("Create a Recipe")); // You can customize this as needed
+        sceneController.setTop(new RecipeCreationTopBar());
         sceneController.setCenter(this);
     }
 }
