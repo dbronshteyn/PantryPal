@@ -53,6 +53,7 @@ public class Controller {
 
     public Whisper getWhisper() {
         return this.whisper;
+    }
 
     /**
      * Saves a recipe into the json file (which acts as our database)
