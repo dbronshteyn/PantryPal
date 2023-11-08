@@ -25,6 +25,8 @@ class RecipeCreationScene extends VBox {
     SceneController sceneController;
     AudioRecorder audioRecorder;
     Button completedButton;
+    String transcribedIngredients;
+    String transcribedMealType;
 
     public class RecipeCreationTopBar extends HBox {
         RecipeCreationTopBar() {
@@ -63,13 +65,11 @@ class RecipeCreationScene extends VBox {
             this.audioFile = audioFile;
             this.recordButton = recordButton;
             this.audioFormat = new AudioFormat(
-                    AudioFormat.Encoding.PCM_SIGNED,
-                    44100,
-                    16,
-                    2,
-                    4,
-                    44100,
-                    false);
+                44100,
+                16,
+                1,
+                true,
+                false);
         }
 
         /**
@@ -129,7 +129,12 @@ class RecipeCreationScene extends VBox {
         this.setAlignment(Pos.TOP_CENTER);
         this.setStyle("-fx-background-color: #e7ffe6;");
 
+        Button completeButton = createStyledButton("Generate Recipe");
+        this.transcribedIngredients = null;
+        this.transcribedMealType = null;
+
         ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
+        Label recordIngredientsLabel = new Label("Recorded ingredients will appear here...");
         this.audioRecorder = new AudioRecorder(ingredientsAudioFile, recordIngredientsButton);
         recordIngredientsButton.setOnAction(e -> {
             if (recordIngredientsButton.isSelected()) {
@@ -137,15 +142,25 @@ class RecipeCreationScene extends VBox {
                 recordIngredientsButton.setText("Stop Recording");
             } else {
                 audioRecorder.stopRecordingAudio();
+                try {
+                    transcribedIngredients = controller.getWhisper().transcribeAudio(ingredientsAudioFile);
+                } catch (Exception e1) {
+                    transcribedIngredients = "Error recording audio!";
+                }
+                recordIngredientsLabel.setText("You said: " + transcribedIngredients);
+                if (this.transcribedIngredients != null && this.transcribedMealType != null) {
+                    completeButton.setDisable(false);
+                }
                 recordIngredientsButton.setText("Record Ingredients");
             }
         });
         this.getChildren().add(createStyledToggleButton(recordIngredientsButton));
+        this.getChildren().add(recordIngredientsLabel);
 
-        Button completeButton = createStyledButton("Generate Recipe");
         completeButton.setOnAction(e -> {
-            controller.createAndShowRecipe(ingredientsAudioFile);
+            controller.createAndShowRecipe("", "");
         });
+        completeButton.setDisable(true);
         this.getChildren().add(completeButton);
     }
 
