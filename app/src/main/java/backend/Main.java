@@ -20,10 +20,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         File ingredientsAudioFile = new File("ingredients.wav");
-        File databaseFile = new File("database.json");
-        Controller controller = new Controller(databaseFile);
+        Controller controller = new Controller();
         SceneController sceneController = new SceneController(controller, ingredientsAudioFile);
-        
         primaryStage.setTitle("PantryPal");
         primaryStage.setScene(new Scene(sceneController, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();
