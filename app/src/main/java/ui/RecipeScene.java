@@ -50,7 +50,6 @@ class RecipeScene extends VBox {
             Button saveButton = createStyledButton("Save");
             saveButton.setOnAction(e -> {
                 recipeList.addRecipe(recipe);
-                controller.saveJSON(recipe);
                 sceneController.displayRecipeList(recipeList);
             });
 

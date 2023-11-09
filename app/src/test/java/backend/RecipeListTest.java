@@ -16,7 +16,7 @@ class RecipeListTest {
 
     @BeforeEach
     public void setUp() {
-        recipeList = new RecipeList(recipes);
+        recipeList = new RecipeList(null);
     }
 
     @Test

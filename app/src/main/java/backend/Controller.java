@@ -32,18 +32,13 @@ public class Controller {
     RecipeList recipeList;
     SceneController sceneController;
     Whisper whisper;
-    File databaseFile;
 
   
     Controller(File databaseFile) {
         this.recipeCreator = new RecipeCreator(new ChatGPT(API_KEY));
         this.whisper = new Whisper(API_KEY);
-        this.recipeList = new RecipeList(); // or load from file if it exists
-        this.databaseFile = databaseFile;
-        loadRecipesFromJsonFile(); // Load recipes from the JSON file
-
+        this.recipeList = new RecipeList(databaseFile); // or load from file if it exists
         this.sceneController = null; // Initialize sceneController, it will be set later
-
     }
 
     public void initialize(SceneController sceneController) {
@@ -60,55 +55,7 @@ public class Controller {
         }
     }
 
-    private void loadRecipesFromJsonFile() {
-        try {
-            if (databaseFile.exists()) {
-                String content = new String(Files.readAllBytes(Paths.get(databaseFile.toURI())));
-                JSONObject fileJSONObject = new JSONObject(content);
-                JSONArray recipeListArray = fileJSONObject.getJSONArray("recipeList");
-
-                // Initialize the RecipeList from the JSON data
-                this.recipeList = new RecipeList(recipeListArray);
-            } else {
-                this.recipeList = new RecipeList(); // Create an empty RecipeList
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public Whisper getWhisper() {
         return this.whisper;
-    }
-
-    /**
-     * Saves a recipe into the json file (which acts as our database)
-     * 
-     * @param recipe the recipe to be added
-     */
-    public void saveJSON(Recipe recipe) {
-        JSONObject jsonRecipe = new JSONObject();
-
-        jsonRecipe.put("title", recipe.getTitle());
-        jsonRecipe.put("instructions", recipe.getInstructions());
-
-        // Format the dateCreated field in ISO 8601 format
-        SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        String iso8601Date = iso8601Format.format(recipe.getDateCreated());
-        jsonRecipe.put("dateCreated", iso8601Date);
-
-        try {
-            String content = new String(Files.readAllBytes(Paths.get(databaseFile.toURI())));
-            JSONObject fileJSONObject = new JSONObject(content);
-            JSONArray recipeList = fileJSONObject.getJSONArray("recipeList");
-            FileWriter fw = new FileWriter(databaseFile, false);
-
-            recipeList.put(jsonRecipe);
-            fw.write(fileJSONObject.toString(1));
-            fw.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
