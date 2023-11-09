@@ -150,7 +150,7 @@ class RecipeCreationScene extends VBox {
             } else {
                 mealTypeAudioRecorder.stopRecordingAudio();
                 try {
-                    transcribedMealType = controller.getMealType(controller.transcribeAudio(mealTypeAudioFile));
+                    transcribedMealType = Recipe.getMealType(controller.transcribeAudio(mealTypeAudioFile));
                 } catch (IOException e1) {
                     recordMealTypeLabel.setText("Error recording audio!");
                 }

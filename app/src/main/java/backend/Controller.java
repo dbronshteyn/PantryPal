@@ -55,15 +55,6 @@ public class Controller {
         }
     }
 
-    public String getMealType(String userInput) {
-        for (String mealType : Recipe.MEAL_TYPES) {
-            if (userInput.toLowerCase().contains(mealType)) {
-                return mealType;
-            }
-        }
-        return null;
-    }
-
     public String transcribeAudio(File audioFile) throws IOException {
         return this.whisper.transcribeAudio(audioFile);
     }

@@ -56,17 +56,9 @@ public class Recipe {
         return this.dateCreated;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public void setInstructions(String instructions) {
         this.dateCreated = new Date();
         this.instructions = instructions;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
     }
 
     /**
@@ -85,5 +77,14 @@ public class Recipe {
         out.put("instructions", this.instructions);
         out.put("dateCreated", this.formatter.format(this.dateCreated));
         return out;
+    }
+
+    public static String getMealType(String userInput) {
+        for (String mealType : MEAL_TYPES) {
+            if (userInput.toLowerCase().contains(mealType)) {
+                return mealType;
+            }
+        }
+        return null;
     }
 }
