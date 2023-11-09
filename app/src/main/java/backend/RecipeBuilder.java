@@ -23,8 +23,16 @@ public class RecipeBuilder {
             return this.value;
         }
 
+        public void setValue(String value) {
+            this.value = value;
+        }
+
         public void reset() {
             this.value = null;
+        }
+
+        public boolean isSet() {
+            return this.value != null;
         }
 
         public String specify(File audioFile) throws IOException {
@@ -62,7 +70,7 @@ public class RecipeBuilder {
     }
 
     public boolean isCompleted() {
-        return this.mealType != null && this.ingredients != null;
+        return this.mealType.isSet() && this.ingredients.isSet();
     }
 
     public Recipe returnRecipe() throws IOException {
