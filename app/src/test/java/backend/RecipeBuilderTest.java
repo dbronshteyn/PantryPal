@@ -126,4 +126,6 @@ class RecipeBuilderTest {
     void testCreateRecipeStoryScenarioTwo() throws IOException {
         ///
     }
+
+    // create integration tests for all stories
 }
