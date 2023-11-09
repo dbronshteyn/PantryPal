@@ -61,6 +61,7 @@ public class Recipe {
     }
 
     public void setInstructions(String instructions) {
+        this.dateCreated = new Date();
         this.instructions = instructions;
     }
 

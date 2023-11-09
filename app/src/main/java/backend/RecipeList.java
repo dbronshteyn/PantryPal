@@ -56,7 +56,7 @@ public class RecipeList {
         return Collections.unmodifiableList(this.recipes);
     }
 
-    private void sortRecipesByDate() {
+    public void sortRecipesByDate() {
         // Sort the list with a custom comparator that compares the dates
         Collections.sort(this.recipes, new Comparator<Recipe>() {
             @Override

@@ -62,6 +62,7 @@ public class Controller {
     public void saveEdits(Recipe recipe, String newInstructions) {
         recipe.setInstructions(newInstructions);
         this.recipeList.updateDatabase();
+        this.recipeList.sortRecipesByDate();
         this.sceneController.displayRecipeDetails(recipe);
     }
 
