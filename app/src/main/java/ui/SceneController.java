@@ -54,8 +54,8 @@ public class SceneController extends BorderPane {
         this.setCenter(listScene);
     }
 
-    public void displayRecipeDetails(Recipe recipe, RecipeList recipeList) {
-        recipeScene.displayRecipe(recipe, recipeList);
+    public void displayRecipeDetails(Recipe recipe) {
+        recipeScene.displayRecipe(recipe);
     }
 
     public void displayNewlyCreatedRecipe(Recipe recipe, RecipeList recipeList) {
@@ -72,5 +72,9 @@ public class SceneController extends BorderPane {
 
     public void saveEdits(Recipe recipe, String newInstructions) {
         this.controller.saveEdits(recipe, newInstructions);
+    }
+
+    public void removeRecipe(Recipe recipe) {
+        this.controller.removeRecipe(recipe);
     }
 }

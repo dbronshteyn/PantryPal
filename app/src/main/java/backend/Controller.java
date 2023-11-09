@@ -64,4 +64,9 @@ public class Controller {
         this.recipeList.updateDatabase();
         this.sceneController.displayRecipeDetails(recipe);
     }
+
+    public void removeRecipe(Recipe recipe) {
+        this.recipeList.removeRecipe(recipe);
+        this.sceneController.displayRecipeList(this.recipeList);
+    }
 }

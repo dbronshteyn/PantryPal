@@ -21,7 +21,7 @@ class RecipeScene extends ScrollPane {
     TextArea instructionsTextArea;
 
     public class RecipeSceneTopBar extends HBox {
-        RecipeSceneTopBar(Recipe recipe, RecipeList recipeList) {
+        RecipeSceneTopBar(Recipe recipe) {
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
             this.setSpacing(10);
@@ -38,8 +38,8 @@ class RecipeScene extends ScrollPane {
 
             Button deleteButton = createStyledButton("Delete");
             deleteButton.setOnAction(e -> {
-                recipeList.removeRecipe(recipe);
-                sceneController.displayRecipeList(recipeList);
+                sceneController.removeRecipe(recipe);
+                sceneController.displayRecipeList(null);
             });
 
             this.getChildren().addAll(backButton, title, editButton, deleteButton);
@@ -120,11 +120,11 @@ class RecipeScene extends ScrollPane {
         sceneController.setTop(new RecipeEditTopBar(recipe, sceneController));
     }
 
-    public void displayRecipe(Recipe recipe, RecipeList recipeList) {
+    public void displayRecipe(Recipe recipe) {
         instructionsLabel.setText(recipe.getInstructions());
         this.setContent(instructionsLabel);
         sceneController.setCenter(this);
-        sceneController.setTop(new RecipeSceneTopBar(recipe, recipeList));
+        sceneController.setTop(new RecipeSceneTopBar(recipe));
     }
 
     public void displayNewlyCreatedRecipe(Recipe recipe, RecipeList recipeList) {

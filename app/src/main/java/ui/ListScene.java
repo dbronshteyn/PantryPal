@@ -57,7 +57,7 @@ public class ListScene extends VBox {
 
             Button detailButton = createStyledButton("View Details");
             detailButton.setOnAction(e -> {
-                sceneController.displayRecipeDetails(recipe, recipeList);
+                sceneController.displayRecipeDetails(recipe);
             });
 
 
