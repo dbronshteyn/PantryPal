@@ -16,7 +16,6 @@ public class Recipe {
     private String instructions;
     private Date dateCreated;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-    public static final String[] MEAL_TYPES = {"breakfast", "lunch", "dinner"};
 
 
     /**
@@ -77,14 +76,5 @@ public class Recipe {
         out.put("instructions", this.instructions);
         out.put("dateCreated", this.formatter.format(this.dateCreated));
         return out;
-    }
-
-    public static String getMealType(String userInput) {
-        for (String mealType : MEAL_TYPES) {
-            if (userInput.toLowerCase().contains(mealType)) {
-                return mealType;
-            }
-        }
-        return null;
     }
 }

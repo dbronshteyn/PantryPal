@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Date;
 
-public class RecipeListTest {
+class RecipeListTest {
 
     private RecipeList recipeList;
     private File databaseFile;
@@ -31,7 +31,7 @@ public class RecipeListTest {
     }
 
     @Test
-    public void testAddRecipe() {
+    void testAddRecipe() {
         File databaseFile = new File("test-recipes.json");
         RecipeList recipeList = new RecipeList(databaseFile);
 
@@ -46,7 +46,7 @@ public class RecipeListTest {
     }
 
     @Test
-    public void testRemoveRecipe() {
+    void testRemoveRecipe() {
         File databaseFile = new File("test-recipes.json");
         RecipeList recipeList = new RecipeList(databaseFile);
 
@@ -63,7 +63,7 @@ public class RecipeListTest {
     }
 
     @Test
-    public void testGetRecipesSortedByDate() {
+    void testGetRecipesSortedByDate() {
         // Create a new recipe list and add two recipes with different dates
         File databaseFile = new File("test-recipes.json");
         RecipeList recipeList = new RecipeList(databaseFile);
@@ -89,7 +89,7 @@ public class RecipeListTest {
     }
 
     @Test
-    public void testUpdateDatabase() {
+    void testUpdateDatabase() {
         File databaseFile = new File("test-recipes.json");
         RecipeList recipeList = new RecipeList(databaseFile);
 
@@ -121,7 +121,7 @@ public class RecipeListTest {
     }
 
     @Test
-    public void testLoadRecipesFromFile() {
+    void testLoadRecipesFromFile() {
         // Add recipes to the recipeList
         recipeList.addRecipe(recipe1);
         recipeList.addRecipe(recipe2);

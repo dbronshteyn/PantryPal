@@ -2,6 +2,7 @@ package ui;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
@@ -14,8 +15,11 @@ import java.io.File;
 
 import java.io.IOException;
 
-import backend.Controller;
 import backend.Recipe;
+import backend.RecipeBuilder;
+import backend.RecipeBuilder.ResettableElement;
+import backend.RecipeList;
+
 
 /**
  * The RecipeCreationScene class is responsible for the UI components of
@@ -26,25 +30,31 @@ class RecipeCreationScene extends VBox {
 
     SceneController sceneController;
     Button completedButton;
-    String transcribedIngredients;
-    String transcribedMealType;
-    AudioRecorder mealTypeAudioRecorder;
-    AudioRecorder ingredientsAudioRecorder;
+    File ingredientsAudioFile;
+    File mealTypeAudioFile;
+    RecipeList recipeList;
 
     public class RecipeCreationTopBar extends HBox {
+
+        private Button cancelButton;
+
         RecipeCreationTopBar() {
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
             this.setSpacing(10);
             this.setStyle("-fx-background-color: #c6ecc6;");
 
-            Button cancelButton = createStyledButton("Cancel");
+            cancelButton = createStyledButton("Cancel");
             cancelButton.setOnAction(e -> sceneController.displayRecipeList(null));
             this.getChildren().add(cancelButton);
 
             Label title = new Label("Create a Recipe");
             title.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
             this.getChildren().add(title);
+        }
+
+        public Button getCancelButton() {
+            return cancelButton;
         }
     }
 
@@ -125,82 +135,59 @@ class RecipeCreationScene extends VBox {
      * @param ingredientsAudioFile The file used to store recorded audio for the
      *                             input ingredients.
      */
-    RecipeCreationScene(SceneController sceneController, Controller controller, File ingredientsAudioFile, File mealTypeAudioFile) {
+    RecipeCreationScene(SceneController sceneController, RecipeList recipeList, File ingredientsAudioFile, File mealTypeAudioFile) {
         this.sceneController = sceneController;
         this.setSpacing(10);
         this.setPadding(new Insets(20, 20, 20, 20));
         this.setAlignment(Pos.TOP_CENTER);
         this.setStyle("-fx-background-color: #e7ffe6;");
 
-        Button completeButton = createStyledButton("Generate Recipe");
-        ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
-        ToggleButton recordMealTypeButton = new ToggleButton("Record Meal Type");
-        this.transcribedIngredients = null;
-        this.transcribedMealType = null;
+        this.recipeList = recipeList;
+        this.ingredientsAudioFile = ingredientsAudioFile;
+        this.mealTypeAudioFile = mealTypeAudioFile;
+    }
 
-        Label recordMealTypeLabel = new Label("Please select either breakfast, lunch, or dinner. Recorded meal type will appear here.");
-        this.mealTypeAudioRecorder = new AudioRecorder(mealTypeAudioFile, recordMealTypeButton);
-        recordMealTypeButton.setOnAction(e -> {
-            if (recordMealTypeButton.isSelected()) {
-                this.transcribedMealType = null;
+    private void setRecordingButtonTriggers(ToggleButton button, 
+                                            Label label, 
+                                            String successMessage, 
+                                            String invalidTypeMessage, 
+                                            File audioFile, 
+                                            RecipeBuilder recipeBuilder, 
+                                            ResettableElement element, 
+                                            Button completeButton, 
+                                            Button cancelButton, 
+                                            ToggleButton otherButton) {
+        AudioRecorder audioRecorder = new AudioRecorder(audioFile, button);
+        String originalText = button.getText();
+        button.setOnAction(e -> {
+            if (button.isSelected()) {
+                element.reset();
                 completeButton.setDisable(true);
-                recordIngredientsButton.setDisable(true);
-                this.mealTypeAudioRecorder.recordAudio();
-                recordMealTypeButton.setText("Stop Recording");
+                otherButton.setDisable(true);
+                cancelButton.setDisable(true);
+                audioRecorder.recordAudio();
+                button.setText("Stop Recording");
             } else {
-                mealTypeAudioRecorder.stopRecordingAudio();
+                audioRecorder.stopRecordingAudio();
                 try {
-                    transcribedMealType = Recipe.getMealType(controller.transcribeAudio(mealTypeAudioFile));
+                    String result = element.specify(audioFile);
+                    if (result == null) {
+                        label.setText(invalidTypeMessage);
+                    } else {
+                        label.setText(String.format(successMessage, result));
+                    }
                 } catch (IOException e1) {
-                    recordMealTypeLabel.setText("Error recording audio!");
+                    label.setText("Error recording audio!");
                 }
-                recordIngredientsButton.setDisable(false);
-                if (transcribedMealType == null) {
-                    recordMealTypeLabel.setText("Please say either breakfast, lunch, or dinner.");
-                } else {
-                    recordMealTypeLabel.setText("You selected " + transcribedMealType);
-                }
-                if (this.transcribedIngredients != null && this.transcribedMealType != null) {
+                button.setDisable(false);
+                button.setText(originalText);
+                otherButton.setDisable(false);
+                cancelButton.setDisable(false);
+                if (recipeBuilder.isCompleted()) {
                     completeButton.setDisable(false);
                 }
-                recordMealTypeButton.setText("Record Meal Type");
             }
         });
-        this.getChildren().add(createStyledToggleButton(recordMealTypeButton));
-        this.getChildren().add(recordMealTypeLabel);
-
-        Label recordIngredientsLabel = new Label("Recorded ingredients will appear here...");
-        this.ingredientsAudioRecorder = new AudioRecorder(ingredientsAudioFile, recordIngredientsButton);
-        recordIngredientsButton.setOnAction(e -> {
-            if (recordIngredientsButton.isSelected()) {
-                completeButton.setDisable(true);
-                recordMealTypeButton.setDisable(true);
-                this.transcribedIngredients = null;
-                ingredientsAudioRecorder.recordAudio();
-                recordIngredientsButton.setText("Stop Recording");
-            } else {
-                ingredientsAudioRecorder.stopRecordingAudio();
-                try {
-                    transcribedIngredients = controller.transcribeAudio(ingredientsAudioFile);
-                } catch (Exception e1) {
-                    recordIngredientsLabel.setText("Error recording audio!");
-                }
-                recordMealTypeButton.setDisable(false);
-                recordIngredientsLabel.setText("You said: " + transcribedIngredients);
-                if (this.transcribedIngredients != null && this.transcribedMealType != null) {
-                    completeButton.setDisable(false);
-                }
-                recordIngredientsButton.setText("Record Ingredients");
-            }
-        });
-        this.getChildren().add(createStyledToggleButton(recordIngredientsButton));
-        this.getChildren().add(recordIngredientsLabel);
-
-        completeButton.setOnAction(e -> {
-            controller.createAndShowRecipe(transcribedMealType, transcribedIngredients);
-        });
-        completeButton.setDisable(true);
-        this.getChildren().add(completeButton);
     }
 
     private Button createStyledButton(String text) {
@@ -235,10 +222,53 @@ class RecipeCreationScene extends VBox {
         return toggleButton;
     }
 
-    public void displayRecipeCreationScene() {
-        this.transcribedIngredients = null;
-        this.transcribedMealType = null;
-        sceneController.setTop(new RecipeCreationTopBar());
+    public void displayRecipeCreationScene(RecipeBuilder recipeBuilder) {
+        this.getChildren().clear();
+        Button completeButton = createStyledButton("Generate Recipe");
+        RecipeCreationTopBar topBar = new RecipeCreationTopBar();
+
+        Label recordMealTypeLabel = new Label("Please select either breakfast, lunch, or dinner.");
+        Label recordIngredientsLabel = new Label("Recorded ingredients will appear here...");
+        ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
+        ToggleButton recordMealTypeButton = new ToggleButton("Record Meal Type");
+
+        setRecordingButtonTriggers(recordMealTypeButton, 
+                                   recordMealTypeLabel, 
+                                   "You selected %s", 
+                                   "Please select either breakfast, lunch, or dinner.", 
+                                   mealTypeAudioFile, 
+                                   recipeBuilder, 
+                                   recipeBuilder.getMealTypeElement(),
+                                   completeButton, 
+                                   topBar.getCancelButton(), 
+                                   recordIngredientsButton);
+        this.getChildren().add(createStyledToggleButton(recordMealTypeButton));
+        this.getChildren().add(recordMealTypeLabel);
+
+        setRecordingButtonTriggers(recordIngredientsButton, 
+                                   recordIngredientsLabel, 
+                                   "You said: %s", 
+                                   null, 
+                                   ingredientsAudioFile, 
+                                   recipeBuilder, 
+                                   recipeBuilder.getIngredientsElement(),
+                                   completeButton, 
+                                   topBar.getCancelButton(), 
+                                   recordMealTypeButton);
+        this.getChildren().add(createStyledToggleButton(recordIngredientsButton));
+        this.getChildren().add(recordIngredientsLabel);
+
+        completeButton.setOnAction(e -> {
+            try {
+                Recipe recipe = recipeBuilder.returnRecipe();
+                sceneController.displayNewlyCreatedRecipe(recipe, recipeList);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } 
+        });
+        completeButton.setDisable(true);
+        this.getChildren().add(completeButton);
+        sceneController.setTop(topBar);
         sceneController.setCenter(this);
     }
 }

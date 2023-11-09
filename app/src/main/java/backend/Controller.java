@@ -25,20 +25,15 @@ import ui.SceneController;
  */
 
 public class Controller {
+    RecipeList recipeList;
+    SceneController sceneController;
 
     private static final String API_KEY = "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";
 
-    RecipeCreator recipeCreator;
-    RecipeList recipeList;
-    SceneController sceneController;
-    Whisper whisper;
-
   
     Controller(File databaseFile) {
-        this.recipeCreator = new RecipeCreator(new ChatGPT(API_KEY));
-        this.whisper = new Whisper(API_KEY);
-        this.recipeList = new RecipeList(databaseFile); // or load from file if it exists
-        this.sceneController = null; // Initialize sceneController, it will be set later
+        this.recipeList = new RecipeList(databaseFile);
+        this.sceneController = null;
     }
 
     public void initialize(SceneController sceneController) {
@@ -46,17 +41,11 @@ public class Controller {
         this.sceneController.displayRecipeList(this.recipeList);
     }
 
-    public void createAndShowRecipe(String mealType, String ingredients) {
-        try {
-            Recipe recipe = this.recipeCreator.createRecipe(mealType, ingredients);
-            this.sceneController.displayNewlyCreatedRecipe(recipe, this.recipeList);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String transcribeAudio(File audioFile) throws IOException {
-        return this.whisper.transcribeAudio(audioFile);
+    public RecipeBuilder generateNewRecipeBuilder() {
+        ChatGPT chatGPT = new ChatGPT(API_KEY);
+        Whisper whisper = new Whisper(API_KEY);
+        RecipeBuilder recipeBuilder = new RecipeBuilder(chatGPT, whisper);
+        return recipeBuilder;
     }
 
     public void saveEdits(Recipe recipe, String newInstructions) {
@@ -70,5 +59,9 @@ public class Controller {
     public void removeRecipe(Recipe recipe) {
         this.recipeList.removeRecipe(recipe);
         this.sceneController.displayRecipeList(this.recipeList);
+    }
+
+    public RecipeList getRecipeList() {
+        return this.recipeList;
     }
 }
