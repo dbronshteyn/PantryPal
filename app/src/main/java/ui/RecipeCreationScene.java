@@ -12,6 +12,8 @@ import javafx.scene.text.Font;
 import javax.sound.sampled.*;
 import java.io.File;
 
+import java.io.IOException;
+
 import backend.Controller;
 import backend.Recipe;
 
@@ -148,14 +150,8 @@ class RecipeCreationScene extends VBox {
             } else {
                 mealTypeAudioRecorder.stopRecordingAudio();
                 try {
-                    String possiblyTranscribedMealType = controller.getWhisper().transcribeAudio(mealTypeAudioFile);
-                    for (String mealType : Recipe.MEAL_TYPES) {
-                        if (possiblyTranscribedMealType.toLowerCase().contains(mealType)) {
-                            transcribedMealType = mealType;
-                            break;
-                        }
-                    }
-                } catch (Exception e1) {
+                    transcribedMealType = controller.getMealType(controller.transcribeAudio(mealTypeAudioFile));
+                } catch (IOException e1) {
                     recordMealTypeLabel.setText("Error recording audio!");
                 }
                 recordIngredientsButton.setDisable(false);
@@ -185,7 +181,7 @@ class RecipeCreationScene extends VBox {
             } else {
                 ingredientsAudioRecorder.stopRecordingAudio();
                 try {
-                    transcribedIngredients = controller.getWhisper().transcribeAudio(ingredientsAudioFile);
+                    transcribedIngredients = controller.transcribeAudio(ingredientsAudioFile);
                 } catch (Exception e1) {
                     recordIngredientsLabel.setText("Error recording audio!");
                 }
