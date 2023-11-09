@@ -74,6 +74,7 @@ public class ListScene extends VBox {
 
             Label recipesLabel = new Label("Recipes");
             recipesLabel.setFont(new Font("Arial", 20));
+            recipesLabel.setStyle("-fx-font-weight: bold;");
 
             Button newRecipeButton = createStyledButton("New Recipe");
             newRecipeButton.setOnAction(e -> {
