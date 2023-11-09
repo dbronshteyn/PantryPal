@@ -4,14 +4,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.ScrollPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.text.Font;
+import javafx.scene.control.TextField;
 import backend.Recipe;
 import backend.RecipeList;
 import backend.Controller;
 
-class RecipeScene extends VBox {
+class RecipeScene extends ScrollPane {
 
     Controller controller;
     SceneController sceneController;
@@ -60,16 +62,15 @@ class RecipeScene extends VBox {
     RecipeScene(Controller controller, SceneController sceneController) {
         this.controller = controller;
         this.sceneController = sceneController;
-        this.setSpacing(10);
-        this.setAlignment(Pos.CENTER);
-        this.setPadding(new Insets(10, 10, 10, 10));
-        this.setStyle("-fx-background-color: #e7ffe6;");
-
+        
         instructionsLabel = new Label();
         instructionsLabel.setWrapText(true);
         instructionsLabel.setFont(new Font("Arial", 14));
-
-        this.getChildren().add(instructionsLabel);
+        instructionsLabel.setStyle("-fx-background-color: #e7ffe6;");
+        this.setFitToWidth(true);
+        this.setContent(instructionsLabel);
+        this.setPadding(new Insets(30, 30, 30, 30));
+        this.setStyle("-fx-background: #e7ffe6;");
     }
 
     public void displayRecipe(Recipe recipe) {
