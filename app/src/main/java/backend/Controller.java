@@ -63,6 +63,7 @@ public class Controller {
         recipe.setInstructions(newInstructions);
         this.recipeList.updateDatabase();
         this.recipeList.sortRecipesByDate();
+        this.sceneController.displayRecipeList(recipeList);
         this.sceneController.displayRecipeDetails(recipe);
     }
 
