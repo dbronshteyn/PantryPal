@@ -31,12 +31,18 @@ class RecipeScene extends ScrollPane {
             title.setFont(new Font("Arial", 20));
 
             Button backButton = createStyledButton("Back");
-            backButton.setOnAction(e -> sceneController.displayRecipeList(null));
-
+            backButton.setOnAction(e -> sceneController.displayRecipeList(null));   
+          
             Button editButton = createStyledButton("Edit");
             editButton.setOnAction(e -> displayRecipeEditScene(recipe));
 
-            this.getChildren().addAll(backButton, title, editButton);
+            Button deleteButton = createStyledButton("Delete");
+            deleteButton.setOnAction(e -> {
+                sceneController.removeRecipe(recipe);
+                sceneController.displayRecipeList(null);
+            });
+
+            this.getChildren().addAll(backButton, title, editButton, deleteButton);
         }
     }
 

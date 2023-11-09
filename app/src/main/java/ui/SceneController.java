@@ -73,4 +73,8 @@ public class SceneController extends BorderPane {
     public void saveEdits(Recipe recipe, String newInstructions) {
         this.controller.saveEdits(recipe, newInstructions);
     }
+
+    public void removeRecipe(Recipe recipe) {
+        this.controller.removeRecipe(recipe);
+    }
 }
