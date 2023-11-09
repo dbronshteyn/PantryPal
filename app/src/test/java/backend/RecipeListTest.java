@@ -2,96 +2,148 @@ package backend;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.io.File;
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+public class RecipeListTest {
 
-class RecipeListTest {
-    // private RecipeList recipeList;
-    // private List<Recipe> recipes = new ArrayList<Recipe>();
+    private RecipeList recipeList;
+    private File databaseFile;
+    private Recipe recipe1;
+    private Recipe recipe2;
+    private Recipe recipe3;
 
-    // @BeforeEach
-    // public void setUp() {
-    //     recipeList = new RecipeList(null);
-    // }
+    @BeforeEach
+    public void setUp() {
+        databaseFile = new File("test-recipes.json");
+        recipeList = new RecipeList(databaseFile);
 
-    // @Test
-    // void testAddRecipe_SortedCorrectly() {
-    //     // Assume Recipe class has a constructor that takes title, instructions, and
-    //     // dateCreated
-    //     Recipe recipe1 = new Recipe("Recipe1", "Instructions1", new Date(System.currentTimeMillis() - 10000)); // Older
-    //     Recipe recipe2 = new Recipe("Recipe2", "Instructions2", new Date()); // Newer
+        Date date1 = new Date();
+        Date date2 = new Date();
+        Date date3 = new Date();
 
-    //     recipeList.addRecipe(recipe1);
-    //     recipeList.addRecipe(recipe2);
+        recipe1 = new Recipe("Recipe 1", "Description 1", date1);
+        recipe2 = new Recipe("Recipe 2", "Description 2", date2);
+        recipe3 = new Recipe("Recipe 3", "Description 3", date3);
+    }
 
-    //     List<Recipe> recipes = recipeList.getRecipes();
+    @Test
+    public void testAddRecipe() {
+        File databaseFile = new File("test-recipes.json");
+        RecipeList recipeList = new RecipeList(databaseFile);
 
-    //     assertEquals(2, recipes.size(), "There should be two recipes in the list.");
-    //     assertEquals("Recipe2", recipes.get(0).getTitle(), "Recipe2 should be first as it is newer.");
-    //     assertEquals("Recipe1", recipes.get(1).getTitle(), "Recipe1 should be second as it is older.");
-    // }
+        Recipe recipe = new Recipe("Test Recipe", "Test Instructions", new Date());
+        recipeList.addRecipe(recipe);
 
-    // @Test
-    // void testRemoveRecipe() {
-    //     Recipe recipe1 = new Recipe("Recipe1", "Instructions1", new Date());
-    //     recipeList.addRecipe(recipe1);
-    //     assertEquals(1, recipeList.getRecipes().size(), "Recipe list should have 1 recipe before removal.");
+        List<Recipe> recipes = recipeList.getRecipes();
+        assertTrue(recipes.contains(recipe));
 
-    //     recipeList.removeRecipe(recipe1);
-    //     assertTrue(recipeList.getRecipes().isEmpty(), "Recipe list should be empty after removal.");
-    // }
+        // Clean up: remove the test database file
+        databaseFile.delete();
+    }
 
-    // @Test
-    // void testGetRecipes_ImmutableList() {
-    //     Recipe recipe1 = new Recipe("Recipe1", "Instructions1", new Date());
-    //     recipeList.addRecipe(recipe1);
+    @Test
+    public void testRemoveRecipe() {
+        File databaseFile = new File("test-recipes.json");
+        RecipeList recipeList = new RecipeList(databaseFile);
 
-    //     List<Recipe> recipes = recipeList.getRecipes();
-    //     try {
-    //         recipes.add(new Recipe("Recipe2", "Instructions2", new Date()));
-    //     } catch (UnsupportedOperationException e) {
-    //         // This is expected as we're attempting to modify an unmodifiable list.
-    //     }
+        Recipe recipe = new Recipe("Test Recipe", "Test Instructions", new Date());
+        recipeList.addRecipe(recipe);
 
-    //     assertEquals(1, recipeList.getRecipes().size(), "Recipe list should not be modified through the getter.");
-    // }
+        recipeList.removeRecipe(recipe);
 
-    // /*
-    //  * This test is not necessary as it is testing the Collections.sort method
-    //  * 
-    //  * However, I just wanted to experiment with the Comparator class and how it
-    //  * works on a larger list. I also wanted to make sure that the sortRecipesByDate
-    //  * method was called in the constructor.
-    //  */
+        List<Recipe> recipes = recipeList.getRecipes();
+        assertFalse(recipes.contains(recipe));
 
-    // @Test
-    // void testGetRecipes_SortedCorrectly() {
-    //     // Assume Recipe class has a constructor that takes title, instructions, and
-    //     // dateCreated
-    //     Recipe recipe1 = new Recipe("Recipe1", "Instructions1", new Date(System.currentTimeMillis() - 10000)); // Older
-    //     Recipe recipe2 = new Recipe("Recipe2", "Instructions2", new Date()); // Newer
-    //     Recipe recipe3 = new Recipe("Recipe3", "Instructions3", new Date(System.currentTimeMillis() - 20000)); // Older
-    //     Recipe recipe4 = new Recipe("Recipe4", "Instructions4", new Date(System.currentTimeMillis() - 30000)); // Older
-    //     Recipe recipe5 = new Recipe("Recipe5", "Instructions5", new Date(System.currentTimeMillis() - 40000)); // Older
+        // Clean up: remove the test database file
+        databaseFile.delete();
+    }
 
-    //     recipeList.addRecipe(recipe1);
-    //     recipeList.addRecipe(recipe2);
-    //     recipeList.addRecipe(recipe3);
-    //     recipeList.addRecipe(recipe4);
-    //     recipeList.addRecipe(recipe5);
+    @Test
+    public void testGetRecipesSortedByDate() {
+        // Create a new recipe list and add two recipes with different dates
+        File databaseFile = new File("test-recipes.json");
+        RecipeList recipeList = new RecipeList(databaseFile);
 
-    //     List<Recipe> recipes = recipeList.getRecipes();
+        // Create two dates that have different times, recipe2 is earlier than recipe1
+        Recipe recipe1 = new Recipe("Recipe 1", "Test Instructions", new Date());
+        Recipe recipe2 = new Recipe("Recipe 2", "Test Instructions", new Date());
 
-    //     assertEquals(5, recipes.size(), "There should be five recipes in the list.");
-    //     assertEquals("Recipe2", recipes.get(0).getTitle(), "Recipe2 should be first as it is newer.");
-    //     assertEquals("Recipe1", recipes.get(1).getTitle(), "Recipe1 should be second as it is older.");
-    //     assertEquals("Recipe3", recipes.get(2).getTitle(), "Recipe3 should be third as it is older.");
-    //     assertEquals("Recipe4", recipes.get(3).getTitle(), "Recipe4 should be fourth as it is older.");
-    //     assertEquals("Recipe5", recipes.get(4).getTitle(), "Recipe5 should be fifth as it is older.");
-    // }
+        // Add the recipes to the list in reverse order
+        recipeList.addRecipe(recipe2);
+        recipeList.addRecipe(recipe1);
+
+        // Sort the recipes by date
+        recipeList.sortRecipesByDate();
+
+        // Check that the first element is recipe2 and the second is recipe1
+        List<Recipe> recipes = recipeList.getRecipes();
+        assertEquals(recipe2.getTitle(), recipes.get(0).getTitle());
+        assertEquals(recipe1, recipes.get(1));
+
+        // Clean up: remove the test database file
+        databaseFile.delete();
+    }
+
+    @Test
+    public void testUpdateDatabase() {
+        File databaseFile = new File("test-recipes.json");
+        RecipeList recipeList = new RecipeList(databaseFile);
+
+        // Create two random dates that have different times
+        Date date1 = new Date();
+        Date date2 = new Date();
+
+        Recipe recipe1 = new Recipe("Recipe 1", "Test Instructions", date1);
+        Recipe recipe2 = new Recipe("Recipe 2", "Test Instructions", date2);
+
+        recipeList.addRecipe(recipe2);
+        recipeList.addRecipe(recipe1);
+
+        // Save the recipes to the database file
+        recipeList.updateDatabase();
+
+        // Re-create the recipe list from the saved file
+        RecipeList newRecipeList = new RecipeList(databaseFile);
+        List<Recipe> newRecipes = newRecipeList.getRecipes();
+
+        assertEquals(2, newRecipes.size());
+
+        // Check that the first element is recipe2 and the second is recipe1
+        assertEquals(recipe2.getTitle(), newRecipes.get(0).getTitle());
+        assertEquals(recipe1.getTitle(), newRecipes.get(1).getTitle());
+
+        // Clean up: remove the test database file
+        databaseFile.delete();
+    }
+
+    @Test
+    public void testLoadRecipesFromFile() {
+        // Add recipes to the recipeList
+        recipeList.addRecipe(recipe1);
+        recipeList.addRecipe(recipe2);
+        recipeList.addRecipe(recipe3);
+
+        // Save the recipes to the database file
+        recipeList.updateDatabase();
+
+        // Create a new RecipeList and load from the saved file
+        RecipeList newRecipeList = new RecipeList(databaseFile);
+
+        // Check that the loaded recipes match the added recipes
+        List<Recipe> loadedRecipes = newRecipeList.getRecipes();
+        List<Recipe> currentRecipes = recipeList.getRecipes(); // recipe4 was not added
+
+        // Check that the loaded recipes match the added recipes
+        assertEquals(currentRecipes.size(), loadedRecipes.size());
+        assertEquals(currentRecipes.get(0).getTitle(), loadedRecipes.get(0).getTitle());
+        assertEquals(currentRecipes.get(1).getTitle(), loadedRecipes.get(1).getTitle());
+        assertEquals(currentRecipes.get(2).getTitle(), loadedRecipes.get(2).getTitle());
+
+        // Clean up: remove the test database file
+        databaseFile.delete();
+    }
 }
