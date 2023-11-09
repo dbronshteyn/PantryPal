@@ -11,6 +11,7 @@ public class Recipe {
     private String title;
     private String instructions;
     private Date dateCreated;
+    public static final String[] MEAL_TYPES = {"breakfast", "lunch", "dinner"};
 
 
     /**

@@ -31,10 +31,14 @@ public class Controller {
     RecipeCreator recipeCreator;
     RecipeList recipeList;
     SceneController sceneController;
+    Whisper whisper;
     File databaseFile;
 
+  
     Controller(File databaseFile) {
-        this.recipeCreator = new RecipeCreator(new ChatGPT(API_KEY), new Whisper(API_KEY));
+        this.recipeCreator = new RecipeCreator(new ChatGPT(API_KEY));
+        this.whisper = new Whisper(API_KEY);
+        this.recipeList = new RecipeList(); // or load from file if it exists
         this.databaseFile = databaseFile;
         loadRecipesFromJsonFile(); // Load recipes from the JSON file
 
@@ -47,9 +51,9 @@ public class Controller {
         this.sceneController.displayRecipeList(this.recipeList);
     }
 
-    public void createAndShowRecipe(File ingredientsAudioFile) {
+    public void createAndShowRecipe(String mealType, String ingredients) {
         try {
-            Recipe recipe = this.recipeCreator.createRecipe(ingredientsAudioFile);
+            Recipe recipe = this.recipeCreator.createRecipe(mealType, ingredients);
             this.sceneController.displayNewlyCreatedRecipe(recipe, this.recipeList);
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,6 +75,10 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Whisper getWhisper() {
+        return this.whisper;
     }
 
     /**
