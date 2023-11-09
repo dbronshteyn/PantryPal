@@ -26,6 +26,8 @@ dependencies {
 
     implementation 'org.json:json:20211205'
 
+    implementation 'com.google.code.gson:gson:2.10.1'
+
     // Use Mockito for mocking in tests. I was researching that many use Mockito for testing
     //implementation group: 'org.mockito', name: 'mockito-core', version: '5.7.0'
 }

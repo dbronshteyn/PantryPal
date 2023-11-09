@@ -5,16 +5,18 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RecipeListTest {
     private RecipeList recipeList;
+    private List<Recipe> recipes = new ArrayList<Recipe>();
 
     @BeforeEach
     public void setUp() {
-        recipeList = new RecipeList();
+        recipeList = new RecipeList(recipes);
     }
 
     @Test
