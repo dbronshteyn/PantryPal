@@ -8,7 +8,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.text.Font;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import backend.Recipe;
 import backend.RecipeList;
 import backend.Controller;
@@ -18,6 +18,7 @@ class RecipeScene extends ScrollPane {
     Controller controller;
     SceneController sceneController;
     Label instructionsLabel;
+    TextArea instructionsTextArea;
 
     public class RecipeSceneTopBar extends HBox {
         RecipeSceneTopBar(Recipe recipe) {
@@ -32,7 +33,10 @@ class RecipeScene extends ScrollPane {
             Button backButton = createStyledButton("Back");
             backButton.setOnAction(e -> sceneController.displayRecipeList(null));
 
-            this.getChildren().addAll(backButton, title);
+            Button editButton = createStyledButton("Edit");
+            editButton.setOnAction(e -> displayRecipeEditScene(recipe));
+
+            this.getChildren().addAll(backButton, title, editButton);
         }
     }
 
@@ -55,6 +59,31 @@ class RecipeScene extends ScrollPane {
                 sceneController.displayRecipeList(recipeList);
             });
 
+            Button editButton = createStyledButton("Edit");
+            editButton.setOnAction(e -> displayRecipeEditScene(recipe));
+
+            this.getChildren().addAll(cancelButton, title, saveButton, editButton);
+        }
+    }
+
+    public class RecipeEditTopBar extends HBox {
+        RecipeEditTopBar(Recipe recipe, SceneController sceneController) {
+            this.setAlignment(Pos.CENTER_LEFT);
+            this.setPadding(new Insets(10, 10, 10, 10));
+            this.setSpacing(10);
+            this.setStyle("-fx-background-color: #c6ecc6;");
+
+            Label title = new Label(recipe.getTitle());
+            title.setFont(new Font("Arial", 20));
+
+            Button cancelButton = createStyledButton("Cancel");
+            cancelButton.setOnAction(e -> sceneController.displayRecipeList(null));
+
+            Button saveButton = createStyledButton("Save Edits");
+            saveButton.setOnAction(e -> {
+                sceneController.saveEdits(recipe, instructionsTextArea.getText());
+            });
+
             this.getChildren().addAll(cancelButton, title, saveButton);
         }
     }
@@ -71,10 +100,23 @@ class RecipeScene extends ScrollPane {
         this.setContent(instructionsLabel);
         this.setPadding(new Insets(30, 30, 30, 30));
         this.setStyle("-fx-background: #e7ffe6;");
+
+        instructionsTextArea = new TextArea();
+        instructionsTextArea.setPrefHeight(450);
+    }
+
+    public void displayRecipeEditScene(Recipe recipe) {
+        this.displayRecipe(recipe);
+        this.instructionsTextArea.setText(recipe.getInstructions());
+        this.instructionsTextArea.setWrapText(true);
+        this.setContent(instructionsTextArea);
+        sceneController.setCenter(this);
+        sceneController.setTop(new RecipeEditTopBar(recipe, sceneController));
     }
 
     public void displayRecipe(Recipe recipe) {
         instructionsLabel.setText(recipe.getInstructions());
+        this.setContent(instructionsLabel);
         sceneController.setCenter(this);
         sceneController.setTop(new RecipeSceneTopBar(recipe));
     }
