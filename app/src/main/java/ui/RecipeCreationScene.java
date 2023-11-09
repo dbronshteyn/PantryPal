@@ -131,16 +131,18 @@ class RecipeCreationScene extends VBox {
         this.setStyle("-fx-background-color: #e7ffe6;");
 
         Button completeButton = createStyledButton("Generate Recipe");
+        ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
+        ToggleButton recordMealTypeButton = new ToggleButton("Record Meal Type");
         this.transcribedIngredients = null;
         this.transcribedMealType = null;
 
-        ToggleButton recordMealTypeButton = new ToggleButton("Record Meal Type");
         Label recordMealTypeLabel = new Label("Please select either breakfast, lunch, or dinner. Recorded meal type will appear here.");
         this.mealTypeAudioRecorder = new AudioRecorder(mealTypeAudioFile, recordMealTypeButton);
         recordMealTypeButton.setOnAction(e -> {
             if (recordMealTypeButton.isSelected()) {
                 this.transcribedMealType = null;
                 completeButton.setDisable(true);
+                recordIngredientsButton.setDisable(true);
                 this.mealTypeAudioRecorder.recordAudio();
                 recordMealTypeButton.setText("Stop Recording");
             } else {
@@ -156,6 +158,7 @@ class RecipeCreationScene extends VBox {
                 } catch (Exception e1) {
                     recordMealTypeLabel.setText("Error recording audio!");
                 }
+                recordIngredientsButton.setDisable(false);
                 if (transcribedMealType == null) {
                     recordMealTypeLabel.setText("Please say either breakfast, lunch, or dinner.");
                 } else {
@@ -170,12 +173,12 @@ class RecipeCreationScene extends VBox {
         this.getChildren().add(createStyledToggleButton(recordMealTypeButton));
         this.getChildren().add(recordMealTypeLabel);
 
-        ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
         Label recordIngredientsLabel = new Label("Recorded ingredients will appear here...");
         this.ingredientsAudioRecorder = new AudioRecorder(ingredientsAudioFile, recordIngredientsButton);
         recordIngredientsButton.setOnAction(e -> {
             if (recordIngredientsButton.isSelected()) {
                 completeButton.setDisable(true);
+                recordMealTypeButton.setDisable(true);
                 this.transcribedIngredients = null;
                 ingredientsAudioRecorder.recordAudio();
                 recordIngredientsButton.setText("Stop Recording");
@@ -186,6 +189,7 @@ class RecipeCreationScene extends VBox {
                 } catch (Exception e1) {
                     recordIngredientsLabel.setText("Error recording audio!");
                 }
+                recordMealTypeButton.setDisable(false);
                 recordIngredientsLabel.setText("You said: " + transcribedIngredients);
                 if (this.transcribedIngredients != null && this.transcribedMealType != null) {
                     completeButton.setDisable(false);

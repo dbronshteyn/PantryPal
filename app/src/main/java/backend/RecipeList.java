@@ -5,42 +5,43 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import com.google.gson.Gson;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+
+import java.io.File;
+
 import com.google.gson.reflect.TypeToken;
 
 public class RecipeList {
 
     private List<Recipe> recipes;
+    private File databaseFile;
 
-    public RecipeList() {
+    public RecipeList(File databaseFile) {
         this.recipes = new ArrayList<>();
-    }
-
-    public RecipeList(JSONArray a) {
-        Gson gson = new Gson();
-        Type listType = new TypeToken<ArrayList<Recipe>>() {
-        }.getType();
-        this.recipes = gson.fromJson(a.toString(), listType);
-        sortRecipesByDate();
-    }
-
-    public RecipeList(List<Recipe> recipes) {
-        this.recipes = new ArrayList<>(recipes);
-        sortRecipesByDate();
+        this.databaseFile = databaseFile;
+        this.loadRecipesFromFile();
+        this.sortRecipesByDate();
     }
 
     public void addRecipe(Recipe recipe) {
         this.recipes.add(recipe);
-        sortRecipesByDate();
+        this.updateDatabase();
+        this.sortRecipesByDate();
     }
 
     public void removeRecipe(Recipe recipe) {
         this.recipes.remove(recipe);
+        this.updateDatabase();
     }
 
     /*
@@ -64,5 +65,41 @@ public class RecipeList {
                 return r2.getDateCreated().compareTo(r1.getDateCreated());
             }
         });
+    }
+
+    /**
+     * Saves all recipes into the json file (which acts as our database)
+     * 
+     * @param recipe the recipe to be added
+     */
+    public void updateDatabase() {
+        JSONArray jsonRecipeList = new JSONArray();
+        for (Recipe recipe : this.recipes) {
+            jsonRecipeList.put(recipe.toJSON());
+        }
+        try {
+            FileWriter fw = new FileWriter(this.databaseFile);
+            fw.write(jsonRecipeList.toString());
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadRecipesFromFile() {
+        if (this.databaseFile.exists()) {
+            try {
+                String content = new String(Files.readAllBytes(Paths.get(this.databaseFile.getAbsolutePath())));
+                JSONArray jsonRecipeList = new JSONArray(content);
+                for (int i = 0; i < jsonRecipeList.length(); i++) {
+                    JSONObject jsonRecipe = jsonRecipeList.getJSONObject(i);              
+                    Recipe recipe = new Recipe(jsonRecipe);
+                    this.recipes.add(recipe);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
