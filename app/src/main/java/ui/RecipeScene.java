@@ -66,7 +66,11 @@ class RecipeScene extends ScrollPane {
             });
 
             Button editButton = createStyledButton("Edit");
-            editButton.setOnAction(e -> displayRecipeEditScene(recipe));
+            editButton.setOnAction(e -> {
+                recipeList.addRecipe(recipe);
+                sceneController.displayRecipeList(recipeList);
+                displayRecipeEditScene(recipe);
+            });
 
             this.getChildren().addAll(cancelButton, title, saveButton, editButton);
         }
