@@ -240,6 +240,8 @@ class RecipeCreationScene extends VBox {
     }
 
     public void displayRecipeCreationScene() {
+        this.transcribedIngredients = null;
+        this.transcribedMealType = null;
         sceneController.setTop(new RecipeCreationTopBar());
         sceneController.setCenter(this);
     }
