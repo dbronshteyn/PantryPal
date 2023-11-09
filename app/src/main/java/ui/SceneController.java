@@ -39,6 +39,7 @@ public class SceneController extends BorderPane {
     ListScene listScene;
     RecipeScene recipeScene;
     RecipeCreationScene recipeCreationScene;
+    Controller controller;
 
     public SceneController(Controller controller, File ingredientsAudioFile, File mealTypeAudioFile) {
         this.setStyle("-fx-background-color: #e7ffe6;"); // Setting the background color
@@ -46,6 +47,8 @@ public class SceneController extends BorderPane {
         listScene = new ListScene(this);
         recipeScene = new RecipeScene(controller, this);
         recipeCreationScene = new RecipeCreationScene(this, controller, ingredientsAudioFile, mealTypeAudioFile);
+
+        this.controller = controller;
 
         // If you want to show the list scene by default
         this.setCenter(listScene);
@@ -65,5 +68,9 @@ public class SceneController extends BorderPane {
 
     public void displayRecipeCreationScene() {
         recipeCreationScene.displayRecipeCreationScene();
+    }
+
+    public void saveEdits(Recipe recipe, String newInstructions) {
+        this.controller.saveEdits(recipe, newInstructions);
     }
 }

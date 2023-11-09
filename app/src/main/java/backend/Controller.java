@@ -58,4 +58,10 @@ public class Controller {
     public Whisper getWhisper() {
         return this.whisper;
     }
+
+    public void saveEdits(Recipe recipe, String newInstructions) {
+        recipe.setInstructions(newInstructions);
+        this.recipeList.updateDatabase();
+        this.sceneController.displayRecipeDetails(recipe);
+    }
 }
