@@ -23,7 +23,7 @@ public class Main extends Application {
         File databaseFile = new File("database.json");
         Controller controller = new Controller(databaseFile);
         SceneController sceneController = new SceneController(controller, ingredientsAudioFile);
-        
+
         primaryStage.setTitle("PantryPal");
         primaryStage.setScene(new Scene(sceneController, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();

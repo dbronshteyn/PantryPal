@@ -3,7 +3,15 @@ package backend;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import org.json.JSONArray;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import com.google.gson.Gson;
+import java.io.FileReader;
+import java.lang.reflect.Type;
+import com.google.gson.reflect.TypeToken;
 
 public class RecipeList {
 
@@ -11,6 +19,14 @@ public class RecipeList {
 
     public RecipeList() {
         this.recipes = new ArrayList<>();
+    }
+
+    public RecipeList(JSONArray a) {
+        Gson gson = new Gson();
+        Type listType = new TypeToken<ArrayList<Recipe>>() {
+        }.getType();
+        this.recipes = gson.fromJson(a.toString(), listType);
+        sortRecipesByDate();
     }
 
     public RecipeList(List<Recipe> recipes) {
