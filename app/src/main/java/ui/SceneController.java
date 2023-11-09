@@ -50,6 +50,7 @@ public class SceneController extends BorderPane {
 
         this.controller = controller;
 
+        // If you want to show the list scene by default
         this.setCenter(listScene);
     }
 
