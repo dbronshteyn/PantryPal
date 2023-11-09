@@ -51,8 +51,8 @@ public class SceneController extends BorderPane {
         this.setCenter(listScene);
     }
 
-    public void displayRecipeDetails(Recipe recipe) {
-        recipeScene.displayRecipe(recipe);
+    public void displayRecipeDetails(Recipe recipe, RecipeList recipeList) {
+        recipeScene.displayRecipe(recipe, recipeList);
     }
 
     public void displayNewlyCreatedRecipe(Recipe recipe, RecipeList recipeList) {

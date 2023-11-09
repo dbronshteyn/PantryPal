@@ -18,7 +18,7 @@ class RecipeScene extends VBox {
     Label instructionsLabel;
 
     public class RecipeSceneTopBar extends HBox {
-        RecipeSceneTopBar(Recipe recipe) {
+        RecipeSceneTopBar(Recipe recipe, RecipeList recipeList) {
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
             this.setSpacing(10);
@@ -28,9 +28,14 @@ class RecipeScene extends VBox {
             title.setFont(new Font("Arial", 20));
 
             Button backButton = createStyledButton("Back");
-            backButton.setOnAction(e -> sceneController.displayRecipeList(null));
+            backButton.setOnAction(e -> sceneController.displayRecipeList(null));            
 
-            this.getChildren().addAll(backButton, title);
+            Button deleteButton = createStyledButton("Delete");
+            deleteButton.setOnAction(e -> {
+                recipeList.removeRecipe(recipe);
+                sceneController.displayRecipeList(recipeList);
+            });
+            this.getChildren().addAll(backButton, title, deleteButton);
         }
     }
 
@@ -53,6 +58,7 @@ class RecipeScene extends VBox {
                 sceneController.displayRecipeList(recipeList);
             });
 
+
             this.getChildren().addAll(cancelButton, title, saveButton);
         }
     }
@@ -72,10 +78,10 @@ class RecipeScene extends VBox {
         this.getChildren().add(instructionsLabel);
     }
 
-    public void displayRecipe(Recipe recipe) {
+    public void displayRecipe(Recipe recipe, RecipeList recipeList) {
         instructionsLabel.setText(recipe.getInstructions());
         sceneController.setCenter(this);
-        sceneController.setTop(new RecipeSceneTopBar(recipe));
+        sceneController.setTop(new RecipeSceneTopBar(recipe, recipeList));
     }
 
     public void displayNewlyCreatedRecipe(Recipe recipe, RecipeList recipeList) {

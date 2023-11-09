@@ -46,7 +46,7 @@ public class ListScene extends VBox {
     ScrollPane scroller;
 
     public class RecipeInListUI extends HBox {
-        RecipeInListUI(Recipe recipe, SceneController sceneController) {
+        RecipeInListUI(Recipe recipe, SceneController sceneController, RecipeList recipeList) {
             this.setSpacing(10);
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
@@ -57,8 +57,9 @@ public class ListScene extends VBox {
 
             Button detailButton = createStyledButton("View Details");
             detailButton.setOnAction(e -> {
-                sceneController.displayRecipeDetails(recipe);
+                sceneController.displayRecipeDetails(recipe, recipeList);
             });
+
 
             this.getChildren().addAll(title, detailButton);
             this.setStyle("-fx-background-color: #e7ffe6; -fx-border-color: #a3d9a5; -fx-border-width: 0.5;");
@@ -100,7 +101,7 @@ public class ListScene extends VBox {
         if (recipes != null) {
             this.getChildren().clear();
             for (Recipe recipe : recipes.getRecipes()) {
-                RecipeInListUI recipeEntry = new RecipeInListUI(recipe, this.sceneController);
+                RecipeInListUI recipeEntry = new RecipeInListUI(recipe, this.sceneController, recipes);
                 this.getChildren().add(recipeEntry);
             }
         }
