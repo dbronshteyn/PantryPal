@@ -28,33 +28,21 @@ class RecipeCreationScene extends VBox {
     String transcribedMealType;
     AudioRecorder mealTypeAudioRecorder;
     AudioRecorder ingredientsAudioRecorder;
-    RecipeCreationTopBar topBar;
 
     public class RecipeCreationTopBar extends HBox {
-
-        private Button cancelButton;
-
         RecipeCreationTopBar() {
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
             this.setSpacing(10);
             this.setStyle("-fx-background-color: #c6ecc6;");
 
-            cancelButton = createStyledButton("Cancel");
+            Button cancelButton = createStyledButton("Cancel");
             cancelButton.setOnAction(e -> sceneController.displayRecipeList(null));
             this.getChildren().add(cancelButton);
 
             Label title = new Label("Create a Recipe");
             title.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
             this.getChildren().add(title);
-        }
-
-        public void enableCancelButton() {
-            cancelButton.setDisable(false);
-        }
-
-        public void disableCancelButton() {
-            cancelButton.setDisable(true);
         }
     }
 
@@ -137,7 +125,6 @@ class RecipeCreationScene extends VBox {
      */
     RecipeCreationScene(SceneController sceneController, Controller controller, File ingredientsAudioFile, File mealTypeAudioFile) {
         this.sceneController = sceneController;
-        this.topBar = new RecipeCreationTopBar();
         this.setSpacing(10);
         this.setPadding(new Insets(20, 20, 20, 20));
         this.setAlignment(Pos.TOP_CENTER);
@@ -156,11 +143,9 @@ class RecipeCreationScene extends VBox {
                 this.transcribedMealType = null;
                 completeButton.setDisable(true);
                 recordIngredientsButton.setDisable(true);
-                this.topBar.disableCancelButton();
                 this.mealTypeAudioRecorder.recordAudio();
                 recordMealTypeButton.setText("Stop Recording");
             } else {
-                this.topBar.enableCancelButton();
                 mealTypeAudioRecorder.stopRecordingAudio();
                 try {
                     String possiblyTranscribedMealType = controller.getWhisper().transcribeAudio(mealTypeAudioFile);
@@ -195,11 +180,9 @@ class RecipeCreationScene extends VBox {
                 completeButton.setDisable(true);
                 recordMealTypeButton.setDisable(true);
                 this.transcribedIngredients = null;
-                this.topBar.disableCancelButton();
                 ingredientsAudioRecorder.recordAudio();
                 recordIngredientsButton.setText("Stop Recording");
             } else {
-                this.topBar.enableCancelButton();
                 ingredientsAudioRecorder.stopRecordingAudio();
                 try {
                     transcribedIngredients = controller.getWhisper().transcribeAudio(ingredientsAudioFile);
@@ -259,7 +242,7 @@ class RecipeCreationScene extends VBox {
     public void displayRecipeCreationScene() {
         this.transcribedIngredients = null;
         this.transcribedMealType = null;
-        sceneController.setTop(this.topBar);
+        sceneController.setTop(new RecipeCreationTopBar());
         sceneController.setCenter(this);
     }
 }
