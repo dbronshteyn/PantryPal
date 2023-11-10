@@ -17,7 +17,6 @@ import backend.RecipeBuilder;
 import java.io.File;
 import java.io.IOException;
 
-
 class RecipeBuilderTest {
 
     private RecipeBuilder recipeBuilder;
@@ -30,7 +29,9 @@ class RecipeBuilderTest {
 
         @Override
         public String generateText(String prompt, int maxTokens) {
-            assertEquals("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2", prompt);
+            assertEquals(
+                    "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2",
+                    prompt);
             assertTrue(maxTokens > 0);
             return "Title: Test Title\n\nIngredient 1 and ingredient 2";
         }
@@ -100,7 +101,8 @@ class RecipeBuilderTest {
 
     @Test
     void testSpecifyFour() throws IOException {
-        assertEquals("Ingredient 1 and ingredient 2", recipeBuilder.getIngredientsElement().specify(new File("ingredients.wav")));
+        assertEquals("Ingredient 1 and ingredient 2",
+                recipeBuilder.getIngredientsElement().specify(new File("ingredients.wav")));
         assertEquals("Ingredient 1 and ingredient 2", recipeBuilder.getIngredientsElement().getValue());
     }
 
@@ -120,11 +122,33 @@ class RecipeBuilderTest {
     @Test
     void testCreateRecipeStoryScenarioOne() throws IOException {
         ///
+        recipeBuilder.getMealTypeElement().setValue("breakfast");
+        recipeBuilder.getIngredientsElement().setValue("Ingredient 1 and ingredient 2");
+
+        Recipe recipe = recipeBuilder.returnRecipe();
+        assertNotNull(recipe);
+        assertEquals("Test Title", recipe.getTitle());
+        assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());
     }
 
     @Test
     void testCreateRecipeStoryScenarioTwo() throws IOException {
         ///
+        // Change the meal type to lunch
+        recipeBuilder.getMealTypeElement().setValue("lunch"); // by default "breakfast"
+
+        // Assert meal tyep changed to lunch
+        assertEquals(recipeBuilder.getMealTypeElement().getValue(), "lunch");
+
+        Recipe recipe = recipeBuilder.returnRecipe();
+        assertNotNull(recipe);
+        assertEquals("Test Title", recipe.getTitle());
+        assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());
+
+        // Recipe recipe = recipeBuilder.returnRecipe();
+        // assertNotNull(recipe);
+        // assertEquals("Test Title", recipe.getTitle());
+        // assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());
     }
 
     // create integration tests for all stories
