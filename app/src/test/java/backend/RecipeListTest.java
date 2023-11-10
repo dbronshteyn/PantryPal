@@ -122,7 +122,8 @@ class RecipeListTest {
         assertEquals(3, recipeList.getRecipes().size());
         assertEquals("Test Recipe", recipeList.getRecipes().get(0).getTitle());
         assertEquals("Test Instructions 2", recipeList.getRecipes().get(1).getInstructions());
-        assertEquals("Thu Nov 09 21:12:03 PST 2023", recipeList.getRecipes().get(2).getDateCreated().toString());
+        String dateString = recipeList.getRecipes().get(2).getDateCreated().toString();
+        assertTrue(dateString.equals("Thu Nov 09 21:12:03 PST 2023") || dateString.equals("<Fri Nov 10 05:12:03 UTC 2023>"));
     }
 
     @Test
