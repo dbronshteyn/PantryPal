@@ -73,6 +73,11 @@ public class RecipeList {
      * @param recipe the recipe to be added
      */
     public void updateDatabase() {
+
+        // to unit test this, use dependency inversion and take a FileWriter object as a method parameter
+        // then mock the FileWriter object and make sure it writes the correct things
+        // same for loadRecipesFromFile()
+
         JSONArray jsonRecipeList = new JSONArray();
         for (Recipe recipe : this.recipes) {
             jsonRecipeList.put(recipe.toJSON());
