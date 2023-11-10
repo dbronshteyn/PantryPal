@@ -3,9 +3,11 @@ package backend;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Paths;
@@ -28,6 +30,13 @@ class RecipeListTest {
             databaseFile.delete();
         }
         recipeList = new RecipeList(databaseFile);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (databaseFile.exists()) {
+            databaseFile.delete();
+        }
     }
 
     @Test
@@ -103,126 +112,38 @@ class RecipeListTest {
         assertEquals(dateCreated, jsonRecipe3.getString("dateCreated"));
     }
 
-    // @Test
-    // void testGetRecipesSortedByDate() {
-    // // Create a new recipe list and add two recipes with different dates
-    // File databaseFile = new File("test-recipes.json");
-    // RecipeList recipeList = new RecipeList(databaseFile);
+    @Test
+    void testLoadRecipesFromFile() throws IOException {
+        FileWriter fw = new FileWriter(databaseFile);
+        fw.write("[{\"instructions\":\"Test Instructions\",\"dateCreated\":\"2023-11-09T21:12:01-08:00\",\"title\":\"Test Recipe\"},{\"instructions\":\"Test Instructions 2\",\"dateCreated\":\"2023-11-09T21:12:02-08:00\",\"title\":\"Test Recipe 2\"},{\"instructions\":\"Test Instructions 3\",\"dateCreated\":\"2023-11-09T21:12:03-08:00\",\"title\":\"Test Recipe 3\"}]");
+        fw.flush();
+        fw.close();
+        recipeList.loadRecipesFromFile();
+        assertEquals(3, recipeList.getRecipes().size());
+        assertEquals("Test Recipe", recipeList.getRecipes().get(0).getTitle());
+        assertEquals("Test Instructions 2", recipeList.getRecipes().get(1).getInstructions());
+        assertEquals("Thu Nov 09 21:12:03 PST 2023", recipeList.getRecipes().get(2).getDateCreated().toString());
+    }
 
-    // // Create two dates that have different times, recipe2 is earlier than
-    // recipe1
-    // long currentTime = System.currentTimeMillis();
-    // Recipe recipe1 = new Recipe("Recipe 1", "Test Instructions", new
-    // Date(currentTime - 1000));
-    // Recipe recipe2 = new Recipe("Recipe 2", "Test Instructions", new
-    // Date(currentTime));
+    @Test
+    void testLoadRecipesFromFileTwo() throws IOException {
+        recipeList.loadRecipesFromFile();
+        assertEquals(0, recipeList.getRecipes().size());
+    }
 
-    // // Add the recipes to the list in reverse order
-    // recipeList.addRecipe(recipe2);
-    // recipeList.addRecipe(recipe1);
-
-    // // Sort the recipes by date
-    // recipeList.sortRecipesByDate();
-
-    // // Check that the first element is recipe2 and the second is recipe1
-    // List<Recipe> recipes = recipeList.getRecipes();
-    // assertEquals(recipe2.getTitle(), recipes.get(0).getTitle());
-    // assertEquals(recipe1, recipes.get(1));
-
-    // // Clean up: remove the test database file
-    // databaseFile.delete();
-    // }
-
-    // @Test
-    // void testScenarioDeleteRecipe() {
-    // // Create a new recipe list with three different recipes
-    // File databaseFile = new File("test-recipes.json");
-    // RecipeList recipeList = new RecipeList(databaseFile);
-    // long currentTime = System.currentTimeMillis();
-
-    // // Make sure that the JSON is updated when a recipe is deleted
-    // Recipe recipe1 = new Recipe("Recipe 1", "Test Instructions", new
-    // Date(currentTime - 1000));
-    // Recipe recipe2 = new Recipe("Recipe 2", "Test Instructions", new
-    // Date(currentTime));
-    // Recipe recipe3 = new Recipe("Recipe 3", "Test Instructions", new
-    // Date(currentTime + 1000));
-
-    // recipeList.addRecipe(recipe1);
-    // recipeList.addRecipe(recipe2);
-    // recipeList.addRecipe(recipe3);
-
-    // // Delete recipe3
-    // recipeList.removeRecipe(recipe3);
-
-    // RecipeList newRecipeList = new RecipeList(databaseFile);
-    // List<Recipe> recipes = newRecipeList.getRecipes();
-    // assertEquals(recipes.size(), 2);
-
-    // // Clean up: remove the test database file
-    // databaseFile.delete();
-    // }
-
-    // @Test
-    // void testScenarioUpdateDatabase() {
-    // File databaseFile = new File("test-recipes.json");
-    // RecipeList recipeList = new RecipeList(databaseFile);
-
-    // // Create two random dates that have different times
-    // Date date1 = new Date();
-    // Date date2 = new Date();
-
-    // Recipe recipe1 = new Recipe("Recipe 1", "Test Instructions", date1);
-    // Recipe recipe2 = new Recipe("Recipe 2", "Test Instructions", date2);
-
-    // recipeList.addRecipe(recipe2);
-    // recipeList.addRecipe(recipe1);
-
-    // // Save the recipes to the database file
-    // recipeList.updateDatabase();
-
-    // // Re-create the recipe list from the saved file
-    // RecipeList newRecipeList = new RecipeList(databaseFile);
-    // List<Recipe> newRecipes = newRecipeList.getRecipes();
-
-    // assertEquals(2, newRecipes.size());
-
-    // // Check that the first element is recipe2 and the second is recipe1
-    // assertEquals(recipe2.getTitle(), newRecipes.get(0).getTitle());
-    // assertEquals(recipe1.getTitle(), newRecipes.get(1).getTitle());
-
-    // // Clean up: remove the test database file
-    // databaseFile.delete();
-    // }
-
-    // @Test
-    // void testLoadRecipesFromFile() {
-    // // Add recipes to the recipeList
-    // recipeList.addRecipe(recipe1);
-    // recipeList.addRecipe(recipe2);
-    // recipeList.addRecipe(recipe3);
-
-    // // Save the recipes to the database file
-    // recipeList.updateDatabase();
-
-    // // Create a new RecipeList and load from the saved file
-    // RecipeList newRecipeList = new RecipeList(databaseFile);
-
-    // // Check that the loaded recipes match the added recipes
-    // List<Recipe> loadedRecipes = newRecipeList.getRecipes();
-    // List<Recipe> currentRecipes = recipeList.getRecipes(); // recipe4 was not
-    // added
-
-    // // Check that the loaded recipes match the added recipes
-    // assertEquals(currentRecipes.size(), loadedRecipes.size());
-    // assertEquals(currentRecipes.get(0).getTitle(),
-    // loadedRecipes.get(0).getTitle());
-    // assertEquals(currentRecipes.get(1).getTitle(),
-    // loadedRecipes.get(1).getTitle());
-    // assertEquals(currentRecipes.get(2).getTitle(),
-    // loadedRecipes.get(2).getTitle());
-
-    // // Clean up: remove the test database file
-    // databaseFile.delete();
-    // }
+    // based on Story 5 BDD Scenario 1
+    @Test
+    void testSaveRecipeStoryScenarioOne() {
+        Date date = new Date();
+        Recipe recipe = new Recipe("Test title", "Test instructions", date);
+        recipeList.addRecipe(recipe);
+        recipeList.updateDatabase();
+        assertEquals(1, recipeList.getRecipes().size());
+        assertEquals(recipe, recipeList.getRecipes().get(0));
+        recipeList = new RecipeList(databaseFile);
+        assertEquals(1, recipeList.getRecipes().size());
+        assertEquals("Test title", recipeList.getRecipes().get(0).getTitle());
+        assertEquals("Test instructions", recipeList.getRecipes().get(0).getInstructions());
+        assertEquals(date.toString(), recipeList.getRecipes().get(0).getDateCreated().toString());
+    }
 }

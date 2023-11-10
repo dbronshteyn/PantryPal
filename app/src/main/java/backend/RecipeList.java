@@ -84,7 +84,7 @@ public class RecipeList {
         }
     }
 
-    private void loadRecipesFromFile() {
+    public void loadRecipesFromFile() {
         if (this.databaseFile.exists()) {
             try {
                 String content = new String(Files.readAllBytes(Paths.get(this.databaseFile.getAbsolutePath())));
