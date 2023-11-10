@@ -1,14 +1,6 @@
 package backend;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.nio.file.Files;
-
-import org.json.*;
-
 import ui.SceneController;
 
 /**
@@ -44,8 +36,7 @@ public class Controller {
     public RecipeBuilder generateNewRecipeBuilder() {
         ChatGPT chatGPT = new ChatGPT(API_KEY);
         Whisper whisper = new Whisper(API_KEY);
-        RecipeBuilder recipeBuilder = new RecipeBuilder(chatGPT, whisper);
-        return recipeBuilder;
+        return new RecipeBuilder(chatGPT, whisper);
     }
 
     public void saveEdits(Recipe recipe, String newInstructions) {
