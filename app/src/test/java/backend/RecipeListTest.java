@@ -140,6 +140,33 @@ class RecipeListTest {
     }
 
     @Test
+    void testScenarioDeleteRecipe() {
+        // Create a new recipe list with three different recipes
+        File databaseFile = new File("test-recipes.json");
+        RecipeList recipeList = new RecipeList(databaseFile);
+        long currentTime = System.currentTimeMillis();
+
+        // Make sure that the JSON is updated when a recipe is deleted
+        Recipe recipe1 = new Recipe("Recipe 1", "Test Instructions", new Date(currentTime - 1000));
+        Recipe recipe2 = new Recipe("Recipe 2", "Test Instructions", new Date(currentTime));
+        Recipe recipe3 = new Recipe("Recipe 3", "Test Instructions", new Date(currentTime + 1000));
+
+        recipeList.addRecipe(recipe1);
+        recipeList.addRecipe(recipe2);
+        recipeList.addRecipe(recipe3);
+
+        // Delete recipe3
+        recipeList.removeRecipe(recipe3);
+
+        RecipeList newRecipeList = new RecipeList(databaseFile);
+        List<Recipe> recipes = newRecipeList.getRecipes();
+        assertEquals(recipes.size(), 2);
+
+        // Clean up: remove the test database file
+        databaseFile.delete();
+    }
+
+    @Test
     void testScenarioUpdateDatabase() {
         File databaseFile = new File("test-recipes.json");
         RecipeList recipeList = new RecipeList(databaseFile);
