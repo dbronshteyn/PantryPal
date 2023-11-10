@@ -50,4 +50,13 @@ class RecipeTest {
         // this one seems to depend on the system
         assertTrue(json.getString("dateCreated").startsWith("1969") || json.getString("dateCreated").startsWith("1970"));
     }
+
+    // based on Story 4 BDD Scenario 1
+    @Test
+    void testEditRecipeScenarioOne() {
+        Recipe recipe = new Recipe("Muffins", "Add 1 cup of sugar and flour.", new Date(2000, 1, 1));
+        recipe.setInstructions("Add 1/2 cup of sugar and flour.");
+        assertEquals("Add 1/2 cup of sugar and flour.", recipe.getInstructions());
+        assertEquals(-1, recipe.getDateCreated().compareTo(new Date(2000, 1, 1)));
+    }
 }

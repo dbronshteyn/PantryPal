@@ -33,7 +33,7 @@ class RecipeBuilderTest {
             if (prompt.equals("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2")) {
                 return "Title: Test Title\n\nIngredient 1 and ingredient 2";
             }
-            if (prompt.equals("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: I have eggs, cheese, and bread.")) {
+            if (prompt.equals("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: I have eggs, cheese, and bread.")) {
                 return "Title: Cheesy Egg Bread\n\n2 eggs, 3 cheese, 1 bread";
             }
             fail();
@@ -129,10 +129,11 @@ class RecipeBuilderTest {
     /*
      * Integration test for recipe creation feature
      */
+    // based on Story 2 BDD Scenario 1, Story 3 BDD Scenario 1
     @Test
     void testCreateRecipeStoryScenarioOne() throws IOException {
         assertFalse(recipeBuilder.isCompleted());
-        assertEquals("dinner", recipeBuilder.getMealTypeElement().specify(new File("dinner-meal-type.wav")));
+        assertEquals("breakfast", recipeBuilder.getMealTypeElement().specify(new File("breakfast-meal-type.wav")));
         assertFalse(recipeBuilder.isCompleted());
         assertEquals("I have eggs, cheese, and bread.", recipeBuilder.getIngredientsElement().specify(new File("eggs-and-cheese.wav")));
         assertTrue(recipeBuilder.isCompleted());
@@ -142,6 +143,7 @@ class RecipeBuilderTest {
         assertEquals("2 eggs, 3 cheese, 1 bread", recipe.getInstructions());
     }
 
+    // based on Story 3 BDD Scenario 2
     @Test
     void testCreateRecipeStoryScenarioTwo() throws IOException {
         assertFalse(recipeBuilder.isCompleted());
