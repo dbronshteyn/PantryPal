@@ -135,7 +135,7 @@ class RecipeBuilderTest {
     void testCreateRecipeStoryScenarioTwo() throws IOException {
         ///
         // Change the meal type to lunch
-        recipeBuilder.getMealTypeElement().setValue("lunch"); // by default "breakfast"
+        recipeBuilder.getMealTypeElement().setValue("lunch");
 
         // Assert meal tyep changed to lunch
         assertEquals(recipeBuilder.getMealTypeElement().getValue(), "lunch");
