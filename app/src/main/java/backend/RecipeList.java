@@ -44,16 +44,8 @@ public class RecipeList {
         this.updateDatabase();
     }
 
-    /*
-     * Returns an unmodifiable list of recipes sorted by date created in descending
-     * 
-     * Daniel's reasoning. I want this list to not be modifiable by other classes
-     * just in case. This is the reason that I am relying on the
-     * Collections.unmodifiableList class so that I don't return a pointer directly
-     * to out list. Let me know if you have any questions.
-     */
     public List<Recipe> getRecipes() {
-        return Collections.unmodifiableList(this.recipes);
+        return this.recipes;
     }
 
     public void sortRecipesByDate() {
