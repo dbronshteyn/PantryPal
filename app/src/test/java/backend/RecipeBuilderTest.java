@@ -29,11 +29,15 @@ class RecipeBuilderTest {
 
         @Override
         public String generateText(String prompt, int maxTokens) {
-            assertEquals(
-                    "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2",
-                    prompt);
             assertTrue(maxTokens > 0);
-            return "Title: Test Title\n\nIngredient 1 and ingredient 2";
+            if (prompt.equals("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2")) {
+                return "Title: Test Title\n\nIngredient 1 and ingredient 2";
+            }
+            if (prompt.equals("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: I have eggs, cheese, and bread.")) {
+                return "Title: Cheesy Egg Bread\n\n2 eggs, 3 cheese, 1 bread";
+            }
+            fail();
+            return "";
         }
     }
 
@@ -52,11 +56,17 @@ class RecipeBuilderTest {
             if (audioFile.getName().equals("breakfast-meal-type.wav")) {
                 return "BREAKFAST";
             }
+            if (audioFile.getName().equals("dinner-meal-type.wav")) {
+                return "Dinner";
+            }
             if (audioFile.getName().equals("invalid-meal-type.wav")) {
                 return "Brunch";
             }
             if (audioFile.getName().equals("ingredients.wav")) {
                 return "Ingredient 1 and ingredient 2";
+            }
+            if (audioFile.getName().equals("eggs-and-cheese.wav")) {
+                return "I have eggs, cheese, and bread.";
             }
             fail();
             return "";
@@ -121,34 +131,23 @@ class RecipeBuilderTest {
      */
     @Test
     void testCreateRecipeStoryScenarioOne() throws IOException {
-        ///
-        recipeBuilder.getMealTypeElement().setValue("breakfast");
-        recipeBuilder.getIngredientsElement().setValue("Ingredient 1 and ingredient 2");
-
+        assertFalse(recipeBuilder.isCompleted());
+        assertEquals("dinner", recipeBuilder.getMealTypeElement().specify(new File("dinner-meal-type.wav")));
+        assertFalse(recipeBuilder.isCompleted());
+        assertEquals("I have eggs, cheese, and bread.", recipeBuilder.getIngredientsElement().specify(new File("eggs-and-cheese.wav")));
+        assertTrue(recipeBuilder.isCompleted());
         Recipe recipe = recipeBuilder.returnRecipe();
         assertNotNull(recipe);
-        assertEquals("Test Title", recipe.getTitle());
-        assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());
+        assertEquals("Cheesy Egg Bread", recipe.getTitle());
+        assertEquals("2 eggs, 3 cheese, 1 bread", recipe.getInstructions());
     }
 
     @Test
     void testCreateRecipeStoryScenarioTwo() throws IOException {
-        ///
-        // Change the meal type to lunch
-        recipeBuilder.getMealTypeElement().setValue("lunch");
-
-        // Assert meal tyep changed to lunch
-        assertEquals(recipeBuilder.getMealTypeElement().getValue(), "lunch");
-
-        Recipe recipe = recipeBuilder.returnRecipe();
-        assertNotNull(recipe);
-        assertEquals("Test Title", recipe.getTitle());
-        assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());
-
-        // Recipe recipe = recipeBuilder.returnRecipe();
-        // assertNotNull(recipe);
-        // assertEquals("Test Title", recipe.getTitle());
-        // assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());
+        assertFalse(recipeBuilder.isCompleted());
+        assertNull(recipeBuilder.getMealTypeElement().specify(new File("invalid-meal-type.wav")));
+        assertFalse(recipeBuilder.isCompleted());
+        assertFalse(recipeBuilder.getMealTypeElement().isSet());
     }
 
     // create integration tests for all stories
