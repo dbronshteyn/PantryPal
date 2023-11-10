@@ -1,5 +1,6 @@
 package backend;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.File;
@@ -15,6 +16,17 @@ class RecipeListTest {
     private Recipe recipe1;
     private Recipe recipe2;
     private Recipe recipe3;
+
+    class FileMock extends File {
+        public FileMock(String pathname) {
+            super(pathname);
+        }
+
+        @Override
+        public boolean exists() {
+            return true;
+        }
+    }
 
     @BeforeEach
     public void setUp() {
@@ -63,14 +75,53 @@ class RecipeListTest {
     }
 
     @Test
+    void testUpdateJSON() {
+        FileMock fileMock = new FileMock("test-recipes.json");
+        RecipeList recipeList = new RecipeList(fileMock);
+        long currentTime = System.currentTimeMillis();
+
+        // JSONObject json = new JSONObject();
+        // json.put("name", "Test Recipe");
+        // json.put("instructions", "Test Instructions");
+        // json.put("date", new Date(currentTime).toString());
+        // String jsonString = json.toString();
+
+        assertTrue(fileMock.exists());
+
+        Recipe recipe = new Recipe("Test Recipe 1", "Test Instructions 1", new Date(currentTime));
+        recipeList.addRecipe(recipe);
+
+        recipeList.updateDatabase();
+        assertTrue(fileMock.exists());
+
+        // Iterate through the file and check that the JSON string is in the file
+        String fileContents = "";
+        try {
+            java.util.Scanner scanner = new java.util.Scanner(fileMock);
+            while (scanner.hasNextLine()) {
+                fileContents += scanner.nextLine();
+            }
+        } catch (java.io.FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(fileContents.contains("Test Recipe 1"));
+        assertTrue(fileContents.contains("Test Instructions 1"));
+
+        // Clean up: remove the test database file
+        fileMock.delete();
+    }
+
+    @Test
     void testGetRecipesSortedByDate() {
         // Create a new recipe list and add two recipes with different dates
         File databaseFile = new File("test-recipes.json");
         RecipeList recipeList = new RecipeList(databaseFile);
 
         // Create two dates that have different times, recipe2 is earlier than recipe1
-        Recipe recipe1 = new Recipe("Recipe 1", "Test Instructions", new Date());
-        Recipe recipe2 = new Recipe("Recipe 2", "Test Instructions", new Date());
+        long currentTime = System.currentTimeMillis();
+        Recipe recipe1 = new Recipe("Recipe 1", "Test Instructions", new Date(currentTime - 1000));
+        Recipe recipe2 = new Recipe("Recipe 2", "Test Instructions", new Date(currentTime));
 
         // Add the recipes to the list in reverse order
         recipeList.addRecipe(recipe2);
@@ -89,7 +140,7 @@ class RecipeListTest {
     }
 
     @Test
-    void testUpdateDatabase() {
+    void testScenarioUpdateDatabase() {
         File databaseFile = new File("test-recipes.json");
         RecipeList recipeList = new RecipeList(databaseFile);
 
