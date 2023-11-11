@@ -144,8 +144,7 @@ class RecipeListTest {
         assertEquals("Test Recipe", recipeList.getRecipes().get(0).getTitle());
         assertEquals("Test Instructions 2", recipeList.getRecipes().get(1).getInstructions());
         String dateString = recipeList.getRecipes().get(2).getDateCreated().toString();
-        assertEquals("Sat Nov 11 00:55:16 PST 2023", dateString);
-        // assertTrue(dateString.equals("Sat Nov 11 00:55:16 PST 2023") || dateString.equals("Fri Nov 10 05:12:03 UTC 2023"));
+        assertTrue(dateString.equals("Sat Nov 11 00:55:16 PST 2023") || dateString.equals("Sat Nov 11 08:55:16 UTC 2023"));
     }
 
     @Test
