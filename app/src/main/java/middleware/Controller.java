@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HexFormat;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -186,12 +187,7 @@ public class Controller {
     private static String fileToHex(File file) {
         try {
             byte[] fileBytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-            Files.write(Paths.get((new File("audio2.wav")).getAbsolutePath()), fileBytes);
-            String out = "";
-            for (byte b : fileBytes) {
-                out += String.format("%02X", b);
-            }
-            return out;
+            return HexFormat.of().formatHex(fileBytes);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

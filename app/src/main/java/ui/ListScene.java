@@ -95,8 +95,7 @@ public class ListScene extends VBox {
      */
     public void displayRecipeList() {
         this.getChildren().clear();
-        for (String recipeID : Controller.getRecipeIDs()) {
-            System.out.println("b" + recipeID);
+        for (String recipeID : controller.getRecipeIDs()) {
             RecipeInListUI recipeEntry = new RecipeInListUI(recipeID, this.sceneManager);
             this.getChildren().add(recipeEntry);
         }
