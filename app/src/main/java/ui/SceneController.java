@@ -33,6 +33,7 @@ import backend.RecipeList;
 
 import backend.Recipe;
 import backend.Controller;
+import backend.RecipeBuilder;
 
 public class SceneController extends BorderPane {
 
@@ -44,9 +45,9 @@ public class SceneController extends BorderPane {
     public SceneController(Controller controller, File ingredientsAudioFile, File mealTypeAudioFile) {
         this.setStyle("-fx-background-color: #e7ffe6;"); // Setting the background color
 
-        listScene = new ListScene(this);
+        listScene = new ListScene(this, controller);
         recipeScene = new RecipeScene(controller, this);
-        recipeCreationScene = new RecipeCreationScene(this, controller, ingredientsAudioFile, mealTypeAudioFile);
+        recipeCreationScene = new RecipeCreationScene(this, controller.getRecipeList(), ingredientsAudioFile, mealTypeAudioFile);
 
         this.controller = controller;
 
@@ -66,8 +67,8 @@ public class SceneController extends BorderPane {
         listScene.displayRecipeList(recipes);
     }
 
-    public void displayRecipeCreationScene() {
-        recipeCreationScene.displayRecipeCreationScene();
+    public void displayRecipeCreationScene(RecipeBuilder recipeBuilder) {
+        recipeCreationScene.displayRecipeCreationScene(recipeBuilder);
     }
 
     public void saveEdits(Recipe recipe, String newInstructions) {

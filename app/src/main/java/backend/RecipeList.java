@@ -44,16 +44,8 @@ public class RecipeList {
         this.updateDatabase();
     }
 
-    /*
-     * Returns an unmodifiable list of recipes sorted by date created in descending
-     * 
-     * Daniel's reasoning. I want this list to not be modifiable by other classes
-     * just in case. This is the reason that I am relying on the
-     * Collections.unmodifiableList class so that I don't return a pointer directly
-     * to out list. Let me know if you have any questions.
-     */
     public List<Recipe> getRecipes() {
-        return Collections.unmodifiableList(this.recipes);
+        return this.recipes;
     }
 
     public void sortRecipesByDate() {
@@ -73,6 +65,11 @@ public class RecipeList {
      * @param recipe the recipe to be added
      */
     public void updateDatabase() {
+
+        // to unit test this, use dependency inversion and take a FileWriter object as a method parameter
+        // then mock the FileWriter object and make sure it writes the correct things
+        // same for loadRecipesFromFile()
+
         JSONArray jsonRecipeList = new JSONArray();
         for (Recipe recipe : this.recipes) {
             jsonRecipeList.put(recipe.toJSON());
@@ -87,7 +84,7 @@ public class RecipeList {
         }
     }
 
-    private void loadRecipesFromFile() {
+    public void loadRecipesFromFile() {
         if (this.databaseFile.exists()) {
             try {
                 String content = new String(Files.readAllBytes(Paths.get(this.databaseFile.getAbsolutePath())));

@@ -27,6 +27,7 @@ import javafx.scene.control.ScrollPane;
 
 import javax.swing.*;
 
+import backend.Controller;
 import backend.Recipe;
 import backend.RecipeList;
 
@@ -43,6 +44,7 @@ import javafx.scene.text.Font;
 public class ListScene extends VBox {
 
     SceneController sceneController;
+    Controller controller;
     ScrollPane scroller;
 
     public class RecipeInListUI extends HBox {
@@ -67,7 +69,7 @@ public class ListScene extends VBox {
     }
 
     public class ListSceneTopBar extends HBox {
-        ListSceneTopBar(SceneController sceneController) {
+        ListSceneTopBar(SceneController sceneController, Controller controller) {
             this.setAlignment(Pos.CENTER);
             this.setPadding(new Insets(10, 10, 10, 10));
             this.setSpacing(10);
@@ -78,7 +80,7 @@ public class ListScene extends VBox {
 
             Button newRecipeButton = createStyledButton("New Recipe");
             newRecipeButton.setOnAction(e -> {
-                sceneController.displayRecipeCreationScene();
+                sceneController.displayRecipeCreationScene(controller.generateNewRecipeBuilder());
             });
 
             this.getChildren().addAll(recipesLabel, newRecipeButton);
@@ -86,8 +88,9 @@ public class ListScene extends VBox {
         }
     }
 
-    ListScene(SceneController sceneController) {
+    ListScene(SceneController sceneController, Controller controller) {
         this.sceneController = sceneController;
+        this.controller = controller;
         this.setSpacing(5);
         this.setPadding(new Insets(10, 10, 10, 10));
         this.setPrefSize(500, 560);
@@ -107,7 +110,7 @@ public class ListScene extends VBox {
             }
         }
         sceneController.setCenter(scroller);
-        sceneController.setTop(new ListSceneTopBar(this.sceneController));
+        sceneController.setTop(new ListSceneTopBar(this.sceneController, this.controller));
     }
 
     private Button createStyledButton(String text) {

@@ -16,7 +16,6 @@ public class Recipe {
     private String instructions;
     private Date dateCreated;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-    public static final String[] MEAL_TYPES = {"breakfast", "lunch", "dinner"};
 
 
     /**
@@ -56,17 +55,9 @@ public class Recipe {
         return this.dateCreated;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public void setInstructions(String instructions) {
         this.dateCreated = new Date();
         this.instructions = instructions;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
     }
 
     /**

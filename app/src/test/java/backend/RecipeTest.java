@@ -1,60 +1,72 @@
 package backend;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RecipeTest {
+class RecipeTest {
     private Recipe recipe;
     private Date dateCreated;
 
     @BeforeEach
     public void setUp() {
-        // Setup a fixed date so that it can be used for comparison in the tests
-        dateCreated = new Date(0); // (January 1, 1970, 00:00:00 GMT)
+        dateCreated = new Date(0);
         recipe = new Recipe("Chocolate Cake", "Mix ingredients and bake for 30 minutes.", dateCreated);
     }
 
     @Test
-    public void testGetTitle() {
-        assertEquals("Chocolate Cake", recipe.getTitle());
-    }
-
-    @Test
-    public void testGetInstructions() {
-        assertEquals("Mix ingredients and bake for 30 minutes.", recipe.getInstructions());
-    }
-
-    @Test
-    public void testGetDateCreated() {
-        assertEquals(dateCreated, recipe.getDateCreated());
-    }
-
-    @Test
-    public void testSetTitle() {
-        String newTitle = "Vanilla Cake";
-        recipe.setTitle(newTitle);
-        assertEquals(newTitle, recipe.getTitle());
-    }
-
-    @Test
-    public void testSetInstructions() {
+    void testSetInstructions() {
         String newInstructions = "Mix ingredients and bake for 45 minutes.";
+        Date oldDate = recipe.getDateCreated();
         recipe.setInstructions(newInstructions);
         assertEquals(newInstructions, recipe.getInstructions());
+        assertTrue(recipe.getDateCreated().after(oldDate));
     }
 
     @Test
-    public void testSetDateCreated() {
-        Date newDateCreated = new Date();
-        recipe.setDateCreated(newDateCreated);
-        assertEquals(newDateCreated, recipe.getDateCreated());
-    }
-
-    @Test
-    public void testToString() {
+    void testToString() {
         assertEquals("Chocolate Cake", recipe.toString());
+    }
+
+    @Test
+    void testFromJSON() {
+        JSONObject json = new JSONObject("{\"title\":\"abc\",\"instructions\":\"ab\",\"dateCreated\":\"1970-01-01T00:00:00-00:00\"}");
+        Recipe recipe = new Recipe(json);
+        assertEquals("abc", recipe.getTitle());
+        assertEquals("ab", recipe.getInstructions());
+        assertEquals(new Date(0), recipe.getDateCreated());
+    }
+
+    @Test
+    void testToJSON() {
+        JSONObject json = recipe.toJSON();
+        assertEquals("Chocolate Cake", json.getString("title"));
+        assertEquals("Mix ingredients and bake for 30 minutes.", json.getString("instructions"));
+
+        // this one seems to depend on the system
+        assertTrue(json.getString("dateCreated").startsWith("1969") || json.getString("dateCreated").startsWith("1970"));
+    }
+
+    // based on Story 4 BDD Scenario 1
+    // also tests Feature 6 in the MS1 delivery document
+    @Test
+    void testEditRecipeScenarioOne() {
+        long currentTime = System.currentTimeMillis();
+        Recipe recipe = new Recipe("Muffins", "Add 1 cup of sugar and flour.", new Date(currentTime - 1000));
+        recipe.setInstructions("Add 1/2 cup of sugar and flour.");
+        assertEquals("Add 1/2 cup of sugar and flour.", recipe.getInstructions());
+        assertTrue(recipe.getDateCreated().after(new Date(currentTime - 1000)));
+    }
+
+    // sort of a trivial test, but tests Feature 3 in the MS1 delivery document
+    @Test
+    void testRetrieveRecipeDetails() {
+        assertEquals("Chocolate Cake", recipe.getTitle());
+        assertEquals("Mix ingredients and bake for 30 minutes.", recipe.getInstructions());
+        assertEquals(dateCreated, recipe.getDateCreated());
     }
 }
