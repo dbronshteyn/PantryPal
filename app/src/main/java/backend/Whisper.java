@@ -6,33 +6,36 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * The Whisper class provides an interface for transcribing audio using OpenAI Whisper.
- * 
- * It enables the user to submit an audio file for transcription and receives the transcribed text in response.
- * 
- * This class requires an API key for authentication to use the OpenAI service.
+ * This class provides a way to transcribe audio files using the OpenAI API.
+ * It sends a POST request to the API endpoint with the audio file and API key,
+ * and returns the transcribed text.
  */
-
 public class Whisper {
     private static final String API_ENDPOINT = "https://api.openai.com/v1/audio/transcriptions";
     private static final String MODEL = "whisper-1";
 
     String apiKey;
 
+    /**
+     * Constructor for the Whisper class.
+     * 
+     * @param apiKey
+     */
     public Whisper(String apiKey) {
         this.apiKey = apiKey;
     }
 
     /**
-     * Transcribes a provided audio file and returns the transcribed text.
-     * @param audioFile Audio file to be transcribed.
-     * @return Transcribed text from the audio file.
-     * @throws IOException If any issues arise with I/O operation.
-     * @throws JSONException If any issues arise with parsing JSON response.
+     * Transcribes the provided audio file using the OpenAI API.
+     * 
+     * @param audioFile
+     * @return The transcribed text.
+     * @throws IOException
+     * @throws JSONException
      */
-
     public String transcribeAudio(File audioFile) throws IOException, JSONException {
         HttpURLConnection connection = null;
+        // Send a new HTTP client
         try {
             URL url = new URI(API_ENDPOINT).toURL();
             connection = (HttpURLConnection) url.openConnection();
@@ -50,6 +53,7 @@ public class Whisper {
             outputStream.flush();
             outputStream.close();
 
+            // Get response code
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return handleSuccessResponse(connection);
@@ -59,13 +63,21 @@ public class Whisper {
         } catch (URISyntaxException e) {
             throw new IOException("Invalid URI for API endpoint", e);
         } finally {
-
             if (connection != null) {
                 connection.disconnect();
             }
         }
     }
 
+    /**
+     * Writes the specified parameter to the output stream.
+     * 
+     * @param outputStream
+     * @param parameterName
+     * @param parameterValue
+     * @param boundary
+     * @throws IOException
+     */
     private void writeParameterToOutputStream(OutputStream outputStream, String parameterName, String parameterValue,
             String boundary) throws IOException {
         outputStream.write(("--" + boundary + "\r\n").getBytes());
@@ -73,6 +85,14 @@ public class Whisper {
         outputStream.write((parameterValue + "\r\n").getBytes());
     }
 
+    /**
+     * Writes the specified file to the output stream.
+     * 
+     * @param outputStream
+     * @param file
+     * @param boundary
+     * @throws IOException
+     */
     private void writeFileToOutputStream(OutputStream outputStream, File file, String boundary) throws IOException {
         outputStream.write(("--" + boundary + "\r\n").getBytes());
         outputStream.write(
@@ -87,6 +107,14 @@ public class Whisper {
         }
     }
 
+    /**
+     * Handles the success response from the API.
+     * 
+     * @param connection
+     * @return the transcribed text
+     * @throws IOException
+     * @throws JSONException
+     */
     private String handleSuccessResponse(HttpURLConnection connection) throws IOException, JSONException {
         StringBuilder response = new StringBuilder();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
@@ -99,6 +127,14 @@ public class Whisper {
         return responseJson.getString("text");
     }
 
+    /**
+     * Handles the error response from the API.
+     * 
+     * @param connection
+     * @return the error response
+     * @throws IOException
+     * @throws JSONException
+     */
     private String handleErrorResponse(HttpURLConnection connection) throws IOException, JSONException {
         StringBuilder errorResponse = new StringBuilder();
         try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(connection.getErrorStream()))) {

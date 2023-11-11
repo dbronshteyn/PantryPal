@@ -18,11 +18,17 @@ import java.io.IOException;
 
 import java.util.Date;
 
+/**
+ * JUnit testing for RecipeList class
+ */
 class RecipeListTest {
 
     private RecipeList recipeList;
     private File databaseFile;
 
+    /**
+     * Sets up the RecipeListTest.
+     */
     @BeforeEach
     public void setUp() {
         databaseFile = new File("test-database.json");
@@ -32,6 +38,9 @@ class RecipeListTest {
         recipeList = new RecipeList(databaseFile);
     }
 
+    /**
+     * Tears down the RecipeListTest database file.
+     */
     @AfterEach
     public void tearDown() {
         if (databaseFile.exists()) {
@@ -39,6 +48,9 @@ class RecipeListTest {
         }
     }
 
+    /**
+     * Tests that the RecipeList properly adds a recipe.
+     */
     @Test
     void testAddRecipe() {
         Recipe recipe = new Recipe("", "Test Recipe", "Test Instructions", new Date());
@@ -50,6 +62,9 @@ class RecipeListTest {
         assertTrue(recipes.contains(recipe));
     }
 
+    /**
+     * Tests that the RecipeList returns recipe IDs.
+     */
     @Test
     void testGetRecipeIDs() {
         recipeList.getRecipes().add(new Recipe("id 1", "Test Recipe", "Test Instructions", new Date()));
@@ -64,6 +79,9 @@ class RecipeListTest {
         assertEquals("id 3", recipeIDs.get(2));
     }
 
+    /**
+     * Tests that the RecipeList returns recipes by ID.
+     */
     @Test
     void testGetRecipeByID() {
         Recipe recipe1 = new Recipe("id 1", "Test Recipe", "Test Instructions", new Date());
@@ -79,6 +97,10 @@ class RecipeListTest {
         assertEquals(recipe3, recipeList.getRecipeByID("id 3"));
     }
 
+    /**
+     * Tests that the RecipeList is sorted in order of newest recipe to oldest
+     * recipe.
+     */
     @Test
     void testSortRecipesByDate() {
         long currentTime = System.currentTimeMillis();
@@ -98,11 +120,17 @@ class RecipeListTest {
         assertEquals(recipe1, recipeList.getRecipes().get(2));
     }
 
-    /*
+    /**
      * Integration tests
      */
-    // based on Story 5 Scenario 1
-    // also tests Features 4 and 5 in the MS1 delivery document
+
+    /**
+     * Based on Story 5 Scenario 1
+     * Also tests Features 4 and 5 in the MS1 delivery document
+     * 
+     * @throws IOException
+     */
+
     @Test
     void testUpdateDatabase() throws IOException {
         long currentTime = System.currentTimeMillis();
@@ -133,10 +161,16 @@ class RecipeListTest {
         assertEquals(dateCreated, jsonRecipe3.getString("dateCreated"));
     }
 
+    /**
+     * Tests that the RecipeList properly loads recipes from the database file.
+     * 
+     * @throws IOException
+     */
     @Test
     void testLoadRecipesFromFile() throws IOException {
         FileWriter fw = new FileWriter(databaseFile);
-        fw.write("[{\"instructions\":\"Test Instructions\",\"dateCreated\":\"2023-11-11T00:55:14-08:00\",\"title\":\"Test Recipe\",\"recipeID\":\"id 1\"},{\"instructions\":\"Test Instructions 2\",\"dateCreated\":\"2023-11-11T00:55:15-08:00\",\"title\":\"Test Recipe 2\",\"recipeID\":\"id 2 \"},{\"instructions\":\"Test Instructions 3\",\"dateCreated\":\"2023-11-11T00:55:16-08:00\",\"title\":\"Test Recipe 3\",\"recipeID\":\"id 3\"}]");
+        fw.write(
+                "[{\"instructions\":\"Test Instructions\",\"dateCreated\":\"2023-11-11T00:55:14-08:00\",\"title\":\"Test Recipe\",\"recipeID\":\"id 1\"},{\"instructions\":\"Test Instructions 2\",\"dateCreated\":\"2023-11-11T00:55:15-08:00\",\"title\":\"Test Recipe 2\",\"recipeID\":\"id 2 \"},{\"instructions\":\"Test Instructions 3\",\"dateCreated\":\"2023-11-11T00:55:16-08:00\",\"title\":\"Test Recipe 3\",\"recipeID\":\"id 3\"}]");
         fw.flush();
         fw.close();
         recipeList.loadRecipesFromFile();
@@ -144,16 +178,26 @@ class RecipeListTest {
         assertEquals("Test Recipe", recipeList.getRecipes().get(0).getTitle());
         assertEquals("Test Instructions 2", recipeList.getRecipes().get(1).getInstructions());
         String dateString = recipeList.getRecipes().get(2).getDateCreated().toString();
-        assertTrue(dateString.equals("Sat Nov 11 00:55:16 PST 2023") || dateString.equals("Sat Nov 11 08:55:16 UTC 2023"));
+        assertTrue(
+                dateString.equals("Sat Nov 11 00:55:16 PST 2023") || dateString.equals("Sat Nov 11 08:55:16 UTC 2023"));
     }
 
+    /**
+     * Tests that the RecipeList properly loads recipes from the database file when
+     * 
+     * @throws IOException
+     */
     @Test
     void testLoadRecipesFromFileTwo() throws IOException {
         recipeList.loadRecipesFromFile();
         assertEquals(0, recipeList.getRecipes().size());
     }
 
-    // based on Story 5 BDD Scenario 1
+    /**
+     * Tests that the RecipeList properly loads recipes from the database file when
+     * Based on Story 5 BDD Scenario 1
+     */
+
     @Test
     void testSaveRecipeStoryScenarioOne() {
         Date date = new Date();
@@ -169,7 +213,11 @@ class RecipeListTest {
         assertEquals(date.toString(), recipeList.getRecipes().get(0).getDateCreated().toString());
     }
 
-    // tests Feature 7 in the MS1 delivery document
+    /**
+     * Tests that the RecipeList properly loads recipes from the database file.
+     * Based on Story 5 BDD Scenario 2
+     */
+
     @Test
     void testRemoveRecipe() {
         Recipe recipe1 = new Recipe("", "Test Recipe", "Test Instructions", new Date());

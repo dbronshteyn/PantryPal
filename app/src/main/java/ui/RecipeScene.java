@@ -11,6 +11,9 @@ import javafx.scene.control.TextArea;
 
 import middleware.Controller;
 
+/**
+ * This class represents the scene that displays the details of a recipe.
+ */
 class RecipeScene extends ScrollPane {
 
     Controller controller;
@@ -18,6 +21,9 @@ class RecipeScene extends ScrollPane {
     Label instructionsLabel;
     TextArea instructionsTextArea;
 
+    /**
+     * This class represents the top bar of the recipe scene.
+     */
     public class RecipeSceneTopBar extends HBox {
         RecipeSceneTopBar(String recipeID) {
             this.setAlignment(Pos.CENTER_LEFT);
@@ -25,18 +31,18 @@ class RecipeScene extends ScrollPane {
             this.setSpacing(10);
             this.setStyle("-fx-background-color: #c6ecc6;");
 
-            Label title = new Label(controller.getRecipeTitle(recipeID));
+            Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
             Button backButton = createStyledButton("Back");
-            backButton.setOnAction(e -> sceneManager.displayRecipeList());   
-          
+            backButton.setOnAction(e -> sceneManager.displayRecipeList());
+
             Button editButton = createStyledButton("Edit");
             editButton.setOnAction(e -> displayRecipeEditScene(recipeID));
 
             Button deleteButton = createStyledButton("Delete");
             deleteButton.setOnAction(e -> {
-                controller.removeRecipe(recipeID);
+                Controller.removeRecipe(recipeID);
                 sceneManager.displayRecipeList();
             });
 
@@ -44,6 +50,9 @@ class RecipeScene extends ScrollPane {
         }
     }
 
+    /**
+     * This class represents the top bar of the newly created recipe scene.
+     */
     public class NewlyCreatedRecipeSceneTopBar extends HBox {
         NewlyCreatedRecipeSceneTopBar(String recipeID) {
             this.setAlignment(Pos.CENTER_LEFT);
@@ -51,7 +60,7 @@ class RecipeScene extends ScrollPane {
             this.setSpacing(10);
             this.setStyle("-fx-background-color: #c6ecc6;");
 
-            Label title = new Label(controller.getRecipeTitle(recipeID));
+            Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
             Button cancelButton = createStyledButton("Cancel");
@@ -59,7 +68,7 @@ class RecipeScene extends ScrollPane {
 
             Button saveButton = createStyledButton("Save");
             saveButton.setOnAction(e -> {
-                controller.saveRecipe(recipeID);
+                Controller.saveRecipe(recipeID);
                 sceneManager.displayRecipeList();
             });
 
@@ -67,6 +76,9 @@ class RecipeScene extends ScrollPane {
         }
     }
 
+    /**
+     * This class represents the top bar of the recipe edit scene.
+     */
     public class RecipeEditTopBar extends HBox {
         RecipeEditTopBar(String recipeID) {
             this.setAlignment(Pos.CENTER_LEFT);
@@ -74,7 +86,7 @@ class RecipeScene extends ScrollPane {
             this.setSpacing(10);
             this.setStyle("-fx-background-color: #c6ecc6;");
 
-            Label title = new Label(controller.getRecipeTitle(recipeID));
+            Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
             Button cancelButton = createStyledButton("Cancel");
@@ -82,7 +94,7 @@ class RecipeScene extends ScrollPane {
 
             Button saveButton = createStyledButton("Save Edits");
             saveButton.setOnAction(e -> {
-                controller.editRecipe(recipeID, instructionsTextArea.getText());
+                Controller.editRecipe(recipeID, instructionsTextArea.getText());
                 sceneManager.displayRecipeDetails(recipeID);
             });
 
@@ -90,10 +102,16 @@ class RecipeScene extends ScrollPane {
         }
     }
 
+    /**
+     * Constructs a new RecipeScene with the provided scene manager and controller.
+     * 
+     * @param sceneManager
+     * @param controller
+     */
     RecipeScene(SceneManager sceneManager, Controller controller) {
         this.sceneManager = sceneManager;
         this.controller = controller;
-        
+
         instructionsLabel = new Label();
         instructionsLabel.setWrapText(true);
         instructionsLabel.setFont(new Font(SceneManager.FONT, 14));
@@ -107,28 +125,49 @@ class RecipeScene extends ScrollPane {
         instructionsTextArea.setPrefHeight(450);
     }
 
+    /**
+     * Displays the recipe edit scene.
+     * 
+     * @param recipeID
+     */
     public void displayRecipeEditScene(String recipeID) {
         this.displayRecipeDetails(recipeID);
-        this.instructionsTextArea.setText(controller.getRecipeInstructions(recipeID));
+        this.instructionsTextArea.setText(Controller.getRecipeInstructions(recipeID));
         this.instructionsTextArea.setWrapText(true);
         this.setContent(instructionsTextArea);
         sceneManager.setCenter(this);
         sceneManager.setTop(new RecipeEditTopBar(recipeID));
     }
 
+    /**
+     * Displays the recipe details.
+     * 
+     * @param recipeID
+     */
     public void displayRecipeDetails(String recipeID) {
-        instructionsLabel.setText(controller.getRecipeInstructions(recipeID));
+        instructionsLabel.setText(Controller.getRecipeInstructions(recipeID));
         this.setContent(instructionsLabel);
         sceneManager.setCenter(this);
         sceneManager.setTop(new RecipeSceneTopBar(recipeID));
     }
 
+    /**
+     * Displays the newly created recipe.
+     * 
+     * @param recipeID
+     */
     public void displayNewlyCreatedRecipe(String recipeID) {
-        instructionsLabel.setText(controller.getRecipeInstructions(recipeID));
+        instructionsLabel.setText(Controller.getRecipeInstructions(recipeID));
         sceneManager.setCenter(this);
         sceneManager.setTop(new NewlyCreatedRecipeSceneTopBar(recipeID));
     }
 
+    /**
+     * Creates a styled button with the provided text.
+     * 
+     * @param text
+     * @return Button with the provided text
+     */
     private Button createStyledButton(String text) {
         Button button = new Button(text);
         button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");

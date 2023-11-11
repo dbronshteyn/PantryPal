@@ -9,22 +9,29 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import com.google.gson.Gson;
-import java.io.FileReader;
 import java.io.FileWriter;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 
 import java.io.File;
 
-
+/**
+ * This class represents a list of Recipe objects. It provides methods for
+ * adding and removing recipes,
+ * getting a list of recipe IDs, getting a list of all recipes, getting a recipe
+ * by ID, sorting the recipes
+ * by date, and updating the recipe list in the database file.
+ */
 public class RecipeList {
 
     private List<Recipe> recipes;
     private File databaseFile;
 
+    /**
+     * Constructs a new RecipeList with the provided database file.
+     * 
+     * @param databaseFile
+     */
     public RecipeList(File databaseFile) {
         this.recipes = new ArrayList<>();
         this.databaseFile = databaseFile;
@@ -32,17 +39,33 @@ public class RecipeList {
         this.sortRecipesByDate();
     }
 
+    /**
+     * Adds the provided recipe to the list of recipes and updates the database.
+     * 
+     * @param recipe
+     */
     public void addRecipe(Recipe recipe) {
         this.recipes.add(recipe);
         this.updateDatabase();
         this.sortRecipesByDate();
     }
 
+    /**
+     * Removes the provided recipe from the list of recipes and updates the
+     * database.
+     * 
+     * @param recipe
+     */
     public void removeRecipe(Recipe recipe) {
         this.recipes.remove(recipe);
         this.updateDatabase();
     }
 
+    /**
+     * Returns a list of all recipe IDs.
+     * 
+     * @return list of recipe IDs
+     */
     public List<String> getRecipeIDs() {
         List<String> recipeIDs = new ArrayList<>();
         for (Recipe recipe : this.recipes) {
@@ -51,10 +74,21 @@ public class RecipeList {
         return recipeIDs;
     }
 
+    /**
+     * Returns a list of all recipes.
+     * 
+     * @return list of all recipes
+     */
     public List<Recipe> getRecipes() {
         return this.recipes;
     }
 
+    /**
+     * Returns the recipe with the provided ID.
+     * 
+     * @param recipeID
+     * @return specific recipe
+     */
     public Recipe getRecipeByID(String recipeID) {
         for (Recipe recipe : this.recipes) {
             if (recipe.getRecipeID().equals(recipeID)) {
@@ -64,6 +98,9 @@ public class RecipeList {
         return null;
     }
 
+    /**
+     * Sorts the list of recipes by date.
+     */
     public void sortRecipesByDate() {
         // Sort the list with a custom comparator that compares the dates
         Collections.sort(this.recipes, new Comparator<Recipe>() {
@@ -76,16 +113,9 @@ public class RecipeList {
     }
 
     /**
-     * Saves all recipes into the json file (which acts as our database)
-     * 
-     * @param recipe the recipe to be added
+     * Updates the database file with the current list of recipes.
      */
     public void updateDatabase() {
-
-        // to unit test this, use dependency inversion and take a FileWriter object as a method parameter
-        // then mock the FileWriter object and make sure it writes the correct things
-        // same for loadRecipesFromFile()
-
         JSONArray jsonRecipeList = new JSONArray();
         for (Recipe recipe : this.recipes) {
             jsonRecipeList.put(recipe.toJSON());
@@ -100,13 +130,16 @@ public class RecipeList {
         }
     }
 
+    /**
+     * Loads the recipes from the database file into the list of recipes.
+     */
     public void loadRecipesFromFile() {
         if (this.databaseFile.exists()) {
             try {
                 String content = new String(Files.readAllBytes(Paths.get(this.databaseFile.getAbsolutePath())));
                 JSONArray jsonRecipeList = new JSONArray(content);
                 for (int i = 0; i < jsonRecipeList.length(); i++) {
-                    JSONObject jsonRecipe = jsonRecipeList.getJSONObject(i);              
+                    JSONObject jsonRecipe = jsonRecipeList.getJSONObject(i);
                     Recipe recipe = new Recipe(jsonRecipe);
                     this.recipes.add(recipe);
                 }
