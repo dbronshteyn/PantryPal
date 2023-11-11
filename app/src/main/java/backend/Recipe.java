@@ -12,6 +12,8 @@ import org.json.JSONObject;
  */
 
 public class Recipe {
+
+    private String recipeID;
     private String title;
     private String instructions;
     private Date dateCreated;
@@ -25,7 +27,8 @@ public class Recipe {
      * @param dateCreated       Date when the recipe was generated.
      */
 
-    public Recipe(String title, String instructions, Date dateCreated) {
+    public Recipe(String recipeID, String title, String instructions, Date dateCreated) {
+        this.recipeID = recipeID;
         this.title = title;
         this.instructions = instructions;
         this.dateCreated = dateCreated;
@@ -41,6 +44,7 @@ public class Recipe {
         }
         this.title = jsonRecipe.getString("title");
         this.instructions = jsonRecipe.getString("instructions");
+        this.recipeID = jsonRecipe.getString("recipeID");
     }
 
     public String getTitle() {
@@ -53,6 +57,10 @@ public class Recipe {
 
     public Date getDateCreated() {
         return this.dateCreated;
+    }
+
+    public String getRecipeID() {
+        return this.recipeID;
     }
 
     public void setInstructions(String instructions) {
@@ -72,6 +80,7 @@ public class Recipe {
 
     public JSONObject toJSON() {
         JSONObject out = new JSONObject();
+        out.put("recipeID", this.recipeID);
         out.put("title", this.title);
         out.put("instructions", this.instructions);
         out.put("dateCreated", this.formatter.format(this.dateCreated));

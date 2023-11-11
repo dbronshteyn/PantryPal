@@ -6,40 +6,19 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Main",
+            "name": "UI",
             "request": "launch",
-            "mainClass": "backend.Main",
+            "mainClass": "ui.Main",
             "projectName": "app",
-            "vmArgs": "--module-path '/Users/danielbronshteyn/Desktop/CSE110/cse-110-project-team-17/app/lib' --add-modules javafx.controls,javafx.fxml"
+            "vmArgs": "--module-path '/Users/peter/VSCodeProjects/cse-110-project-team-17/app/lib' --add-modules javafx.controls,javafx.fxml"
         },
         {
             "type": "java",
-            "name": "ListScene",
+            "name": "Server",
             "request": "launch",
-            "mainClass": "ui.ListScene",
+            "mainClass": "middleware.Server",
             "projectName": "app",
-            "vmArgs": "--module-path '/Users/danielbronshteyn/Desktop/CSE110/cse-110-project-team-17/app/lib' --add-modules javafx.controls,javafx.fxml"
-        },
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "App",
-            "request": "launch",
-            "mainClass": "App",
-            "projectName": "app"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "app",
-            "vmArgs": "--module-path '/Users/danielbronshteyn/Desktop/CSE110/cse-110-project-team-17/app/lib' --add-modules javafx.controls,javafx.fxml"
+            "vmArgs": "--module-path '/Users/peter/VSCodeProjects/cse-110-project-team-17/app/lib' --add-modules javafx.controls,javafx.fxml"
         }
     ]
 }

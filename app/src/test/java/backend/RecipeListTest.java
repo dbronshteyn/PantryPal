@@ -41,7 +41,7 @@ class RecipeListTest {
 
     @Test
     void testAddRecipe() {
-        Recipe recipe = new Recipe("Test Recipe", "Test Instructions", new Date());
+        Recipe recipe = new Recipe("", "Test Recipe", "Test Instructions", new Date());
         recipeList.addRecipe(recipe);
 
         List<Recipe> recipes = recipeList.getRecipes();
@@ -51,11 +51,40 @@ class RecipeListTest {
     }
 
     @Test
+    void testGetRecipeIDs() {
+        recipeList.getRecipes().add(new Recipe("id 1", "Test Recipe", "Test Instructions", new Date()));
+        recipeList.getRecipes().add(new Recipe("id 2", "Test Recipe 2", "Test Instructions 2", new Date()));
+        recipeList.getRecipes().add(new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date()));
+
+        List<String> recipeIDs = recipeList.getRecipeIDs();
+
+        assertEquals(3, recipeIDs.size());
+        assertEquals("id 1", recipeIDs.get(0));
+        assertEquals("id 2", recipeIDs.get(1));
+        assertEquals("id 3", recipeIDs.get(2));
+    }
+
+    @Test
+    void testGetRecipeByID() {
+        Recipe recipe1 = new Recipe("id 1", "Test Recipe", "Test Instructions", new Date());
+        Recipe recipe2 = new Recipe("id 2", "Test Recipe 2", "Test Instructions 2", new Date());
+        Recipe recipe3 = new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date());
+
+        recipeList.getRecipes().add(recipe1);
+        recipeList.getRecipes().add(recipe2);
+        recipeList.getRecipes().add(recipe3);
+
+        assertEquals(recipe1, recipeList.getRecipeByID("id 1"));
+        assertEquals(recipe2, recipeList.getRecipeByID("id 2"));
+        assertEquals(recipe3, recipeList.getRecipeByID("id 3"));
+    }
+
+    @Test
     void testSortRecipesByDate() {
         long currentTime = System.currentTimeMillis();
-        Recipe recipe1 = new Recipe("Test Recipe", "Test Instructions", new Date(currentTime - 1000));
-        Recipe recipe2 = new Recipe("Test Recipe 2", "Test Instructions 2", new Date(currentTime));
-        Recipe recipe3 = new Recipe("Test Recipe 3", "Test Instructions 3", new Date(currentTime + 1000));
+        Recipe recipe1 = new Recipe("", "Test Recipe", "Test Instructions", new Date(currentTime - 1000));
+        Recipe recipe2 = new Recipe("", "Test Recipe 2", "Test Instructions 2", new Date(currentTime));
+        Recipe recipe3 = new Recipe("", "Test Recipe 3", "Test Instructions 3", new Date(currentTime + 1000));
 
         recipeList.getRecipes().add(recipe1);
         recipeList.getRecipes().add(recipe2);
@@ -77,9 +106,9 @@ class RecipeListTest {
     @Test
     void testUpdateDatabase() throws IOException {
         long currentTime = System.currentTimeMillis();
-        Recipe recipe1 = new Recipe("Test Recipe", "Test Instructions", new Date(currentTime - 1000)); // oldest
-        Recipe recipe2 = new Recipe("Test Recipe 2", "Test Instructions 2", new Date(currentTime)); // middle
-        Recipe recipe3 = new Recipe("Test Recipe 3", "Test Instructions 3", new Date(currentTime + 1000)); // newest
+        Recipe recipe1 = new Recipe("id 1", "Test Recipe", "Test Instructions", new Date(currentTime - 1000)); // oldest
+        Recipe recipe2 = new Recipe("id 2 ", "Test Recipe 2", "Test Instructions 2", new Date(currentTime)); // middle
+        Recipe recipe3 = new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date(currentTime + 1000)); // newest
 
         recipeList.getRecipes().add(recipe1);
         recipeList.getRecipes().add(recipe2);
@@ -95,6 +124,7 @@ class RecipeListTest {
         JSONObject jsonRecipe1 = jsonRecipeList.getJSONObject(0);
         JSONObject jsonRecipe2 = jsonRecipeList.getJSONObject(1);
         JSONObject jsonRecipe3 = jsonRecipeList.getJSONObject(2);
+        assertEquals("id 1", jsonRecipe1.getString("recipeID"));
         assertEquals("Test Recipe", jsonRecipe1.getString("title"));
         assertEquals("Test Instructions 2", jsonRecipe2.getString("instructions"));
 
@@ -106,7 +136,7 @@ class RecipeListTest {
     @Test
     void testLoadRecipesFromFile() throws IOException {
         FileWriter fw = new FileWriter(databaseFile);
-        fw.write("[{\"instructions\":\"Test Instructions\",\"dateCreated\":\"2023-11-09T21:12:01-08:00\",\"title\":\"Test Recipe\"},{\"instructions\":\"Test Instructions 2\",\"dateCreated\":\"2023-11-09T21:12:02-08:00\",\"title\":\"Test Recipe 2\"},{\"instructions\":\"Test Instructions 3\",\"dateCreated\":\"2023-11-09T21:12:03-08:00\",\"title\":\"Test Recipe 3\"}]");
+        fw.write("[{\"instructions\":\"Test Instructions\",\"dateCreated\":\"2023-11-11T00:55:14-08:00\",\"title\":\"Test Recipe\",\"recipeID\":\"id 1\"},{\"instructions\":\"Test Instructions 2\",\"dateCreated\":\"2023-11-11T00:55:15-08:00\",\"title\":\"Test Recipe 2\",\"recipeID\":\"id 2 \"},{\"instructions\":\"Test Instructions 3\",\"dateCreated\":\"2023-11-11T00:55:16-08:00\",\"title\":\"Test Recipe 3\",\"recipeID\":\"id 3\"}]");
         fw.flush();
         fw.close();
         recipeList.loadRecipesFromFile();
@@ -114,7 +144,7 @@ class RecipeListTest {
         assertEquals("Test Recipe", recipeList.getRecipes().get(0).getTitle());
         assertEquals("Test Instructions 2", recipeList.getRecipes().get(1).getInstructions());
         String dateString = recipeList.getRecipes().get(2).getDateCreated().toString();
-        assertTrue(dateString.equals("Thu Nov 09 21:12:03 PST 2023") || dateString.equals("Fri Nov 10 05:12:03 UTC 2023"));
+        assertTrue(dateString.equals("Sat Nov 11 00:55:16 PST 2023") || dateString.equals("Sat Nov 11 08:55:16 UTC 2023"));
     }
 
     @Test
@@ -127,7 +157,7 @@ class RecipeListTest {
     @Test
     void testSaveRecipeStoryScenarioOne() {
         Date date = new Date();
-        Recipe recipe = new Recipe("Test title", "Test instructions", date);
+        Recipe recipe = new Recipe("", "Test title", "Test instructions", date);
         recipeList.addRecipe(recipe);
         recipeList.updateDatabase();
         assertEquals(1, recipeList.getRecipes().size());
@@ -142,8 +172,8 @@ class RecipeListTest {
     // tests Feature 7 in the MS1 delivery document
     @Test
     void testRemoveRecipe() {
-        Recipe recipe1 = new Recipe("Test Recipe", "Test Instructions", new Date());
-        Recipe recipe2 = new Recipe("Test Recipe 2", "Test Instructions 2", new Date());
+        Recipe recipe1 = new Recipe("", "Test Recipe", "Test Instructions", new Date());
+        Recipe recipe2 = new Recipe("", "Test Recipe 2", "Test Instructions 2", new Date());
 
         recipeList.addRecipe(recipe1);
         recipeList.addRecipe(recipe2);

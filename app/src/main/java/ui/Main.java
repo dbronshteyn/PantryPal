@@ -1,16 +1,13 @@
-package backend;
-
-import java.util.List;
+package ui;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ui.SceneController;
-
-import java.util.ArrayList;
-import java.util.Date;
 
 import java.io.File;
+
+import middleware.Controller;
+
 
 public class Main extends Application {
 
@@ -21,15 +18,15 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         File ingredientsAudioFile = new File("ingredients.wav");
         File mealTypeAudioFile = new File("mealType.wav");
-        File databaseFile = new File("database.json");
       
-        Controller controller = new Controller(databaseFile);
-        SceneController sceneController = new SceneController(controller, ingredientsAudioFile, mealTypeAudioFile);
+        Controller controller = new Controller();
+        SceneManager sceneManager = new SceneManager(controller, ingredientsAudioFile, mealTypeAudioFile);
         
         primaryStage.setTitle("PantryPal");
-        primaryStage.setScene(new Scene(sceneController, WINDOW_WIDTH, WINDOW_HEIGHT));
+        primaryStage.setScene(new Scene(sceneManager, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();
-        controller.initialize(sceneController);
+        
+        sceneManager.displayRecipeList();
     }
 
     public static void main(String[] args) {
