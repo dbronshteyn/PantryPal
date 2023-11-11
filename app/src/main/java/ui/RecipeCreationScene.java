@@ -12,7 +12,7 @@ import javafx.scene.text.Font;
 import javax.sound.sampled.*;
 import java.io.File;
 
-import backend.Controller;
+import middleware.Controller;
 
 
 /**

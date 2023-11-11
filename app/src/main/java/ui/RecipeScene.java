@@ -3,14 +3,13 @@ package ui;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.text.Font;
 import javafx.scene.control.TextArea;
 
-import backend.Controller;
+import middleware.Controller;
 
 class RecipeScene extends ScrollPane {
 

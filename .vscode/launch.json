@@ -6,9 +6,17 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Main",
+            "name": "UI",
             "request": "launch",
             "mainClass": "ui.Main",
+            "projectName": "app",
+            "vmArgs": "--module-path '/Users/peter/VSCodeProjects/cse-110-project-team-17/app/lib' --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
+            "name": "Server",
+            "request": "launch",
+            "mainClass": "middleware.Server",
             "projectName": "app",
             "vmArgs": "--module-path '/Users/peter/VSCodeProjects/cse-110-project-team-17/app/lib' --add-modules javafx.controls,javafx.fxml"
         }

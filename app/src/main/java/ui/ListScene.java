@@ -8,7 +8,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
 
-import backend.Controller;
+import middleware.Controller;
 
 
 public class ListScene extends VBox {
@@ -68,6 +68,7 @@ public class ListScene extends VBox {
     public void displayRecipeList() {
         this.getChildren().clear();
         for (String recipeID : controller.getRecipeIDs()) {
+            System.out.println("b" + recipeID);
             RecipeInListUI recipeEntry = new RecipeInListUI(recipeID, this.sceneManager);
             this.getChildren().add(recipeEntry);
         }

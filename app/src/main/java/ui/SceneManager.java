@@ -4,7 +4,7 @@ import javafx.scene.layout.BorderPane;
 
 import java.io.File;
 
-import backend.Controller;
+import middleware.Controller;
 
 
 public class SceneManager extends BorderPane {
