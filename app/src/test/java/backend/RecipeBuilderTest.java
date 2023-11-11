@@ -130,6 +130,7 @@ class RecipeBuilderTest {
      * Integration test for recipe creation feature
      */
     // based on Story 2 BDD Scenario 1, Story 3 BDD Scenario 1
+    // also tests Features 1 and 2 in the MS1 delivery document
     @Test
     void testCreateRecipeStoryScenarioOne() throws IOException {
         assertFalse(recipeBuilder.isCompleted());

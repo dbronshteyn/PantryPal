@@ -51,20 +51,6 @@ class RecipeListTest {
     }
 
     @Test
-    void testRemoveRecipe() {
-        Recipe recipe1 = new Recipe("Test Recipe", "Test Instructions", new Date());
-        Recipe recipe2 = new Recipe("Test Recipe 2", "Test Instructions 2", new Date());
-
-        recipeList.getRecipes().add(recipe1);
-        recipeList.getRecipes().add(recipe2);
-
-        recipeList.removeRecipe(recipe2);
-
-        assertEquals(1, recipeList.getRecipes().size());
-        assertFalse(recipeList.getRecipes().contains(recipe2));
-    }
-
-    @Test
     void testSortRecipesByDate() {
         long currentTime = System.currentTimeMillis();
         Recipe recipe1 = new Recipe("Test Recipe", "Test Instructions", new Date(currentTime - 1000));
@@ -83,6 +69,11 @@ class RecipeListTest {
         assertEquals(recipe1, recipeList.getRecipes().get(2));
     }
 
+    /*
+     * Integration tests
+     */
+    // based on Story 5 Scenario 1
+    // also tests Features 4 and 5 in the MS1 delivery document
     @Test
     void testUpdateDatabase() throws IOException {
         long currentTime = System.currentTimeMillis();
@@ -146,5 +137,20 @@ class RecipeListTest {
         assertEquals("Test title", recipeList.getRecipes().get(0).getTitle());
         assertEquals("Test instructions", recipeList.getRecipes().get(0).getInstructions());
         assertEquals(date.toString(), recipeList.getRecipes().get(0).getDateCreated().toString());
+    }
+
+    // tests Feature 7 in the MS1 delivery document
+    @Test
+    void testRemoveRecipe() {
+        Recipe recipe1 = new Recipe("Test Recipe", "Test Instructions", new Date());
+        Recipe recipe2 = new Recipe("Test Recipe 2", "Test Instructions 2", new Date());
+
+        recipeList.addRecipe(recipe1);
+        recipeList.addRecipe(recipe2);
+
+        recipeList.removeRecipe(recipe2);
+
+        assertEquals(1, recipeList.getRecipes().size());
+        assertFalse(recipeList.getRecipes().contains(recipe2));
     }
 }

@@ -52,11 +52,21 @@ class RecipeTest {
     }
 
     // based on Story 4 BDD Scenario 1
+    // also tests Feature 6 in the MS1 delivery document
     @Test
     void testEditRecipeScenarioOne() {
-        Recipe recipe = new Recipe("Muffins", "Add 1 cup of sugar and flour.", new Date(2000, 1, 1));
+        long currentTime = System.currentTimeMillis();
+        Recipe recipe = new Recipe("Muffins", "Add 1 cup of sugar and flour.", new Date(currentTime - 1000));
         recipe.setInstructions("Add 1/2 cup of sugar and flour.");
         assertEquals("Add 1/2 cup of sugar and flour.", recipe.getInstructions());
-        assertEquals(-1, recipe.getDateCreated().compareTo(new Date(2000, 1, 1)));
+        assertTrue(recipe.getDateCreated().after(new Date(currentTime - 1000)));
+    }
+
+    // sort of a trivial test, but tests Feature 3 in the MS1 delivery document
+    @Test
+    void testRetrieveRecipeDetails() {
+        assertEquals("Chocolate Cake", recipe.getTitle());
+        assertEquals("Mix ingredients and bake for 30 minutes.", recipe.getInstructions());
+        assertEquals(dateCreated, recipe.getDateCreated());
     }
 }
