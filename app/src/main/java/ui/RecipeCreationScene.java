@@ -2,7 +2,6 @@ package ui;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
@@ -13,12 +12,7 @@ import javafx.scene.text.Font;
 import javax.sound.sampled.*;
 import java.io.File;
 
-import java.io.IOException;
-
-import backend.Recipe;
-import backend.RecipeBuilder;
-import backend.RecipeBuilder.ResettableElement;
-import backend.RecipeList;
+import backend.Controller;
 
 
 /**
@@ -28,11 +22,11 @@ import backend.RecipeList;
  */
 class RecipeCreationScene extends VBox {
 
-    SceneController sceneController;
+    SceneManager sceneManager;
+    Controller controller;
     Button completedButton;
     File ingredientsAudioFile;
     File mealTypeAudioFile;
-    RecipeList recipeList;
 
     public class RecipeCreationTopBar extends HBox {
 
@@ -45,7 +39,7 @@ class RecipeCreationScene extends VBox {
             this.setStyle("-fx-background-color: #c6ecc6;");
 
             cancelButton = createStyledButton("Cancel");
-            cancelButton.setOnAction(e -> sceneController.displayRecipeList(null));
+            cancelButton.setOnAction(e -> sceneManager.displayRecipeList());
             this.getChildren().add(cancelButton);
 
             Label title = new Label("Create a Recipe");
@@ -135,14 +129,14 @@ class RecipeCreationScene extends VBox {
      * @param ingredientsAudioFile The file used to store recorded audio for the
      *                             input ingredients.
      */
-    RecipeCreationScene(SceneController sceneController, RecipeList recipeList, File ingredientsAudioFile, File mealTypeAudioFile) {
-        this.sceneController = sceneController;
+    RecipeCreationScene(SceneManager sceneManager, Controller controller, File ingredientsAudioFile, File mealTypeAudioFile) {
+        this.sceneManager = sceneManager;
+        this.controller = controller;
         this.setSpacing(10);
         this.setPadding(new Insets(20, 20, 20, 20));
         this.setAlignment(Pos.TOP_CENTER);
         this.setStyle("-fx-background-color: #e7ffe6;");
 
-        this.recipeList = recipeList;
         this.ingredientsAudioFile = ingredientsAudioFile;
         this.mealTypeAudioFile = mealTypeAudioFile;
     }
@@ -151,9 +145,9 @@ class RecipeCreationScene extends VBox {
                                             Label label, 
                                             String successMessage, 
                                             String invalidTypeMessage, 
+                                            String recipeID,
+                                            String elementName,
                                             File audioFile, 
-                                            RecipeBuilder recipeBuilder, 
-                                            ResettableElement element, 
                                             Button completeButton, 
                                             Button cancelButton, 
                                             ToggleButton otherButton) {
@@ -161,7 +155,7 @@ class RecipeCreationScene extends VBox {
         String originalText = button.getText();
         button.setOnAction(e -> {
             if (button.isSelected()) {
-                element.reset();
+                controller.resetRecipeCreatorElement(recipeID, elementName);
                 completeButton.setDisable(true);
                 otherButton.setDisable(true);
                 cancelButton.setDisable(true);
@@ -169,21 +163,17 @@ class RecipeCreationScene extends VBox {
                 button.setText("Stop Recording");
             } else {
                 audioRecorder.stopRecordingAudio();
-                try {
-                    String result = element.specify(audioFile);
-                    if (result == null) {
-                        label.setText(invalidTypeMessage);
-                    } else {
-                        label.setText(String.format(successMessage, result));
-                    }
-                } catch (IOException e1) {
-                    label.setText("Error recording audio!");
+                String result = controller.specifyRecipeCreatorElement(recipeID, elementName, audioFile);
+                if (result == null) {
+                    label.setText(invalidTypeMessage);
+                } else {
+                    label.setText(String.format(successMessage, result));
                 }
                 button.setDisable(false);
                 button.setText(originalText);
                 otherButton.setDisable(false);
                 cancelButton.setDisable(false);
-                if (recipeBuilder.isCompleted()) {
+                if (controller.isRecipeCreatorCompleted(recipeID)) {
                     completeButton.setDisable(false);
                 }
             }
@@ -193,7 +183,7 @@ class RecipeCreationScene extends VBox {
     private Button createStyledButton(String text) {
         Button button = new Button(text);
         button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
-        button.setFont(new Font("Arial", 14));
+        button.setFont(new Font(sceneManager.FONT, 14));
         button.setPadding(new Insets(10, 20, 10, 20));
         button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #8cc68c; -fx-text-fill: #000000;"));
         button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;"));
@@ -202,7 +192,7 @@ class RecipeCreationScene extends VBox {
 
     private ToggleButton createStyledToggleButton(ToggleButton toggleButton) {
         toggleButton.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
-        toggleButton.setFont(new Font("Arial", 14));
+        toggleButton.setFont(new Font(SceneManager.FONT, 14));
         toggleButton.setPadding(new Insets(10, 20, 10, 20));
         toggleButton.setOnMouseEntered(e -> {
             if (!toggleButton.isSelected())
@@ -222,7 +212,7 @@ class RecipeCreationScene extends VBox {
         return toggleButton;
     }
 
-    public void displayRecipeCreationScene(RecipeBuilder recipeBuilder) {
+    public void displayRecipeCreationScene(String recipeID) {
         this.getChildren().clear();
         Button completeButton = createStyledButton("Generate Recipe");
         RecipeCreationTopBar topBar = new RecipeCreationTopBar();
@@ -236,9 +226,9 @@ class RecipeCreationScene extends VBox {
                                    recordMealTypeLabel, 
                                    "You selected %s", 
                                    "Please select either breakfast, lunch, or dinner.", 
+                                   recipeID,
+                                   "mealType",
                                    mealTypeAudioFile, 
-                                   recipeBuilder, 
-                                   recipeBuilder.getMealTypeElement(),
                                    completeButton, 
                                    topBar.getCancelButton(), 
                                    recordIngredientsButton);
@@ -249,9 +239,9 @@ class RecipeCreationScene extends VBox {
                                    recordIngredientsLabel, 
                                    "You said: %s", 
                                    null, 
+                                   recipeID,
+                                   "ingredients",
                                    ingredientsAudioFile, 
-                                   recipeBuilder, 
-                                   recipeBuilder.getIngredientsElement(),
                                    completeButton, 
                                    topBar.getCancelButton(), 
                                    recordMealTypeButton);
@@ -259,16 +249,12 @@ class RecipeCreationScene extends VBox {
         this.getChildren().add(recordIngredientsLabel);
 
         completeButton.setOnAction(e -> {
-            try {
-                Recipe recipe = recipeBuilder.returnRecipe();
-                sceneController.displayNewlyCreatedRecipe(recipe, recipeList);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } 
+            controller.generateRecipe(recipeID);
+            sceneManager.displayNewlyCreatedRecipe(recipeID);
         });
         completeButton.setDisable(true);
         this.getChildren().add(completeButton);
-        sceneController.setTop(topBar);
-        sceneController.setCenter(this);
+        sceneManager.setTop(topBar);
+        sceneManager.setCenter(this);
     }
 }

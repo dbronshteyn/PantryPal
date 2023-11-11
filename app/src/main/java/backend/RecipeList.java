@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 
 import java.io.File;
 
-import com.google.gson.reflect.TypeToken;
 
 public class RecipeList {
 
@@ -44,8 +43,25 @@ public class RecipeList {
         this.updateDatabase();
     }
 
+    public List<String> getRecipeIDs() {
+        List<String> recipeIDs = new ArrayList<>();
+        for (Recipe recipe : this.recipes) {
+            recipeIDs.add(recipe.getRecipeID());
+        }
+        return recipeIDs;
+    }
+
     public List<Recipe> getRecipes() {
         return this.recipes;
+    }
+
+    public Recipe getRecipeByID(String recipeID) {
+        for (Recipe recipe : this.recipes) {
+            if (recipe.getRecipeID().equals(recipeID)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     public void sortRecipesByDate() {

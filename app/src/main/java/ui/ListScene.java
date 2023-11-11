@@ -1,67 +1,34 @@
 package ui;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.geometry.Insets;
-import javafx.scene.text.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.scene.control.ScrollPane;
-
-import javax.swing.*;
+import javafx.scene.text.Font;
 
 import backend.Controller;
-import backend.Recipe;
-import backend.RecipeList;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import java.util.List;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-
-// import font
-import javafx.scene.text.Font;
 
 public class ListScene extends VBox {
 
-    SceneController sceneController;
+    SceneManager sceneManager;
     Controller controller;
     ScrollPane scroller;
 
     public class RecipeInListUI extends HBox {
-        RecipeInListUI(Recipe recipe, SceneController sceneController, RecipeList recipeList) {
+        RecipeInListUI(String recipeID, SceneManager sceneManager) {
             this.setSpacing(10);
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
 
-            Label title = new Label(recipe.getTitle());
-            title.setFont(new Font("Arial", 16));
+            Label title = new Label(controller.getRecipeTitle(recipeID));
+            title.setFont(new Font(SceneManager.FONT, 16));
             title.setWrapText(true);
 
             Button detailButton = createStyledButton("View Details");
-            detailButton.setOnAction(e -> {
-                sceneController.displayRecipeDetails(recipe);
-            });
-
+            detailButton.setOnAction(e -> sceneManager.displayRecipeDetails(recipeID));
 
             this.getChildren().addAll(title, detailButton);
             this.setStyle("-fx-background-color: #e7ffe6; -fx-border-color: #a3d9a5; -fx-border-width: 0.5;");
@@ -69,7 +36,7 @@ public class ListScene extends VBox {
     }
 
     public class ListSceneTopBar extends HBox {
-        ListSceneTopBar(SceneController sceneController, Controller controller) {
+        ListSceneTopBar(SceneManager sceneManager) {
             this.setAlignment(Pos.CENTER);
             this.setPadding(new Insets(10, 10, 10, 10));
             this.setSpacing(10);
@@ -79,17 +46,15 @@ public class ListScene extends VBox {
             recipesLabel.setStyle("-fx-font-weight: bold;");
 
             Button newRecipeButton = createStyledButton("New Recipe");
-            newRecipeButton.setOnAction(e -> {
-                sceneController.displayRecipeCreationScene(controller.generateNewRecipeBuilder());
-            });
+            newRecipeButton.setOnAction(e -> sceneManager.displayRecipeCreationScene());
 
             this.getChildren().addAll(recipesLabel, newRecipeButton);
             this.setStyle("-fx-background-color: #c6ecc6;");
         }
     }
 
-    ListScene(SceneController sceneController, Controller controller) {
-        this.sceneController = sceneController;
+    ListScene(SceneManager sceneManager, Controller controller) {
+        this.sceneManager = sceneManager;
         this.controller = controller;
         this.setSpacing(5);
         this.setPadding(new Insets(10, 10, 10, 10));
@@ -97,20 +62,17 @@ public class ListScene extends VBox {
         scroller = new ScrollPane(this);
         scroller.setFitToWidth(true);
         scroller.setFitToHeight(true);
-
         this.setStyle("-fx-background-color: #e7ffe6;");
     }
 
-    public void displayRecipeList(RecipeList recipes) {
-        if (recipes != null) {
-            this.getChildren().clear();
-            for (Recipe recipe : recipes.getRecipes()) {
-                RecipeInListUI recipeEntry = new RecipeInListUI(recipe, this.sceneController, recipes);
-                this.getChildren().add(recipeEntry);
-            }
+    public void displayRecipeList() {
+        this.getChildren().clear();
+        for (String recipeID : controller.getRecipeIDs()) {
+            RecipeInListUI recipeEntry = new RecipeInListUI(recipeID, this.sceneManager);
+            this.getChildren().add(recipeEntry);
         }
-        sceneController.setCenter(scroller);
-        sceneController.setTop(new ListSceneTopBar(this.sceneController, this.controller));
+        sceneManager.setCenter(scroller);
+        sceneManager.setTop(new ListSceneTopBar(this.sceneManager));
     }
 
     private Button createStyledButton(String text) {

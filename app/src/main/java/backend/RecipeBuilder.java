@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 
 public class RecipeBuilder {
@@ -61,12 +62,15 @@ public class RecipeBuilder {
     private ResettableElement mealType;
     private ResettableElement ingredients;
 
+    private String recipeID;
+
 
     public RecipeBuilder(ChatGPT chatGPT, Whisper whisper) {
         this.chatGPT = chatGPT;
         this.whisper = whisper;
         this.mealType = new ResettableElement(MEAL_TYPES);
         this.ingredients = new ResettableElement(null);
+        this.recipeID = UUID.randomUUID().toString();
     }
 
     public boolean isCompleted() {
@@ -79,7 +83,7 @@ public class RecipeBuilder {
         List<String> responseLines = Arrays.asList(response.split("Title:")[1].split("\n"));
         String recipeTitle = responseLines.get(0).strip();
         String recipeBody = String.join("\n", responseLines.subList(1, responseLines.size())).strip();
-        return new Recipe(recipeTitle, recipeBody, new Date());
+        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date());
     }
 
     public ResettableElement getMealTypeElement() {
@@ -88,5 +92,9 @@ public class RecipeBuilder {
 
     public ResettableElement getIngredientsElement() {
         return this.ingredients;
+    }
+
+    public String getRecipeID() {
+        return this.recipeID;
     }
 }

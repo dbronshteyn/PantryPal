@@ -1,16 +1,18 @@
-package backend;
+package ui;
 
 import java.util.List;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ui.SceneController;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 import java.io.File;
+
+import ui.SceneManager;
+import backend.Controller;
+
 
 public class Main extends Application {
 
@@ -24,12 +26,13 @@ public class Main extends Application {
         File databaseFile = new File("database.json");
       
         Controller controller = new Controller(databaseFile);
-        SceneController sceneController = new SceneController(controller, ingredientsAudioFile, mealTypeAudioFile);
+        SceneManager sceneManager = new SceneManager(controller, ingredientsAudioFile, mealTypeAudioFile);
         
         primaryStage.setTitle("PantryPal");
-        primaryStage.setScene(new Scene(sceneController, WINDOW_WIDTH, WINDOW_HEIGHT));
+        primaryStage.setScene(new Scene(sceneManager, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();
-        controller.initialize(sceneController);
+        
+        sceneManager.displayRecipeList();
     }
 
     public static void main(String[] args) {
