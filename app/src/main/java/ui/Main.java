@@ -16,7 +16,7 @@ public class Main extends Application {
     static final int WINDOW_HEIGHT = 600;
 
     /**
-     * Starts the application.
+     * Starts the UI.
      */
     @Override
     public void start(Stage primaryStage) throws Exception {

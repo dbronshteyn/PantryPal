@@ -72,7 +72,7 @@ public class ListScene extends VBox {
     }
 
     /**
-     * Constructs a new ListScene with the provided scene manager and controller.
+     * Constructs a new ListScene with the provided scene manager.
      * 
      * @param sceneManager
      */

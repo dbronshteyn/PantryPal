@@ -19,7 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * This class represents a controller that handles requests from the frontend.
+ * This class represents a controller that handles requests from the frontend and
+ * sends them to the backend.
  */
 public class Controller {
 
@@ -33,20 +34,20 @@ public class Controller {
     }
 
     /**
-     * Returns the recipe builder element titles.
+     * Returns the recipe title.
      * 
      * @param recipeID
-     * @return the recipe builder element titles
+     * @return the recipe title
      */
     public static String getRecipeTitle(String recipeID) {
         return sendRequest("/get-recipe-title", "recipeID=" + recipeID, "GET");
     }
 
     /**
-     * Returns the recipe builder element instructions.
+     * Returns the detailed instructions for a given recipe.
      * 
      * @param recipeID
-     * @return the recipe builder element instructions
+     * @return the instructions
      */
     public static String getRecipeInstructions(String recipeID) {
         try {
@@ -59,9 +60,9 @@ public class Controller {
     }
 
     /**
-     * Returns the recipe builder element meal type.
+     * Returns all the recipe IDs.
      * 
-     * @return the recipe builder element meal type
+     * @return list of recipe IDs
      */
     public static List<String> getRecipeIDs() {
         String response = sendRequest("/get-recipe-ids", null, "GET");
@@ -72,7 +73,7 @@ public class Controller {
     }
 
     /**
-     * Resets the recipe builder element.
+     * Resets an element in the recipe builder back to null.
      * 
      * @param recipeID
      * @param elementName
@@ -83,12 +84,12 @@ public class Controller {
     }
 
     /**
-     * Specifies the recipe builder element.
+     * Sets a recipe builder element by providing an audio file.
      * 
      * @param recipeID
      * @param elementName
      * @param audioFile
-     * @return the response from the server
+     * @return the new value of the element if it was set, otherwise null
      */
     public static String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
         String hex = fileToHex(audioFile);
@@ -100,7 +101,7 @@ public class Controller {
     }
 
     /**
-     * Returns true if the recipe builder is completed, false otherwise.
+     * Returns true if the recipe is ready to be created, false otherwise.
      * 
      * @param recipeID
      * @return true if the recipe builder is completed, false otherwise
@@ -129,7 +130,7 @@ public class Controller {
     }
 
     /**
-     * Saves the recipe with the specified ID.
+     * Saves the recipe with the specified ID to the server's filesystem.
      * 
      * @param recipeID
      */
@@ -138,7 +139,7 @@ public class Controller {
     }
 
     /**
-     * Edits the recipe with the specified ID.
+     * Edits the instructions of the recipe with the specified ID.
      * 
      * @param recipeID
      * @param newInstructions
@@ -182,7 +183,8 @@ public class Controller {
     }
 
     /**
-     * Converts the specified file to a hex string.
+     * Converts the specified file to a hex string, useful for encoding
+     * the audio file before it gets sent to the server.
      * 
      * @param file
      * @return the hex string
