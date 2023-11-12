@@ -14,11 +14,8 @@ import java.io.File;
 
 import middleware.Controller;
 
-
 /**
- * The RecipeCreationScene class is responsible for the UI components of
- * creating a recipe by allowing the user to record audio for inputting
- * ingredients.
+ * This class represents the scene that allows the user to create a recipe.
  */
 class RecipeCreationScene extends VBox {
 
@@ -28,10 +25,16 @@ class RecipeCreationScene extends VBox {
     File ingredientsAudioFile;
     File mealTypeAudioFile;
 
+    /**
+     * This class represents the top bar of the recipe creation scene.
+     */
     public class RecipeCreationTopBar extends HBox {
 
         private Button cancelButton;
 
+        /**
+         * Constructor for the RecipeCreationTopBar class.
+         */
         RecipeCreationTopBar() {
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
@@ -47,13 +50,19 @@ class RecipeCreationScene extends VBox {
             this.getChildren().add(title);
         }
 
+        /**
+         * Returns the cancel button.
+         * 
+         * @return cancel button
+         */
         public Button getCancelButton() {
             return cancelButton;
         }
     }
 
     /**
-     * The AudioRecorder class allows the user to record inputted audio.
+     * This class represents an audio recorder that allows the user to record audio
+     * from the microphone.
      */
     public class AudioRecorder {
 
@@ -64,23 +73,23 @@ class RecipeCreationScene extends VBox {
 
         /**
          * Constructor for the AudioRecorder class.
-         *
-         * @param audioFile    The file where we want to save the recorded audio.
-         * @param recordButton The button that allows the user to record audio.
+         * 
+         * @param audioFile
+         * @param recordButton
          */
         AudioRecorder(File audioFile, ToggleButton recordButton) {
             this.audioFile = audioFile;
             this.recordButton = recordButton;
             this.audioFormat = new AudioFormat(
-                44100,
-                16,
-                1,
-                true,
-                false);
+                    44100,
+                    16,
+                    1,
+                    true,
+                    false);
         }
 
         /**
-         * Allows the user to begin recording audio when the "Record" button is pressed.
+         * Allows the user to record audio when the "Record ..." button is pressed.
          */
         public void recordAudio() {
             Thread recordingThread = new Thread(this::startRecording);
@@ -88,16 +97,14 @@ class RecipeCreationScene extends VBox {
         }
 
         /**
-         * Allows the user to stop recording audio when the "Stop" button is pressed.
+         * Stops the audio recording process when the "Stop Recording" button is
          */
         public void stopRecordingAudio() {
             stopRecording();
         }
 
         /**
-         * Initiates the process of recording audio.
-         * Sets up the audio recording parameters and captures audio data from the
-         * microphone.
+         * This method is used to start the audio recording process.
          */
         private void startRecording() {
             try {
@@ -114,7 +121,6 @@ class RecipeCreationScene extends VBox {
 
         /**
          * This method is used to stop the audio recording process.
-         * Stops and closes the data line.
          */
         private void stopRecording() {
             targetDataLine.stop();
@@ -124,12 +130,14 @@ class RecipeCreationScene extends VBox {
 
     /**
      * Constructor for the RecipeCreationScene class.
-     *
-     * @param sceneController      The controller for managing scenes.
-     * @param ingredientsAudioFile The file used to store recorded audio for the
-     *                             input ingredients.
+     * 
+     * @param sceneManager
+     * @param controller
+     * @param ingredientsAudioFile
+     * @param mealTypeAudioFile
      */
-    RecipeCreationScene(SceneManager sceneManager, Controller controller, File ingredientsAudioFile, File mealTypeAudioFile) {
+    RecipeCreationScene(SceneManager sceneManager, Controller controller, File ingredientsAudioFile,
+            File mealTypeAudioFile) {
         this.sceneManager = sceneManager;
         this.controller = controller;
         this.setSpacing(10);
@@ -141,29 +149,45 @@ class RecipeCreationScene extends VBox {
         this.mealTypeAudioFile = mealTypeAudioFile;
     }
 
-    private void setRecordingButtonTriggers(ToggleButton button, 
-                                            Label label, 
-                                            String successMessage, 
-                                            String invalidTypeMessage, 
-                                            String recipeID,
-                                            String elementName,
-                                            File audioFile, 
-                                            Button completeButton, 
-                                            Button cancelButton, 
-                                            ToggleButton otherButton) {
+    /**
+     * Sets the recording button triggers.
+     * 
+     * @param button
+     * @param label
+     * @param successMessage
+     * @param invalidTypeMessage
+     * @param recipeID
+     * @param elementName
+     * @param audioFile
+     * @param completeButton
+     * @param cancelButton
+     * @param otherButton
+     */
+    private void setRecordingButtonTriggers(ToggleButton button,
+            Label label,
+            String successMessage,
+            String invalidTypeMessage,
+            String recipeID,
+            String elementName,
+            File audioFile,
+            Button completeButton,
+            Button cancelButton,
+            ToggleButton otherButton) {
         AudioRecorder audioRecorder = new AudioRecorder(audioFile, button);
         String originalText = button.getText();
         button.setOnAction(e -> {
             if (button.isSelected()) {
-                controller.resetRecipeCreatorElement(recipeID, elementName);
+                // Reset the recipe creator element
+                Controller.resetRecipeCreatorElement(recipeID, elementName);
                 completeButton.setDisable(true);
                 otherButton.setDisable(true);
                 cancelButton.setDisable(true);
                 audioRecorder.recordAudio();
                 button.setText("Stop Recording");
             } else {
+                // Specify the recipe creator element
                 audioRecorder.stopRecordingAudio();
-                String result = controller.specifyRecipeCreatorElement(recipeID, elementName, audioFile);
+                String result = Controller.specifyRecipeCreatorElement(recipeID, elementName, audioFile);
                 if (result == null) {
                     label.setText(invalidTypeMessage);
                 } else {
@@ -173,13 +197,19 @@ class RecipeCreationScene extends VBox {
                 button.setText(originalText);
                 otherButton.setDisable(false);
                 cancelButton.setDisable(false);
-                if (controller.isRecipeCreatorCompleted(recipeID)) {
+                if (Controller.isRecipeCreatorCompleted(recipeID)) {
                     completeButton.setDisable(false);
                 }
             }
         });
     }
 
+    /**
+     * Creates a styled button with the provided text.
+     * 
+     * @param text
+     * @return Button with the provided text
+     */
     private Button createStyledButton(String text) {
         Button button = new Button(text);
         button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
@@ -190,18 +220,30 @@ class RecipeCreationScene extends VBox {
         return button;
     }
 
+    /**
+     * Creates a styled toggle button.
+     * 
+     * @param toggleButton
+     * @return
+     */
     private ToggleButton createStyledToggleButton(ToggleButton toggleButton) {
         toggleButton.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
         toggleButton.setFont(new Font(SceneManager.FONT, 14));
         toggleButton.setPadding(new Insets(10, 20, 10, 20));
+
+        // Hover effect
         toggleButton.setOnMouseEntered(e -> {
             if (!toggleButton.isSelected())
                 toggleButton.setStyle("-fx-background-color: #8cc68c; -fx-text-fill: #000000;");
         });
+
+        // Hover effect
         toggleButton.setOnMouseExited(e -> {
             if (!toggleButton.isSelected())
                 toggleButton.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");
         });
+
+        // Selected effect
         toggleButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 toggleButton.setStyle("-fx-background-color: #6fa06b; -fx-text-fill: #000000;");
@@ -212,6 +254,11 @@ class RecipeCreationScene extends VBox {
         return toggleButton;
     }
 
+    /**
+     * Displays the recipe creation scene.
+     * 
+     * @param recipeID
+     */
     public void displayRecipeCreationScene(String recipeID) {
         this.getChildren().clear();
         Button completeButton = createStyledButton("Generate Recipe");
@@ -222,34 +269,37 @@ class RecipeCreationScene extends VBox {
         ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
         ToggleButton recordMealTypeButton = new ToggleButton("Record Meal Type");
 
-        setRecordingButtonTriggers(recordMealTypeButton, 
-                                   recordMealTypeLabel, 
-                                   "You selected %s", 
-                                   "Please select either breakfast, lunch, or dinner.", 
-                                   recipeID,
-                                   "mealType",
-                                   mealTypeAudioFile, 
-                                   completeButton, 
-                                   topBar.getCancelButton(), 
-                                   recordIngredientsButton);
+        // Set the recording button triggers
+        setRecordingButtonTriggers(recordMealTypeButton,
+                recordMealTypeLabel,
+                "You selected %s",
+                "Please select either breakfast, lunch, or dinner.",
+                recipeID,
+                "mealType",
+                mealTypeAudioFile,
+                completeButton,
+                topBar.getCancelButton(),
+                recordIngredientsButton);
         this.getChildren().add(createStyledToggleButton(recordMealTypeButton));
         this.getChildren().add(recordMealTypeLabel);
 
-        setRecordingButtonTriggers(recordIngredientsButton, 
-                                   recordIngredientsLabel, 
-                                   "You said: %s", 
-                                   null, 
-                                   recipeID,
-                                   "ingredients",
-                                   ingredientsAudioFile, 
-                                   completeButton, 
-                                   topBar.getCancelButton(), 
-                                   recordMealTypeButton);
+        // Set the recording button triggers
+        setRecordingButtonTriggers(recordIngredientsButton,
+                recordIngredientsLabel,
+                "You said: %s",
+                null,
+                recipeID,
+                "ingredients",
+                ingredientsAudioFile,
+                completeButton,
+                topBar.getCancelButton(),
+                recordMealTypeButton);
         this.getChildren().add(createStyledToggleButton(recordIngredientsButton));
         this.getChildren().add(recordIngredientsLabel);
 
+        // Set the complete button trigger
         completeButton.setOnAction(e -> {
-            controller.generateRecipe(recipeID);
+            Controller.generateRecipe(recipeID);
             sceneManager.displayNewlyCreatedRecipe(recipeID);
         });
         completeButton.setDisable(true);

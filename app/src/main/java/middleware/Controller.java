@@ -4,101 +4,160 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Arrays;
 import java.util.HexFormat;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-import java.nio.file.Files;  
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * The Controller class is responsible for managing the recipes of this
- * application.
- * 
- * It initializes and interacts with a RecipeCreator, RecipeList and
- * SceneController to create and show recipes, as well as dealing with user
- * interactions.
- * It also deals with reading from and saving to the JSON file holding the
- * recipes.
- * 
- * The class relies on an API key to access the ChatGPT and Whisper services.
+ * This class represents a controller that handles requests from the frontend.
  */
-
 public class Controller {
-  
-    public Controller() {
+
+    /**
+     * Generates a new recipe builder and returns the ID of the recipe builder.
+     * 
+     * @return
+     */
+    public static String generateNewRecipeBuilder() {
+        return sendRequest("/generate-new-recipe-builder", null, "GET");
     }
 
-    public String generateNewRecipeBuilder() {
-        return this.sendRequest("/generate-new-recipe-builder", null, "GET");
+    /**
+     * Returns the recipe builder element titles.
+     * 
+     * @param recipeID
+     * @return the recipe builder element titles
+     */
+    public static String getRecipeTitle(String recipeID) {
+        return sendRequest("/get-recipe-title", "recipeID=" + recipeID, "GET");
     }
 
-    public String getRecipeTitle(String recipeID) {
-        return this.sendRequest("/get-recipe-title", "recipeID=" + recipeID, "GET");
-    }
-
-    public String getRecipeInstructions(String recipeID) {
+    /**
+     * Returns the recipe builder element instructions.
+     * 
+     * @param recipeID
+     * @return the recipe builder element instructions
+     */
+    public static String getRecipeInstructions(String recipeID) {
         try {
-            return URLDecoder.decode(this.sendRequest("/get-recipe-instructions", "recipeID=" + recipeID, "GET"), "UTF-8");
+            return URLDecoder.decode(sendRequest("/get-recipe-instructions", "recipeID=" + recipeID, "GET"),
+                    "UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public List<String> getRecipeIDs() {
-        String response = this.sendRequest("/get-recipe-ids", null, "GET");
+    /**
+     * Returns the recipe builder element meal type.
+     * 
+     * @return the recipe builder element meal type
+     */
+    public static List<String> getRecipeIDs() {
+        String response = sendRequest("/get-recipe-ids", null, "GET");
         if (response.equals(".")) {
             return new ArrayList<>();
         }
         return Arrays.asList(response.split(","));
     }
 
-    public void resetRecipeCreatorElement(String recipeID, String elementName) {
-        this.sendRequest("/reset-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName, "GET");
+    /**
+     * Resets the recipe builder element.
+     * 
+     * @param recipeID
+     * @param elementName
+     */
+    public static void resetRecipeCreatorElement(String recipeID, String elementName) {
+        sendRequest("/reset-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName,
+                "GET");
     }
 
-    public String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
-        String hex = this.fileToHex(audioFile);
-        return this.sendRequest("/specify-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "GET");
+    /**
+     * Specifies the recipe builder element.
+     * 
+     * @param recipeID
+     * @param elementName
+     * @param audioFile
+     * @return the response from the server
+     */
+    public static String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
+        String hex = fileToHex(audioFile);
+        return sendRequest("/specify-recipe-creator-element",
+                "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "GET");
     }
 
-    public boolean isRecipeCreatorCompleted(String recipeID) {
-        String response = this.sendRequest("/is-recipe-creator-completed", "recipeID=" + recipeID, "GET");
+    /**
+     * Returns true if the recipe builder is completed, false otherwise.
+     * 
+     * @param recipeID
+     * @return true if the recipe builder is completed, false otherwise
+     */
+    public static boolean isRecipeCreatorCompleted(String recipeID) {
+        String response = sendRequest("/is-recipe-creator-completed", "recipeID=" + recipeID, "GET");
         return response.equals("true");
     }
 
-    public void generateRecipe(String recipeID) {
-        this.sendRequest("/generate-recipe", "recipeID=" + recipeID, "GET");
+    /**
+     * Generates a recipe from the recipe builder.
+     * 
+     * @param recipeID
+     */
+    public static void generateRecipe(String recipeID) {
+        sendRequest("/generate-recipe", "recipeID=" + recipeID, "GET");
     }
 
-    public void removeRecipe(String recipeID) {
-        this.sendRequest("/remove-recipe", "recipeID=" + recipeID, "GET");
+    /**
+     * Removes the recipe with the specified ID.
+     * 
+     * @param recipeID
+     */
+    public static void removeRecipe(String recipeID) {
+        sendRequest("/remove-recipe", "recipeID=" + recipeID, "GET");
     }
 
-    public void saveRecipe(String recipeID) {
-        this.sendRequest("/save-recipe", "recipeID=" + recipeID, "GET");
+    /**
+     * Saves the recipe with the specified ID.
+     * 
+     * @param recipeID
+     */
+    public static void saveRecipe(String recipeID) {
+        sendRequest("/save-recipe", "recipeID=" + recipeID, "GET");
     }
 
-    public void editRecipe(String recipeID, String newInstructions) {
+    /**
+     * Edits the recipe with the specified ID.
+     * 
+     * @param recipeID
+     * @param newInstructions
+     */
+    public static void editRecipe(String recipeID, String newInstructions) {
         try {
-            this.sendRequest("/edit-recipe", "recipeID=" + recipeID + "&newInstructions=" + URLEncoder.encode(newInstructions, "UTF-8"), "GET");
+            sendRequest("/edit-recipe",
+                    "recipeID=" + recipeID + "&newInstructions=" + URLEncoder.encode(newInstructions, "UTF-8"), "GET");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private String sendRequest(String path, String query, String method) {
+    /**
+     * Sends a request to the server and returns the response.
+     * 
+     * @param path
+     * @param query
+     * @param method
+     * @return the response from the server
+     */
+    private static String sendRequest(String path, String query, String method) {
         try {
             String urlString = "http://localhost:8100" + path;
             if (query != null) {
@@ -119,7 +178,13 @@ public class Controller {
         }
     }
 
-    private String fileToHex(File file) {
+    /**
+     * Converts the specified file to a hex string.
+     * 
+     * @param file
+     * @return the hex string
+     */
+    private static String fileToHex(File file) {
         try {
             byte[] fileBytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
             return HexFormat.of().formatHex(fileBytes);

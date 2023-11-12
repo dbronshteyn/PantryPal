@@ -5,35 +5,42 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-
-import backend.RecipeBuilder;
 
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * JUnit testing for RecipeBuilder class
+ */
 class RecipeBuilderTest {
 
     private RecipeBuilder recipeBuilder;
 
+    /**
+     * Mock class for ChatGPT
+     */
     class ChatGPTMock extends ChatGPT {
 
         public ChatGPTMock() {
             super("");
         }
 
+        /**
+         * Generates mock text.
+         */
         @Override
         public String generateText(String prompt, int maxTokens) {
             assertTrue(maxTokens > 0);
-            if (prompt.equals("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2")) {
+            if (prompt.equals(
+                    "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2")) {
                 return "Title: Test Title\n\nIngredient 1 and ingredient 2";
             }
-            if (prompt.equals("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: I have eggs, cheese, and bread.")) {
+            if (prompt.equals(
+                    "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: I have eggs, cheese, and bread.")) {
                 return "Title: Cheesy Egg Bread\n\n2 eggs, 3 cheese, 1 bread";
             }
             fail();
@@ -41,12 +48,18 @@ class RecipeBuilderTest {
         }
     }
 
+    /**
+     * Mock class for Whisper
+     */
     class WhisperMock extends Whisper {
 
         public WhisperMock() {
             super("");
         }
 
+        /**
+         * Transcribes mock audio files.
+         */
         @Override
         public String transcribeAudio(File audioFile) throws IOException {
             assertNotNull(audioFile);
@@ -73,11 +86,17 @@ class RecipeBuilderTest {
         }
     }
 
+    /**
+     * Sets up the RecipeBuilder for testing.
+     */
     @BeforeEach
     public void setUp() {
         recipeBuilder = new RecipeBuilder(new ChatGPTMock(), new WhisperMock());
     }
 
+    /**
+     * Tests the isCompleted method.
+     */
     @Test
     void testIsCompleted() {
         assertFalse(recipeBuilder.isCompleted());
@@ -87,12 +106,20 @@ class RecipeBuilderTest {
         assertTrue(recipeBuilder.isCompleted());
     }
 
+    /**
+     * Tests the getMealTypeElement method.
+     * 
+     * @throws IOException
+     */
     @Test
     void testSpecifyOne() throws IOException {
         assertEquals("breakfast", recipeBuilder.getMealTypeElement().specify(new File("breakfast-meal-type.wav")));
         assertEquals("breakfast", recipeBuilder.getMealTypeElement().getValue());
     }
 
+    /**
+     * Tests the getMealTypeElement method.
+     */
     @Test
     void testSpecifyTwo() {
         try {
@@ -103,18 +130,34 @@ class RecipeBuilderTest {
         }
     }
 
+    /**
+     * Tests the getMealTypeElement method.
+     * 
+     * @throws IOException
+     */
     @Test
     void testSpecifyThree() throws IOException {
         assertNull(recipeBuilder.getMealTypeElement().specify(new File("invalid-meal-type.wav")));
         assertFalse(recipeBuilder.getMealTypeElement().isSet());
     }
 
+    /**
+     * Tests the getIngredientsElement method.
+     * 
+     * @throws IOException
+     */
     @Test
     void testSpecifyFour() throws IOException {
         assertEquals("Ingredient 1 and ingredient 2",
                 recipeBuilder.getIngredientsElement().specify(new File("ingredients.wav")));
         assertEquals("Ingredient 1 and ingredient 2", recipeBuilder.getIngredientsElement().getValue());
     }
+
+    /**
+     * Tests the getIngredientsElement method.
+     * 
+     * @throws IOException
+     */
 
     @Test
     void testReturnRecipe() throws IOException {
@@ -136,7 +179,8 @@ class RecipeBuilderTest {
         assertFalse(recipeBuilder.isCompleted());
         assertEquals("breakfast", recipeBuilder.getMealTypeElement().specify(new File("breakfast-meal-type.wav")));
         assertFalse(recipeBuilder.isCompleted());
-        assertEquals("I have eggs, cheese, and bread.", recipeBuilder.getIngredientsElement().specify(new File("eggs-and-cheese.wav")));
+        assertEquals("I have eggs, cheese, and bread.",
+                recipeBuilder.getIngredientsElement().specify(new File("eggs-and-cheese.wav")));
         assertTrue(recipeBuilder.isCompleted());
         Recipe recipe = recipeBuilder.returnRecipe();
         assertNotNull(recipe);
@@ -152,6 +196,4 @@ class RecipeBuilderTest {
         assertFalse(recipeBuilder.isCompleted());
         assertFalse(recipeBuilder.getMealTypeElement().isSet());
     }
-
-    // create integration tests for all stories
 }

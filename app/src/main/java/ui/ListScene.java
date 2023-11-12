@@ -10,20 +10,31 @@ import javafx.scene.text.Font;
 
 import middleware.Controller;
 
-
+/**
+ * This class represents the scene that displays the list of recipes.
+ */
 public class ListScene extends VBox {
 
     SceneManager sceneManager;
     Controller controller;
     ScrollPane scroller;
 
+    /**
+     * This class represents a recipe entry in the list of recipes.
+     */
     public class RecipeInListUI extends HBox {
+        /**
+         * Constructs a new RecipeInListUI with the provided recipe ID and scene
+         * 
+         * @param recipeID
+         * @param sceneManager
+         */
         RecipeInListUI(String recipeID, SceneManager sceneManager) {
             this.setSpacing(10);
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
 
-            Label title = new Label(controller.getRecipeTitle(recipeID));
+            Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 16));
             title.setWrapText(true);
 
@@ -35,7 +46,15 @@ public class ListScene extends VBox {
         }
     }
 
+    /**
+     * This class represents the top bar of the list scene.
+     */
     public class ListSceneTopBar extends HBox {
+        /**
+         * Constructs a new ListSceneTopBar with the provided scene manager.
+         * 
+         * @param sceneManager
+         */
         ListSceneTopBar(SceneManager sceneManager) {
             this.setAlignment(Pos.CENTER);
             this.setPadding(new Insets(10, 10, 10, 10));
@@ -53,6 +72,12 @@ public class ListScene extends VBox {
         }
     }
 
+    /**
+     * Constructs a new ListScene with the provided scene manager and controller.
+     * 
+     * @param sceneManager
+     * @param controller
+     */
     ListScene(SceneManager sceneManager, Controller controller) {
         this.sceneManager = sceneManager;
         this.controller = controller;
@@ -65,6 +90,9 @@ public class ListScene extends VBox {
         this.setStyle("-fx-background-color: #e7ffe6;");
     }
 
+    /**
+     * Displays the list of recipes.
+     */
     public void displayRecipeList() {
         this.getChildren().clear();
         for (String recipeID : controller.getRecipeIDs()) {
@@ -75,6 +103,12 @@ public class ListScene extends VBox {
         sceneManager.setTop(new ListSceneTopBar(this.sceneManager));
     }
 
+    /**
+     * Creates a styled button with the provided text.
+     * 
+     * @param text
+     * @return Button with the provided text.
+     */
     private Button createStyledButton(String text) {
         Button button = new Button(text);
         button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;");

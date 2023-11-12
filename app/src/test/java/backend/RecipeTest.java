@@ -8,16 +8,25 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * JUnit testing for Recipe class
+ */
 class RecipeTest {
     private Recipe recipe;
     private Date dateCreated;
 
+    /**
+     * Sets up the RecipeTest.
+     */
     @BeforeEach
     public void setUp() {
         dateCreated = new Date(0);
         recipe = new Recipe("", "Chocolate Cake", "Mix ingredients and bake for 30 minutes.", dateCreated);
     }
 
+    /**
+     * Tests that the Recipe properly sets the instructions.
+     */
     @Test
     void testSetInstructions() {
         String newInstructions = "Mix ingredients and bake for 45 minutes.";
@@ -27,14 +36,21 @@ class RecipeTest {
         assertTrue(recipe.getDateCreated().after(oldDate));
     }
 
+    /**
+     * Tests that the Recipe properly returns the title.
+     */
     @Test
     void testToString() {
         assertEquals("Chocolate Cake", recipe.toString());
     }
 
+    /**
+     * Tests Recipe properly reads JSON Object.
+     */
     @Test
     void testFromJSON() {
-        JSONObject json = new JSONObject("{\"title\":\"abc\",\"instructions\":\"ab\",\"dateCreated\":\"1970-01-01T00:00:00-00:00\",\"recipeID\":\"id 1\"}");
+        JSONObject json = new JSONObject(
+                "{\"title\":\"abc\",\"instructions\":\"ab\",\"dateCreated\":\"1970-01-01T00:00:00-00:00\",\"recipeID\":\"id 1\"}");
         Recipe recipe = new Recipe(json);
         assertEquals("id 1", recipe.getRecipeID());
         assertEquals("abc", recipe.getTitle());
@@ -42,6 +58,9 @@ class RecipeTest {
         assertEquals(new Date(0), recipe.getDateCreated());
     }
 
+    /**
+     * Tests to JSON file.
+     */
     @Test
     void testToJSON() {
         JSONObject json = recipe.toJSON();
@@ -49,11 +68,15 @@ class RecipeTest {
         assertEquals("Mix ingredients and bake for 30 minutes.", json.getString("instructions"));
 
         // this one seems to depend on the system
-        assertTrue(json.getString("dateCreated").startsWith("1969") || json.getString("dateCreated").startsWith("1970"));
+        assertTrue(
+                json.getString("dateCreated").startsWith("1969") || json.getString("dateCreated").startsWith("1970"));
     }
 
-    // based on Story 4 BDD Scenario 1
-    // also tests Feature 6 in the MS1 delivery document
+    /**
+     * Based on Story 4 BDD Scenario 1
+     * 
+     * Also tests Feature 6 in the MS1 delivery document
+     */
     @Test
     void testEditRecipeScenarioOne() {
         long currentTime = System.currentTimeMillis();
@@ -63,7 +86,9 @@ class RecipeTest {
         assertTrue(recipe.getDateCreated().after(new Date(currentTime - 1000)));
     }
 
-    // sort of a trivial test, but tests Feature 3 in the MS1 delivery document
+    /**
+     * Tests Feature 3 in the MS1 delivery document
+     */
     @Test
     void testRetrieveRecipeDetails() {
         assertEquals("Chocolate Cake", recipe.getTitle());

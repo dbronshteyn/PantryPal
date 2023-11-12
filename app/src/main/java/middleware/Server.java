@@ -21,19 +21,26 @@ import backend.RecipeList;
 import backend.ChatGPT;
 import backend.Whisper;
 
-
+/**
+ * This class represents a server that handles requests from the frontend.
+ */
 public class Server {
 
     private static final int SERVER_PORT = 8100;
     private static final String SERVER_HOSTNAME = "localhost";
     private static final String DATABASE_FILENAME = "database.json";
 
+    /**
+     * Starts the server.
+     * 
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
         HttpServer server = HttpServer.create(
-            new InetSocketAddress(SERVER_HOSTNAME, SERVER_PORT),
-            0
-        );
+                new InetSocketAddress(SERVER_HOSTNAME, SERVER_PORT),
+                0);
 
         server.createContext("/", new RequestHandler(new File(DATABASE_FILENAME)));
 
@@ -42,7 +49,10 @@ public class Server {
     }
 }
 
-
+/**
+ * This class represents a request handler that handles requests from the
+ * frontend.
+ */
 class RequestHandler implements HttpHandler {
 
     private static final String OPENAI_API_KEY = "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";
@@ -56,6 +66,11 @@ class RequestHandler implements HttpHandler {
     ChatGPT chatGPT;
     Whisper whisper;
 
+    /**
+     * Constructs a new RequestHandler with the provided database file.
+     * 
+     * @param databaseFile
+     */
     public RequestHandler(File databaseFile) {
         this.recipeList = new RecipeList(databaseFile);
         this.recipeBuilders = new HashMap<>();
@@ -65,6 +80,9 @@ class RequestHandler implements HttpHandler {
         this.whisper = new Whisper(OPENAI_API_KEY);
     }
 
+    /**
+     * Handles the provided HTTP exchange.
+     */
     public void handle(HttpExchange httpExchange) throws IOException {
         try {
             URI uri = httpExchange.getRequestURI();
@@ -72,32 +90,45 @@ class RequestHandler implements HttpHandler {
             Map<String, String> query = this.parseQuery(uri.getQuery());
 
             String response = "";
-            if (path.equals("/generate-new-recipe-builder")) {
-                response = this.handleGenerateNewRecipeBuilder();
-            } else if (path.equals("/get-recipe-title")) {
-                response = this.handleGetRecipeTitle(query);
-            } else if (path.equals("/get-recipe-instructions")) {
-                response = this.handleGetRecipeInstructions(query);
-            } else if (path.equals("/get-recipe-ids")) {
-                response = this.handleGetRecipeIDs();
-            } else if (path.equals("/reset-recipe-creator-element")) {
-                response = this.handleResetRecipeCreatorElement(query);
-            } else if (path.equals("/specify-recipe-creator-element")) {
-                response = this.handleSpecifyRecipeCreatorElement(query);
-            } else if (path.equals("/is-recipe-creator-completed")) {
-                response = this.handleIsRecipeCreatorCompleted(query);
-            } else if (path.equals("/generate-recipe")) {
-                response = this.handleGenerateRecipe(query);
-            } else if (path.equals("/remove-recipe")) {
-                response = this.handleRemoveRecipe(query);
-            } else if (path.equals("/save-recipe")) {
-                response = this.handleSaveRecipe(query);
-            } else if (path.equals("/edit-recipe")) {
-                response = this.handleEditRecipe(query);
-            } else {
-                response = "Invalid path";
+            switch (path) {
+                case "/generate-new-recipe-builder":
+                    response = this.handleGenerateNewRecipeBuilder();
+                    break;
+                case "/get-recipe-title":
+                    response = this.handleGetRecipeTitle(query);
+                    break;
+                case "/get-recipe-instructions":
+                    response = this.handleGetRecipeInstructions(query);
+                    break;
+                case "/get-recipe-ids":
+                    response = this.handleGetRecipeIDs();
+                    break;
+                case "/reset-recipe-creator-element":
+                    response = this.handleResetRecipeCreatorElement(query);
+                    break;
+                case "/specify-recipe-creator-element":
+                    response = this.handleSpecifyRecipeCreatorElement(query);
+                    break;
+                case "/is-recipe-creator-completed":
+                    response = this.handleIsRecipeCreatorCompleted(query);
+                    break;
+                case "/generate-recipe":
+                    response = this.handleGenerateRecipe(query);
+                    break;
+                case "/remove-recipe":
+                    response = this.handleRemoveRecipe(query);
+                    break;
+                case "/save-recipe":
+                    response = this.handleSaveRecipe(query);
+                    break;
+                case "/edit-recipe":
+                    response = this.handleEditRecipe(query);
+                    break;
+                default:
+                    response = "Invalid path";
+                    break;
             }
-            
+
             httpExchange.sendResponseHeaders(200, response.length());
             OutputStream outStream = httpExchange.getResponseBody();
             outStream.write(response.getBytes());
@@ -107,6 +138,12 @@ class RequestHandler implements HttpHandler {
         }
     }
 
+    /**
+     * Parses the provided query string into a map of key-value pairs.
+     * 
+     * @param queryString
+     * @return a map of key-value pairs
+     */
     private Map<String, String> parseQuery(String queryString) {
         Map<String, String> queryMap = new HashMap<>();
         if (queryString != null) {
@@ -118,12 +155,23 @@ class RequestHandler implements HttpHandler {
         return queryMap;
     }
 
+    /**
+     * Generates a new recipe builder and returns its ID.
+     * 
+     * @return the ID of the new recipe builder
+     */
     private String handleGenerateNewRecipeBuilder() {
         RecipeBuilder recipeBuilder = new RecipeBuilder(chatGPT, whisper);
         this.recipeBuilders.put(recipeBuilder.getRecipeID(), recipeBuilder);
         return recipeBuilder.getRecipeID();
     }
 
+    /**
+     * Returns the title of the recipe with the specified ID.
+     * 
+     * @param query
+     * @return the title of the recipe with the specified ID
+     */
     private String handleGetRecipeTitle(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         if (temporaryRecipes.containsKey(recipeID))
@@ -131,6 +179,12 @@ class RequestHandler implements HttpHandler {
         return this.recipeList.getRecipeByID(recipeID).getTitle();
     }
 
+    /**
+     * Returns the instructions of the recipe with the specified ID.
+     * 
+     * @param query
+     * @return the instructions of the recipe with the specified ID
+     */
     private String handleGetRecipeInstructions(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         try {
@@ -143,6 +197,11 @@ class RequestHandler implements HttpHandler {
         }
     }
 
+    /**
+     * Returns a comma-separated list of recipe IDs.
+     * 
+     * @return a comma-separated list of recipe IDs
+     */
     private String handleGetRecipeIDs() {
         if (this.recipeList.getRecipeIDs().isEmpty()) {
             return ".";
@@ -150,6 +209,12 @@ class RequestHandler implements HttpHandler {
         return String.join(",", this.recipeList.getRecipeIDs());
     }
 
+    /**
+     * Resets the specified recipe builder element.
+     * 
+     * @param query
+     * @return a success message
+     */
     private String handleResetRecipeCreatorElement(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         String elementName = query.get("elementName");
@@ -163,8 +228,15 @@ class RequestHandler implements HttpHandler {
         return SUCCESS_MESSAGE;
     }
 
+    /**
+     * Specifies the specified recipe builder element.
+     * 
+     * @param query
+     * @return a success message, or a failure message if the element could not be
+     *         specified
+     */
     private String handleSpecifyRecipeCreatorElement(Map<String, String> query) {
-        try {  
+        try {
             String hex = query.get("hex");
             Files.write(Paths.get(this.audioFile.getAbsolutePath()), HexFormat.of().parseHex(hex));
             String recipeID = query.get("recipeID");
@@ -181,11 +253,24 @@ class RequestHandler implements HttpHandler {
         return FAILURE_MESSAGE;
     }
 
+    /**
+     * Returns true if the specified recipe builder is completed, false otherwise.
+     * 
+     * @param query
+     * @return true if the specified recipe builder is completed, false otherwise
+     */
     private String handleIsRecipeCreatorCompleted(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         return Boolean.toString(this.recipeBuilders.get(recipeID).isCompleted());
     }
 
+    /**
+     * Generates a recipe from the specified recipe builder.
+     * 
+     * @param query
+     * @return a success message; a failure message if the recipe could not be
+     *         generated
+     */
     private String handleGenerateRecipe(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         try {
@@ -198,18 +283,37 @@ class RequestHandler implements HttpHandler {
         return SUCCESS_MESSAGE;
     }
 
+    /**
+     * Removes the recipe with the specified ID.
+     * 
+     * @param query
+     * @return a success message
+     */
     private String handleRemoveRecipe(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         this.recipeList.removeRecipe(this.recipeList.getRecipeByID(recipeID));
         return SUCCESS_MESSAGE;
     }
 
+    /**
+     * Saves the recipe with the specified ID.
+     * 
+     * @param query
+     * @return a success message
+     */
     private String handleSaveRecipe(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         this.recipeList.addRecipe(this.temporaryRecipes.remove(recipeID));
         return SUCCESS_MESSAGE;
     }
 
+    /**
+     * Edits the recipe with the specified ID.
+     * 
+     * @param query
+     * @return a success message; a failure message if the recipe could not be
+     *         edited
+     */
     private String handleEditRecipe(Map<String, String> query) {
         try {
             String recipeID = query.get("recipeID");
