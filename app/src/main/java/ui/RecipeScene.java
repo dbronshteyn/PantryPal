@@ -16,7 +16,6 @@ import middleware.Controller;
  */
 class RecipeScene extends ScrollPane {
 
-    Controller controller;
     SceneManager sceneManager;
     Label instructionsLabel;
     TextArea instructionsTextArea;
@@ -106,11 +105,9 @@ class RecipeScene extends ScrollPane {
      * Constructs a new RecipeScene with the provided scene manager and controller.
      * 
      * @param sceneManager
-     * @param controller
      */
-    RecipeScene(SceneManager sceneManager, Controller controller) {
+    RecipeScene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
-        this.controller = controller;
 
         instructionsLabel = new Label();
         instructionsLabel.setWrapText(true);

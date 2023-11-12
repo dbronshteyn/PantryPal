@@ -20,7 +20,6 @@ import middleware.Controller;
 class RecipeCreationScene extends VBox {
 
     SceneManager sceneManager;
-    Controller controller;
     Button completedButton;
     File ingredientsAudioFile;
     File mealTypeAudioFile;
@@ -132,14 +131,11 @@ class RecipeCreationScene extends VBox {
      * Constructor for the RecipeCreationScene class.
      * 
      * @param sceneManager
-     * @param controller
      * @param ingredientsAudioFile
      * @param mealTypeAudioFile
      */
-    RecipeCreationScene(SceneManager sceneManager, Controller controller, File ingredientsAudioFile,
-            File mealTypeAudioFile) {
+    RecipeCreationScene(SceneManager sceneManager, File ingredientsAudioFile, File mealTypeAudioFile) {
         this.sceneManager = sceneManager;
-        this.controller = controller;
         this.setSpacing(10);
         this.setPadding(new Insets(20, 20, 20, 20));
         this.setAlignment(Pos.TOP_CENTER);
