@@ -241,16 +241,20 @@ class RequestHandler implements HttpHandler {
             Files.write(Paths.get(this.audioFile.getAbsolutePath()), HexFormat.of().parseHex(hex));
             String recipeID = query.get("recipeID");
             String elementName = query.get("elementName");
+            String out = FAILURE_MESSAGE;
             if (elementName.equals("mealType")) {
-                return this.recipeBuilders.get(recipeID).getMealTypeElement().specify(this.audioFile);
+                out = this.recipeBuilders.get(recipeID).getMealTypeElement().specify(this.audioFile);
             } else if (elementName.equals("ingredients")) {
-                return this.recipeBuilders.get(recipeID).getIngredientsElement().specify(this.audioFile);
+                out = this.recipeBuilders.get(recipeID).getIngredientsElement().specify(this.audioFile);
             }
+            if (out == null) {
+                out = "invalid";
+            }
+            return out;
         } catch (Exception e) {
             e.printStackTrace();
             return FAILURE_MESSAGE;
         }
-        return FAILURE_MESSAGE;
     }
 
     /**

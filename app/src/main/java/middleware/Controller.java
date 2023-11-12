@@ -92,8 +92,11 @@ public class Controller {
      */
     public static String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
         String hex = fileToHex(audioFile);
-        return sendRequest("/specify-recipe-creator-element",
-                "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "GET");
+        String response = sendRequest("/specify-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "GET");
+        if (response.equals("invalid")) {
+            return null;
+        }
+        return response;
     }
 
     /**

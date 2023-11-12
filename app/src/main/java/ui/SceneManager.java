@@ -17,24 +17,20 @@ public class SceneManager extends BorderPane {
     ListScene listScene;
     RecipeScene recipeScene;
     RecipeCreationScene recipeCreationScene;
-    Controller controller;
 
     /**
      * Constructs a new SceneManager with the provided controller and audio files.
      * 
-     * @param controller
      * @param ingredientsAudioFile
      * @param mealTypeAudioFile
      */
-    public SceneManager(Controller controller, File ingredientsAudioFile, File mealTypeAudioFile) {
+    public SceneManager(File ingredientsAudioFile, File mealTypeAudioFile) {
         this.setStyle("-fx-background-color: #e7ffe6;");
 
-        this.listScene = new ListScene(this, controller);
-        this.recipeScene = new RecipeScene(this, controller);
-        this.recipeCreationScene = new RecipeCreationScene(this, controller, ingredientsAudioFile, mealTypeAudioFile);
+        this.listScene = new ListScene(this);
+        this.recipeScene = new RecipeScene(this);
+        this.recipeCreationScene = new RecipeCreationScene(this, ingredientsAudioFile, mealTypeAudioFile);
         this.setCenter(listScene);
-
-        this.controller = controller;
     }
 
     /**

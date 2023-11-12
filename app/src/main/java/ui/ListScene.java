@@ -16,7 +16,6 @@ import middleware.Controller;
 public class ListScene extends VBox {
 
     SceneManager sceneManager;
-    Controller controller;
     ScrollPane scroller;
 
     /**
@@ -76,11 +75,9 @@ public class ListScene extends VBox {
      * Constructs a new ListScene with the provided scene manager and controller.
      * 
      * @param sceneManager
-     * @param controller
      */
-    ListScene(SceneManager sceneManager, Controller controller) {
+    ListScene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
-        this.controller = controller;
         this.setSpacing(5);
         this.setPadding(new Insets(10, 10, 10, 10));
         this.setPrefSize(500, 560);
@@ -95,7 +92,7 @@ public class ListScene extends VBox {
      */
     public void displayRecipeList() {
         this.getChildren().clear();
-        for (String recipeID : controller.getRecipeIDs()) {
+        for (String recipeID : Controller.getRecipeIDs()) {
             RecipeInListUI recipeEntry = new RecipeInListUI(recipeID, this.sceneManager);
             this.getChildren().add(recipeEntry);
         }

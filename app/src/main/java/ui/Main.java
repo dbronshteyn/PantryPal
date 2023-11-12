@@ -6,7 +6,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 
-import middleware.Controller;
 
 /**
  * This class represents the main class that runs the application.
@@ -24,8 +23,7 @@ public class Main extends Application {
         File ingredientsAudioFile = new File("ingredients.wav");
         File mealTypeAudioFile = new File("mealType.wav");
 
-        Controller controller = new Controller();
-        SceneManager sceneManager = new SceneManager(controller, ingredientsAudioFile, mealTypeAudioFile);
+        SceneManager sceneManager = new SceneManager(ingredientsAudioFile, mealTypeAudioFile);
 
         primaryStage.setTitle("PantryPal");
         primaryStage.setScene(new Scene(sceneManager, WINDOW_WIDTH, WINDOW_HEIGHT));
