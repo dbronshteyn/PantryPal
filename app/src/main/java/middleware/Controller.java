@@ -80,7 +80,7 @@ public class Controller {
      */
     public static void resetRecipeCreatorElement(String recipeID, String elementName) {
         sendRequest("/reset-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName,
-                "GET");
+                "PUT");
     }
 
     /**
@@ -93,7 +93,7 @@ public class Controller {
      */
     public static String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
         String hex = fileToHex(audioFile);
-        String response = sendRequest("/specify-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "GET");
+        String response = sendRequest("/specify-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "POST");
         if (response.equals("invalid")) {
             return null;
         }
@@ -117,7 +117,7 @@ public class Controller {
      * @param recipeID
      */
     public static void generateRecipe(String recipeID) {
-        sendRequest("/generate-recipe", "recipeID=" + recipeID, "GET");
+        sendRequest("/generate-recipe", "recipeID=" + recipeID, "PUT");
     }
 
     /**
@@ -126,7 +126,7 @@ public class Controller {
      * @param recipeID
      */
     public static void removeRecipe(String recipeID) {
-        sendRequest("/remove-recipe", "recipeID=" + recipeID, "GET");
+        sendRequest("/remove-recipe", "recipeID=" + recipeID, "DELETE");
     }
 
     /**
@@ -147,7 +147,7 @@ public class Controller {
     public static void editRecipe(String recipeID, String newInstructions) {
         try {
             sendRequest("/edit-recipe",
-                    "recipeID=" + recipeID + "&newInstructions=" + URLEncoder.encode(newInstructions, "UTF-8"), "GET");
+                    "recipeID=" + recipeID + "&newInstructions=" + URLEncoder.encode(newInstructions, "UTF-8"), "PUT");
         } catch (Exception e) {
             e.printStackTrace();
         }
