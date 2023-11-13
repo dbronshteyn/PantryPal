@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * JUnit testing for Recipe class
+ * Unit testing for Recipe class
  */
 class RecipeTest {
     private Recipe recipe;

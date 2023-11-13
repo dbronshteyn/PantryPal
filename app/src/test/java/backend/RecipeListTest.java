@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * JUnit testing for RecipeList class
+ * Unit testing for RecipeList class
  */
 class RecipeListTest {
 
@@ -121,16 +121,11 @@ class RecipeListTest {
     }
 
     /**
-     * Integration tests
-     */
-
-    /**
      * Based on Story 5 Scenario 1
      * Also tests Features 4 and 5 in the MS1 delivery document
      * 
      * @throws IOException
      */
-
     @Test
     void testUpdateDatabase() throws IOException {
         long currentTime = System.currentTimeMillis();
@@ -178,12 +173,15 @@ class RecipeListTest {
         assertEquals("Test Recipe", recipeList.getRecipes().get(0).getTitle());
         assertEquals("Test Instructions 2", recipeList.getRecipes().get(1).getInstructions());
         String dateString = recipeList.getRecipes().get(2).getDateCreated().toString();
+
+        // depends on the timezone you run the code from
         assertTrue(
                 dateString.equals("Sat Nov 11 00:55:16 PST 2023") || dateString.equals("Sat Nov 11 08:55:16 UTC 2023"));
     }
 
     /**
      * Tests that the RecipeList properly loads recipes from the database file when
+     * the file does not exist.
      * 
      * @throws IOException
      */
@@ -195,14 +193,15 @@ class RecipeListTest {
 
     /**
      * Tests that the RecipeList properly loads recipes from the database file when
+     * the file is empty.
+     * 
      * Based on Story 5 BDD Scenario 1
      */
-
     @Test
     void testSaveRecipeStoryScenarioOne() {
         Date date = new Date();
         Recipe recipe = new Recipe("", "Test title", "Test instructions", date);
-        recipeList.addRecipe(recipe);
+        recipeList.getRecipes().add(recipe);
         recipeList.updateDatabase();
         assertEquals(1, recipeList.getRecipes().size());
         assertEquals(recipe, recipeList.getRecipes().get(0));
@@ -217,14 +216,13 @@ class RecipeListTest {
      * Tests that the RecipeList properly loads recipes from the database file.
      * Based on Story 5 BDD Scenario 2
      */
-
     @Test
     void testRemoveRecipe() {
         Recipe recipe1 = new Recipe("", "Test Recipe", "Test Instructions", new Date());
         Recipe recipe2 = new Recipe("", "Test Recipe 2", "Test Instructions 2", new Date());
 
-        recipeList.addRecipe(recipe1);
-        recipeList.addRecipe(recipe2);
+        recipeList.getRecipes().add(recipe1);
+        recipeList.getRecipes().add(recipe2);
 
         recipeList.removeRecipe(recipe2);
 
