@@ -121,8 +121,7 @@ class RecipeListTest {
     }
 
     /**
-     * Based on Story 5 Scenario 1
-     * Also tests Features 4 and 5 in the MS1 delivery document
+     * Tests saving the RecipeList to the database file.
      * 
      * @throws IOException
      */
@@ -172,6 +171,7 @@ class RecipeListTest {
         assertEquals(3, recipeList.getRecipes().size());
         assertEquals("Test Recipe", recipeList.getRecipes().get(0).getTitle());
         assertEquals("Test Instructions 2", recipeList.getRecipes().get(1).getInstructions());
+        assertEquals("id 3", recipeList.getRecipes().get(2).getRecipeID());
         String dateString = recipeList.getRecipes().get(2).getDateCreated().toString();
 
         // depends on the timezone you run the code from
@@ -191,30 +191,8 @@ class RecipeListTest {
         assertEquals(0, recipeList.getRecipes().size());
     }
 
-    /**
-     * Tests that the RecipeList properly loads recipes from the database file when
-     * the file is empty.
-     * 
-     * Based on Story 5 BDD Scenario 1
-     */
-    @Test
-    void testSaveRecipeStoryScenarioOne() {
-        Date date = new Date();
-        Recipe recipe = new Recipe("", "Test title", "Test instructions", date);
-        recipeList.getRecipes().add(recipe);
-        recipeList.updateDatabase();
-        assertEquals(1, recipeList.getRecipes().size());
-        assertEquals(recipe, recipeList.getRecipes().get(0));
-        recipeList = new RecipeList(databaseFile);
-        assertEquals(1, recipeList.getRecipes().size());
-        assertEquals("Test title", recipeList.getRecipes().get(0).getTitle());
-        assertEquals("Test instructions", recipeList.getRecipes().get(0).getInstructions());
-        assertEquals(date.toString(), recipeList.getRecipes().get(0).getDateCreated().toString());
-    }
-
-    /**
-     * Tests that the RecipeList properly loads recipes from the database file.
-     * Based on Story 5 BDD Scenario 2
+    /*
+     * Tests that the RecipeList properly removes a recipe.
      */
     @Test
     void testRemoveRecipe() {

@@ -21,7 +21,7 @@ class RecipeTest {
     @BeforeEach
     public void setUp() {
         dateCreated = new Date(0);
-        recipe = new Recipe("", "Chocolate Cake", "Mix ingredients and bake for 30 minutes.", dateCreated);
+        recipe = new Recipe("id 1", "Chocolate Cake", "Mix ingredients and bake for 30 minutes.", dateCreated);
     }
 
     /**
@@ -72,13 +72,11 @@ class RecipeTest {
                 json.getString("dateCreated").startsWith("1969") || json.getString("dateCreated").startsWith("1970"));
     }
 
-    /**
-     * Based on Story 4 BDD Scenario 1
-     * 
-     * Also tests Feature 6 in the MS1 delivery document
+    /*
+     * Tests editing a recipe
      */
     @Test
-    void testEditRecipeScenarioOne() {
+    void testEditRecipe() {
         long currentTime = System.currentTimeMillis();
         Recipe recipe = new Recipe("", "Muffins", "Add 1 cup of sugar and flour.", new Date(currentTime - 1000));
         recipe.setInstructions("Add 1/2 cup of sugar and flour.");
@@ -87,12 +85,13 @@ class RecipeTest {
     }
 
     /**
-     * Tests Feature 3 in the MS1 delivery document
+     * Tests retrieving recipe details
      */
     @Test
-    void testRetrieveRecipeDetails() {
+    void testGetRecipeDetails() {
         assertEquals("Chocolate Cake", recipe.getTitle());
         assertEquals("Mix ingredients and bake for 30 minutes.", recipe.getInstructions());
+        assertEquals("id 1", recipe.getRecipeID());
         assertEquals(dateCreated, recipe.getDateCreated());
     }
 }

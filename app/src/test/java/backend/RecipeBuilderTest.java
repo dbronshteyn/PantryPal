@@ -42,10 +42,12 @@ class RecipeBuilderTest {
         assertFalse(recipeBuilder.isCompleted());
         recipeBuilder.getMealTypeElement().setValue("breakfast");
         assertTrue(recipeBuilder.isCompleted());
+        recipeBuilder.getMealTypeElement().reset();
+        assertFalse(recipeBuilder.isCompleted());
     }
 
     /**
-     * Tests the getMealTypeElement method.
+     * Tests specifying a valid meal type
      * 
      * @throws IOException
      */
@@ -57,7 +59,7 @@ class RecipeBuilderTest {
     }
 
     /**
-     * Tests the getMealTypeElement method.
+     * Tests that specifying throws an exception when there is a network error
      */
     @Test
     void testSpecifyTwo() {
@@ -70,7 +72,7 @@ class RecipeBuilderTest {
     }
 
     /**
-     * Tests the getMealTypeElement method.
+     * Tests that null is returned when specifying an invalid meal type
      * 
      * @throws IOException
      */
@@ -82,7 +84,7 @@ class RecipeBuilderTest {
     }
 
     /**
-     * Tests the getIngredientsElement method.
+     * Tests specifying an ingredient list
      * 
      * @throws IOException
      */
@@ -95,7 +97,7 @@ class RecipeBuilderTest {
     }
 
     /**
-     * Tests the getIngredientsElement method.
+     * Tests the recipe that the builder returns
      * 
      * @throws IOException
      */
@@ -103,42 +105,13 @@ class RecipeBuilderTest {
     void testReturnRecipe() throws IOException {
         chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2", 
                 "Title: Test Title\n\nIngredient 1 and ingredient 2");
+        String recipeID = recipeBuilder.getRecipeID();
         recipeBuilder.getMealTypeElement().setValue("breakfast");
         recipeBuilder.getIngredientsElement().setValue("Ingredient 1 and ingredient 2");
         Recipe recipe = recipeBuilder.returnRecipe();
         assertNotNull(recipe);
         assertEquals("Test Title", recipe.getTitle());
         assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());
-    }
-
-    // based on Story 2 BDD Scenario 1, Story 3 BDD Scenario 1
-    // also tests Features 1 and 2 in the MS1 delivery document
-    @Test
-    void testCreateRecipeStoryScenarioOne() throws IOException {
-        whisperMock.setMockScenario("breakfast-meal-type.wav", "BREAKFAST");
-        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: I have eggs, cheese, and bread.", 
-                "Title: Cheesy Egg Bread\n\n2 eggs, 3 cheese, 1 bread");
-        assertFalse(recipeBuilder.isCompleted());
-        assertEquals("breakfast", recipeBuilder.getMealTypeElement().specify(new File("breakfast-meal-type.wav")));
-        assertFalse(recipeBuilder.isCompleted());
-
-        whisperMock.setMockScenario("eggs-and-cheese.wav", "I have eggs, cheese, and bread.");
-        assertEquals("I have eggs, cheese, and bread.",
-                recipeBuilder.getIngredientsElement().specify(new File("eggs-and-cheese.wav")));
-        assertTrue(recipeBuilder.isCompleted());
-        Recipe recipe = recipeBuilder.returnRecipe();
-        assertNotNull(recipe);
-        assertEquals("Cheesy Egg Bread", recipe.getTitle());
-        assertEquals("2 eggs, 3 cheese, 1 bread", recipe.getInstructions());
-    }
-
-    // based on Story 3 BDD Scenario 2
-    @Test
-    void testCreateRecipeStoryScenarioTwo() throws IOException {
-        whisperMock.setMockScenario("invalid-meal-type.wav", "Brunch");
-        assertFalse(recipeBuilder.isCompleted());
-        assertNull(recipeBuilder.getMealTypeElement().specify(new File("invalid-meal-type.wav")));
-        assertFalse(recipeBuilder.isCompleted());
-        assertFalse(recipeBuilder.getMealTypeElement().isSet());
+        assertEquals(recipeID, recipe.getRecipeID());
     }
 }
