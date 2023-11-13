@@ -18,7 +18,8 @@ public class RecipeBuilder {
 
     /**
      * This class represents a resettable element that can be set to a value, reset
-     * to null, and checked if it is set.
+     * to null, and checked if it is set. This is a class because both the meal type
+     * and ingredients can be set and reset in the recipe creation process.
      * The resettable element can also specify a value from an audio file if the
      * value is one of the allowed values.
      */
@@ -37,7 +38,8 @@ public class RecipeBuilder {
         /**
          * Constructs a resettable element with the specified allowed values.
          * 
-         * @param allowedValues the allowed values for the resettable element
+         * @param allowedValues the allowed values for the resettable element,
+         *                      or null if any value is allowed
          */
         public ResettableElement(String[] allowedValues) {
             this.value = null;
@@ -79,8 +81,10 @@ public class RecipeBuilder {
         }
 
         /**
-         * Specifies the value of the resettable element from the specified audio file
-         * if the value is one of the allowed values.
+         * Sets the value of the resettable element by transcribing the speech in
+         * the specified audio file, checking to make sure what was said was one
+         * of the allowed values. If there are no limits on the
+         * allowed values, the value is set to the transcribed text.
          * 
          * @param audioFile the audio file to transcribe and specify the value from
          * @return the specified value if it is one of the allowed values, null

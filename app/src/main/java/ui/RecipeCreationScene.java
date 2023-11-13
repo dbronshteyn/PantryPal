@@ -146,7 +146,7 @@ class RecipeCreationScene extends VBox {
     }
 
     /**
-     * Sets the recording button triggers.
+     * Sets up a recording button with all the appropriate triggers.
      * 
      * @param button
      * @param label
@@ -171,9 +171,11 @@ class RecipeCreationScene extends VBox {
             ToggleButton otherButton) {
         AudioRecorder audioRecorder = new AudioRecorder(audioFile, button);
         String originalText = button.getText();
+
+        // this button starts/stops the audio recording
         button.setOnAction(e -> {
             if (button.isSelected()) {
-                // Reset the recipe creator element
+                // disables all other buttons when recording
                 Controller.resetRecipeCreatorElement(recipeID, elementName);
                 completeButton.setDisable(true);
                 otherButton.setDisable(true);
@@ -181,7 +183,7 @@ class RecipeCreationScene extends VBox {
                 audioRecorder.recordAudio();
                 button.setText("Stop Recording");
             } else {
-                // Specify the recipe creator element
+                // send recording to the server and display the response
                 audioRecorder.stopRecordingAudio();
                 String result = Controller.specifyRecipeCreatorElement(recipeID, elementName, audioFile);
                 if (result == null) {
@@ -265,7 +267,7 @@ class RecipeCreationScene extends VBox {
         ToggleButton recordIngredientsButton = new ToggleButton("Record Ingredients");
         ToggleButton recordMealTypeButton = new ToggleButton("Record Meal Type");
 
-        // Set the recording button triggers
+        // Set triggers for the meal type button
         setRecordingButtonTriggers(recordMealTypeButton,
                 recordMealTypeLabel,
                 "You selected %s",
@@ -279,7 +281,7 @@ class RecipeCreationScene extends VBox {
         this.getChildren().add(createStyledToggleButton(recordMealTypeButton));
         this.getChildren().add(recordMealTypeLabel);
 
-        // Set the recording button triggers
+        // Set triggers for the ingredients button
         setRecordingButtonTriggers(recordIngredientsButton,
                 recordIngredientsLabel,
                 "You said: %s",

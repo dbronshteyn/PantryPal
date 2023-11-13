@@ -42,10 +42,12 @@ public class Whisper {
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
 
+            // Set request properties
             String boundary = "Boundary-" + System.currentTimeMillis();
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
             connection.setRequestProperty("Authorization", "Bearer " + this.apiKey);
 
+            // Attach audio file to request and send it
             OutputStream outputStream = connection.getOutputStream();
             writeParameterToOutputStream(outputStream, "model", MODEL, boundary);
             writeFileToOutputStream(outputStream, audioFile, boundary);
