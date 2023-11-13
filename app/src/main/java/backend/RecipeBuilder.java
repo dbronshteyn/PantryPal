@@ -107,44 +107,19 @@ public class RecipeBuilder {
         }
     }
 
-    /**
-     * The meal types that can be specified for the recipe.
-     */
+    // allowed meal types
     static final String[] MEAL_TYPES = { "breakfast", "lunch", "dinner" };
 
-    /**
-     * The maximum number of tokens for the ChatGPT response.
-     */
+    // max tokens for ChatGPT response
     static final int MAX_TOKENS = 300;
 
-    /**
-     * The prompt for the recipe generator.
-     */
+    // prompt for ChatGPT
     static final String PROMPT = "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a %s recipe with the following ingredients: %s";
 
-    /**
-     * The ChatGPT used to generate the recipe.
-     */
     private ChatGPT chatGPT;
-
-    /**
-     * The Whisper used to transcribe audio files.
-     */
     private Whisper whisper;
-
-    /**
-     * The resettable element for the meal type.
-     */
     private ResettableElement mealType;
-
-    /**
-     * The resettable element for the ingredients.
-     */
     private ResettableElement ingredients;
-
-    /**
-     * The ID of the recipe.
-     */
     private String recipeID;
 
     /**
@@ -164,7 +139,7 @@ public class RecipeBuilder {
     }
 
     /**
-     * Returns true if the recipe is ready to generate, false otherwise.
+     * Returns true if the recipe is ready to be generated, false otherwise
      * 
      * @return true if the meal type and ingredients resettable elements are set to
      *         values, false otherwise
@@ -174,7 +149,7 @@ public class RecipeBuilder {
     }
 
     /**
-     * Generates a recipe using the specified meal type and ingredients.
+     * Returns the produced Recipe object
      * 
      * @return the generated recipe
      * @throws IOException if there is an error generating the recipe

@@ -169,6 +169,7 @@ class RequestHandler implements HttpHandler {
         try {
             // we need to encode the instructions because they may contain special characters like newline
             if (temporaryRecipes.containsKey(recipeID))
+                // we need to encode the instructions because they contain special characters like newlines
                 return URLEncoder.encode(this.temporaryRecipes.get(recipeID).getInstructions(), "UTF-8");
             return URLEncoder.encode(this.recipeList.getRecipeByID(recipeID).getInstructions(), "UTF-8");
         } catch (Exception e) {
