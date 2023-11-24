@@ -153,6 +153,14 @@ public class Controller {
         }
     }
 
+    public static String addAccount(String username, String password) {
+        String response = sendRequest("/add-account", "username=" + username + "&password=" + password, "POST");
+        if (response.equals("created")) {
+            return username;
+        }
+        return null;
+    }
+
     /**
      * Sends a request to the server and returns the response.
      * 

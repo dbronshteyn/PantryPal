@@ -18,6 +18,7 @@ import java.net.URLDecoder;
 import backend.Recipe;
 import backend.RecipeBuilder;
 import backend.RecipeList;
+import backend.AccountList;
 import backend.ChatGPT;
 import backend.Whisper;
 
@@ -28,7 +29,8 @@ public class Server {
 
     private static final int SERVER_PORT = 8100;
     private static final String SERVER_HOSTNAME = "localhost";
-    private static final String DATABASE_FILENAME = "database.json";
+    private static final String RECIPE_DATABASE_FILENAME = "database.json";
+    private static final String ACCOUNT_DATABASE_FILENAME = "accounts.json";
 
     /**
      * Starts the server.
@@ -42,7 +44,7 @@ public class Server {
                 new InetSocketAddress(SERVER_HOSTNAME, SERVER_PORT),
                 0);
 
-        server.createContext("/", new RequestHandler(new File(DATABASE_FILENAME)));
+        server.createContext("/", new RequestHandler(new File(RECIPE_DATABASE_FILENAME), new File(ACCOUNT_DATABASE_FILENAME)));
 
         server.setExecutor(threadPoolExecutor);
         server.start();
@@ -60,6 +62,7 @@ class RequestHandler implements HttpHandler {
     private static final String FAILURE_MESSAGE = "failure";
 
     RecipeList recipeList;
+    AccountList accountList;
     Map<String, RecipeBuilder> recipeBuilders;
     Map<String, Recipe> temporaryRecipes;
     File audioFile;
@@ -71,8 +74,9 @@ class RequestHandler implements HttpHandler {
      * 
      * @param databaseFile
      */
-    public RequestHandler(File databaseFile) {
-        this.recipeList = new RecipeList(databaseFile);
+    public RequestHandler(File recipeDatabaseFile, File accountDatabaseFile) {
+        this.recipeList = new RecipeList(recipeDatabaseFile);
+        this.accountList = new AccountList(accountDatabaseFile);
         this.recipeBuilders = new HashMap<>();
         this.temporaryRecipes = new HashMap<>();
         this.audioFile = new File("audio.wav");
@@ -123,6 +127,9 @@ class RequestHandler implements HttpHandler {
                     break;
                 case "/edit-recipe":
                     response = this.handleEditRecipe(query);
+                    break;
+                case "/add-account":
+                    response = this.handleAddAccount(query);
                     break;
                 default:
                     response = "Invalid path";
@@ -261,5 +268,14 @@ class RequestHandler implements HttpHandler {
             e.printStackTrace();
             return FAILURE_MESSAGE;
         }
+    }
+
+    private String handleAddAccount(Map<String, String> query) {
+        String username = query.get("username");
+        String password = query.get("password");
+        if (this.accountList.addAccount(username, password)) {
+            return "created";
+        }
+        return "in use";
     }
 }
