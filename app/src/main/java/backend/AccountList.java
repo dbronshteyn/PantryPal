@@ -1,7 +1,5 @@
 package backend;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -41,6 +39,10 @@ public class AccountList {
             jsonAccount.put("password", this.password);
             return jsonAccount;
         }
+
+        public String getUsername() {
+            return this.username;
+        }
     }
 
     public AccountList(File databaseFile) {
@@ -51,13 +53,17 @@ public class AccountList {
 
     public boolean addAccount(String username, String password) {
         for (Account account : this.accounts) {
-            if (account.username.equals(username)) {
+            if (account.getUsername().equals(username)) {
                 return false;
             }
         }
         this.accounts.add(new Account(username, password));
         this.updateDatabase();
         return true;
+    }
+
+    public List<Account> getAccounts() {
+        return this.accounts;
     }
 
     public void loadAccountsFromFile() {
