@@ -19,7 +19,7 @@ public class AccountList {
     private File databaseFile;
     private List<Account> accounts;
 
-    private class Account {
+    public class Account {
         private String username;
         private String password;
 
