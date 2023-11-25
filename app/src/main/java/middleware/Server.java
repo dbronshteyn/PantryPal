@@ -124,6 +124,12 @@ class RequestHandler implements HttpHandler {
                 case "/edit-recipe":
                     response = this.handleEditRecipe(query);
                     break;
+                case "/add-account":
+                    response = this.handleAddAccount(query);
+                    break;
+                case "/login":
+                    response = this.handleLogin(query);
+                    break;
                 default:
                     response = "Invalid path";
                     break;
@@ -261,5 +267,23 @@ class RequestHandler implements HttpHandler {
             e.printStackTrace();
             return FAILURE_MESSAGE;
         }
+    }
+
+    private String handleAddAccount(Map<String, String> query) {
+        String username = query.get("username");
+        String password = query.get("password");
+        if (this.accountList.addAccount(username, password)) {
+            return "created";
+        }
+        return "in use";
+    }
+
+    private String handleLogin(Map<String, String> query) {
+        String username = query.get("username");
+        String password = query.get("password");
+        if (this.accountList.login(username, password)) {
+            return "true";
+        }
+        return "false";
     }
 }

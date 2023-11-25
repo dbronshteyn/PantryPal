@@ -17,6 +17,8 @@ public class SceneManager extends BorderPane {
     ListScene listScene;
     RecipeScene recipeScene;
     RecipeCreationScene recipeCreationScene;
+    AccountCreationScene accountCreationScene;
+    LoginScene loginScene;
 
     /**
      * Constructs a new SceneManager with the provided controller and audio files.
@@ -30,6 +32,8 @@ public class SceneManager extends BorderPane {
         this.listScene = new ListScene(this);
         this.recipeScene = new RecipeScene(this);
         this.recipeCreationScene = new RecipeCreationScene(this, ingredientsAudioFile, mealTypeAudioFile);
+        this.accountCreationScene = new AccountCreationScene(this);
+        this.loginScene = new LoginScene(this);
         this.setCenter(listScene);
     }
 
@@ -63,5 +67,16 @@ public class SceneManager extends BorderPane {
      */
     public void displayRecipeCreationScene() {
         recipeCreationScene.displayRecipeCreationScene(Controller.generateNewRecipeBuilder());
+    }
+
+    /**
+     * Displays the account creation scene.
+     */
+    public void displayAccountCreationScene() {
+        accountCreationScene.displayAccountCreationScene();
+    }
+
+    public void displayLoginScene() {
+        loginScene.displayLoginScene();
     }
 }

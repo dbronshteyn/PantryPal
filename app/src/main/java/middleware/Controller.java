@@ -153,6 +153,22 @@ public class Controller {
         }
     }
 
+    public static String addAccount(String username, String password) {
+        String response = sendRequest("/add-account", "username=" + username + "&password=" + password, "POST");
+        if (response.equals("created")) {
+            return username;
+        }
+        return null;
+    }
+
+    public static Boolean login(String username, String password) {
+        String response = sendRequest("/login", "username=" + username + "&password=" + password, "GET");
+        System.out.println(response);
+        if (response.equals("true")) {
+            return true;
+        }
+        return false;
+    }
     /**
      * Sends a request to the server and returns the response.
      * 
@@ -198,4 +214,6 @@ public class Controller {
             return null;
         }
     }
+
+
 }

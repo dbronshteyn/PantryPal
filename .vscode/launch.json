@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "ui.Main",
             "projectName": "app",
-            "vmArgs": "--module-path 'app/lib' --add-modules javafx.controls,javafx.fxml"
+            "vmArgs": "--module-path 'C:/Users/alexn/Documents/CSE110/openjfx-21_windows-x64_bin-sdk/javafx-sdk-21/lib' --add-modules javafx.controls,javafx.fxml"
         },
         {
             "type": "java",
@@ -18,7 +18,7 @@
             "request": "launch",
             "mainClass": "middleware.Server",
             "projectName": "app",
-            "vmArgs": "--module-path 'app/lib' --add-modules javafx.controls,javafx.fxml"
+            "vmArgs": "--module-path 'C:/Users/alexn/Documents/CSE110/openjfx-21_windows-x64_bin-sdk/javafx-sdk-21/lib' --add-modules javafx.controls,javafx.fxml"
         }
     ]
 }
