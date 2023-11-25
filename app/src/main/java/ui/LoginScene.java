@@ -13,17 +13,13 @@ import javafx.scene.control.TextField;
 import middleware.Controller;
 import ui.ListScene.ListSceneTopBar;
 import ui.ListScene.RecipeInListUI;
+
 public class LoginScene extends VBox {
-    
+
     SceneManager sceneManager;
     private Label statusLabel = new Label("");
 
-
-
     public class LoginSceneTopBar extends HBox {
-
-        private Button cancelButton;
-        private Button createAccountButton;
 
         LoginSceneTopBar() {
             this.setAlignment(Pos.CENTER_LEFT);
@@ -31,17 +27,11 @@ public class LoginScene extends VBox {
             this.setSpacing(10);
             this.setStyle("-fx-background-color: #c6ecc6;");
 
-            cancelButton = createStyledButton("Cancel");
-            cancelButton.setOnAction(e -> sceneManager.displayRecipeList());
-            createAccountButton = createStyledButton("Create Account");
-            createAccountButton.setOnAction(e -> sceneManager.displayAccountCreationScene());
-            this.getChildren().addAll(cancelButton, createAccountButton);
-
             Label title = new Label("Login");
             title.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
             this.getChildren().add(title);
         }
-        
+
     }
 
     /**
@@ -89,12 +79,20 @@ public class LoginScene extends VBox {
                 statusLabel.setText("Login unsuccessful, try again or create an account");
             }
         });
-        this.getChildren().add(statusLabel);
 
+        Button createAccountButton = createStyledButton("Create Account");
+        createAccountButton.setOnAction(e -> sceneManager.displayAccountCreationScene());
+
+        HBox buttonContainer = new HBox(loginButton, createAccountButton);
+        buttonContainer.setSpacing(10);
+        buttonContainer.setAlignment(Pos.CENTER);
+
+
+        this.getChildren().add(statusLabel);
         setTextFieldTriggers(usernameField, loginButton, passwordField);
         setTextFieldTriggers(passwordField, loginButton, usernameField);
 
-        this.getChildren().addAll(usernameField, passwordField, autoLogin, loginButton);
+        this.getChildren().addAll(usernameField, passwordField, autoLogin, buttonContainer);
 
         sceneManager.setCenter(this);
         sceneManager.setTop(new LoginSceneTopBar());
