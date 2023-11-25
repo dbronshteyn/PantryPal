@@ -25,7 +25,7 @@ public class Main extends Application {
 
         SceneManager sceneManager = new SceneManager(ingredientsAudioFile, mealTypeAudioFile);
 
-        primaryStage.setTitle("PantryPal");
+        primaryStage.setTitle("PantryPal2");
         primaryStage.setScene(new Scene(sceneManager, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();
 
