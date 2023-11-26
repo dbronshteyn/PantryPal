@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DallE",
+            "request": "launch",
+            "mainClass": "backend.DallE",
+            "projectName": "app"
+        },
+        {
+            "type": "java",
             "name": "UI",
             "request": "launch",
             "mainClass": "ui.Main",
