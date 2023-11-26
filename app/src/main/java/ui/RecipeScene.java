@@ -11,6 +11,10 @@ import javafx.scene.control.TextArea;
 
 import middleware.Controller;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.io.File;
+
 /**
  * This class represents the scene that displays the details of a recipe.
  */
@@ -33,6 +37,12 @@ class RecipeScene extends ScrollPane {
             Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
+            Image image = new Image(new File("generated_image.png").toURI().toString());
+            ImageView imageView = new ImageView(image);
+
+            imageView.setFitWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
+            imageView.setFitHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
+
             Button backButton = createStyledButton("Back");
             backButton.setOnAction(e -> sceneManager.displayRecipeList());
 
@@ -45,7 +55,7 @@ class RecipeScene extends ScrollPane {
                 sceneManager.displayRecipeList();
             });
 
-            this.getChildren().addAll(backButton, title, editButton, deleteButton);
+            this.getChildren().addAll(backButton, title, imageView, editButton, deleteButton);
         }
     }
 
@@ -62,6 +72,12 @@ class RecipeScene extends ScrollPane {
             Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
+            Image image = new Image(new File("generated_image.png").toURI().toString());
+            ImageView imageView = new ImageView(image);
+
+            imageView.setFitWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
+            imageView.setFitHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
+
             Button cancelButton = createStyledButton("Cancel");
             cancelButton.setOnAction(e -> sceneManager.displayRecipeList());
 
@@ -71,7 +87,7 @@ class RecipeScene extends ScrollPane {
                 sceneManager.displayRecipeList();
             });
 
-            this.getChildren().addAll(cancelButton, title, saveButton);
+            this.getChildren().addAll(cancelButton, title, imageView, saveButton);
         }
     }
 
@@ -88,6 +104,9 @@ class RecipeScene extends ScrollPane {
             Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
+            Image image = new Image(new File("generated_image.png").toURI().toString());
+            ImageView imageView = new ImageView(image);
+
             Button cancelButton = createStyledButton("Cancel");
             cancelButton.setOnAction(e -> sceneManager.displayRecipeList());
 
@@ -97,7 +116,7 @@ class RecipeScene extends ScrollPane {
                 sceneManager.displayRecipeDetails(recipeID);
             });
 
-            this.getChildren().addAll(cancelButton, title, saveButton);
+            this.getChildren().addAll(cancelButton, title, imageView, saveButton);
         }
     }
 

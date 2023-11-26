@@ -9,6 +9,7 @@ import java.util.concurrent.*;
 import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HexFormat;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,6 +22,7 @@ import backend.RecipeList;
 import backend.AccountList;
 import backend.ChatGPT;
 import backend.Whisper;
+import backend.DallE;
 
 /**
  * This class represents a server that handles requests from the frontend.
@@ -44,7 +46,8 @@ public class Server {
                 new InetSocketAddress(SERVER_HOSTNAME, SERVER_PORT),
                 0);
 
-        server.createContext("/", new RequestHandler(new File(RECIPE_DATABASE_FILENAME), new File(ACCOUNT_DATABASE_FILENAME)));
+        server.createContext("/",
+                new RequestHandler(new File(RECIPE_DATABASE_FILENAME), new File(ACCOUNT_DATABASE_FILENAME)));
 
         server.setExecutor(threadPoolExecutor);
         server.start();
@@ -68,6 +71,7 @@ class RequestHandler implements HttpHandler {
     File audioFile;
     ChatGPT chatGPT;
     Whisper whisper;
+    DallE dallE;
 
     /**
      * Constructs a new RequestHandler with the provided database file.
@@ -82,6 +86,7 @@ class RequestHandler implements HttpHandler {
         this.audioFile = new File("audio.wav");
         this.chatGPT = new ChatGPT(OPENAI_API_KEY);
         this.whisper = new Whisper(OPENAI_API_KEY);
+        this.dallE = new DallE(OPENAI_API_KEY);
     }
 
     /**
@@ -159,7 +164,7 @@ class RequestHandler implements HttpHandler {
     }
 
     private String handleGenerateNewRecipeBuilder() {
-        RecipeBuilder recipeBuilder = new RecipeBuilder(chatGPT, whisper);
+        RecipeBuilder recipeBuilder = new RecipeBuilder(chatGPT, whisper, dallE);
         this.recipeBuilders.put(recipeBuilder.getRecipeID(), recipeBuilder);
         return recipeBuilder.getRecipeID();
     }
@@ -174,9 +179,11 @@ class RequestHandler implements HttpHandler {
     private String handleGetRecipeInstructions(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         try {
-            // we need to encode the instructions because they may contain special characters like newline
+            // we need to encode the instructions because they may contain special
+            // characters like newline
             if (temporaryRecipes.containsKey(recipeID))
-                // we need to encode the instructions because they contain special characters like newlines
+                // we need to encode the instructions because they contain special characters
+                // like newlines
                 return URLEncoder.encode(this.temporaryRecipes.get(recipeID).getInstructions(), "UTF-8");
             return URLEncoder.encode(this.recipeList.getRecipeByID(recipeID).getInstructions(), "UTF-8");
         } catch (Exception e) {
@@ -232,7 +239,7 @@ class RequestHandler implements HttpHandler {
         return Boolean.toString(this.recipeBuilders.get(recipeID).isCompleted());
     }
 
-    private String handleGenerateRecipe(Map<String, String> query) {
+    private String handleGenerateRecipe(Map<String, String> query) throws InterruptedException, URISyntaxException {
         String recipeID = query.get("recipeID");
         try {
             Recipe recipe = this.recipeBuilders.remove(recipeID).returnRecipe();

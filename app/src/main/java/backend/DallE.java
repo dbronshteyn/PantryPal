@@ -1,6 +1,8 @@
 package backend;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -8,29 +10,25 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javafx.scene.shape.Path;
+// import javafx.scene.shape.Path;
 
 public class DallE {
 
-    // TODO: Set the URL of the API Endpoint
     private static final String API_ENDPOINT = "https://api.openai.com/v1/images/generations";
     private static final String MODEL = "dall-e-2";
-    private static final String API_KEY = "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";
+    String apiKey;
 
-    // String apiKey;
+    public DallE(String apiKey) {
+        this.apiKey = apiKey;
+    }
 
-    // public DallE(String apiKey) {
-    // this.apiKey = apiKey;
-    // }
-
-    public static void main(String[] args)
+    public String generateImage(String recipeTitle, String recipeBody)
             throws IOException, InterruptedException, URISyntaxException {
         // Set request parameters
-        String prompt = "A monkey eating a banana";
+        String prompt = recipeTitle + "\n" + recipeBody;
         int n = 1;
 
         // Create a request body which you will pass into request object
@@ -48,7 +46,7 @@ public class DallE {
                 .newBuilder()
                 .uri(URI.create(API_ENDPOINT))
                 .header("Content-Type", "application/json")
-                .header("Authorization", String.format("Bearer %s", API_KEY))
+                .header("Authorization", String.format("Bearer %s", apiKey))
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
                 .build();
 
@@ -69,10 +67,12 @@ public class DallE {
         System.out.println("DALL-E Response:");
         System.out.println(generatedImageURL);
 
-        try (InputStream in = new URI(generatedImageURL).toURL().openStream()) {
-            Files.copy(in,
-                    Paths.get("/Users/danielbronshteyn/Desktop/CSE110/cse-110-project-team-17/generated_image.png"));
-        }
+        return generatedImageURL;
     }
 
+    public void viewImage(String imageURL) throws MalformedURLException, IOException, URISyntaxException {
+        try (InputStream in = new URI(imageURL).toURL().openStream()) {
+            Files.copy(in, Paths.get("image.jpg"));
+        }
+    }
 }

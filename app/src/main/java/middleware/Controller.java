@@ -19,7 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * This class represents a controller that handles requests from the frontend and
+ * This class represents a controller that handles requests from the frontend
+ * and
  * sends them to the backend.
  */
 public class Controller {
@@ -60,6 +61,16 @@ public class Controller {
     }
 
     /**
+     * Returns the image URL for a given recipe.
+     * 
+     * @param recipeID
+     * @return the image URL
+     */
+    public static String getRecipeImageURL(String recipeID) {
+        return sendRequest("/get-recipe-image-url", "recipeID=" + recipeID, "GET");
+    }
+
+    /**
      * Returns all the recipe IDs.
      * 
      * @return list of recipe IDs
@@ -93,7 +104,8 @@ public class Controller {
      */
     public static String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
         String hex = fileToHex(audioFile);
-        String response = sendRequest("/specify-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "POST");
+        String response = sendRequest("/specify-recipe-creator-element",
+                "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "POST");
         if (response.equals("invalid")) {
             return null;
         }
