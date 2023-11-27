@@ -1,12 +1,17 @@
 package backend;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import java.net.URL;
 
 /**
  * This class represents a Recipe Builder that allows the user to create a
@@ -168,10 +173,17 @@ public class RecipeBuilder {
         String recipeTitle = responseLines.get(0).strip();
         String recipeBody = String.join("\n", responseLines.subList(1, responseLines.size())).strip();
 
-        // Generate image
-        String imageURL = this.dallE.generateImage(recipeTitle, recipeBody);
+        // from https://stackoverflow.com/questions/921262/how-can-i-download-and-save-a-file-from-the-internet-using-java
+        URL imageURL = new URL(this.dallE.generateImage(recipeTitle, recipeBody));
+        ReadableByteChannel rbc = Channels.newChannel(imageURL.openStream());
+        FileOutputStream fos = new FileOutputStream("temp.png");
+        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        fos.close();
+        File imageFile = new File("temp.png");
+        String imageHex = HexUtils.fileToHex(imageFile);
+        imageFile.delete();
 
-        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date(), imageURL);
+        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date(), imageHex);
     }
 
     /**

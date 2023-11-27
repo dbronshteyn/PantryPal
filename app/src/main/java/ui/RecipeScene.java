@@ -8,20 +8,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.text.Font;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
 
 import middleware.Controller;
-
-import backend.ImageConvertor;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import java.util.HexFormat;
 
 /**
  * This class represents the scene that displays the details of a recipe.
@@ -31,6 +24,8 @@ class RecipeScene extends ScrollPane {
     SceneManager sceneManager;
     Label instructionsLabel;
     TextArea instructionsTextArea;
+    ImageView imageView;
+    VBox content;
 
     /**
      * This class represents the top bar of the recipe scene.
@@ -45,25 +40,6 @@ class RecipeScene extends ScrollPane {
             Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
-            String url = Controller.getRecipeImageURL(recipeID);
-
-            // Currently the image is in hex format, I would like for it to be in File
-            // format
-            // so that I can use it in the ImageView
-            String hex = Controller.getRecipeImageURL(recipeID);
-            byte[] bytes = hex.getBytes();
-            try {
-                Files.write(Paths.get("generated_image.png"), bytes);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            File file = new File("generated_image.png");
-            Image image = new Image(file.toURI().toString());
-            ImageView imageView = new ImageView(image);
-
-            imageView.setFitWidth(400);
-            imageView.setFitHeight(400);
-
             Button backButton = createStyledButton("Back");
             backButton.setOnAction(e -> sceneManager.displayRecipeList());
 
@@ -76,7 +52,7 @@ class RecipeScene extends ScrollPane {
                 sceneManager.displayRecipeList();
             });
 
-            this.getChildren().addAll(backButton, title, imageView, editButton, deleteButton);
+            this.getChildren().addAll(backButton, title, editButton, deleteButton);
         }
     }
 
@@ -92,13 +68,6 @@ class RecipeScene extends ScrollPane {
 
             Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
-
-            // String url = Controller.getRecipeImageURL(recipeID);
-            // Image image = new Image(url);
-            // ImageView imageView = new ImageView(image);
-
-            // imageView.setFitWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
-            // imageView.setFitHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
 
             Button cancelButton = createStyledButton("Cancel");
             cancelButton.setOnAction(e -> sceneManager.displayRecipeList());
@@ -154,8 +123,18 @@ class RecipeScene extends ScrollPane {
         instructionsLabel.setWrapText(true);
         instructionsLabel.setFont(new Font(SceneManager.FONT, 14));
         instructionsLabel.setStyle("-fx-background-color: #e7ffe6;");
+
+        this.imageView = new ImageView();
+        this.imageView.setFitWidth(200);
+        this.imageView.setFitHeight(200);
+
+        this.content = new VBox();
+        this.content.setAlignment(Pos.CENTER);
+        this.content.setSpacing(20);
+        this.content.getChildren().addAll(imageView, instructionsLabel);
+
         this.setFitToWidth(true);
-        this.setContent(instructionsLabel);
+        this.setContent(this.content);
         this.setPadding(new Insets(30, 30, 30, 30));
         this.setStyle("-fx-background: #e7ffe6;");
 
@@ -184,7 +163,10 @@ class RecipeScene extends ScrollPane {
      */
     public void displayRecipeDetails(String recipeID) {
         instructionsLabel.setText(Controller.getRecipeInstructions(recipeID));
-        this.setContent(instructionsLabel);
+        File imageFile = Controller.getRecipeImage(recipeID);
+        Image image = new Image(imageFile.toURI().toString());
+        this.imageView.setImage(image);
+        this.setContent(this.content);
         sceneManager.setCenter(this);
         sceneManager.setTop(new RecipeSceneTopBar(recipeID));
     }

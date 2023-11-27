@@ -15,8 +15,7 @@ public class Recipe {
     private String instructions;
     private Date dateCreated;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-
-    private String imageURL;
+    private String imageHex;
 
     /**
      * Constructs a new Recipe with the provided ID, title, instructions, and
@@ -28,12 +27,12 @@ public class Recipe {
      * @param instructions Instructions for preparing the recipe.
      * @param dateCreated  Date when the recipe was generated.
      */
-    public Recipe(String recipeID, String title, String instructions, Date dateCreated, String imageURL) {
+    public Recipe(String recipeID, String title, String instructions, Date dateCreated, String imageHex) {
         this.recipeID = recipeID;
         this.title = title;
         this.instructions = instructions;
         this.dateCreated = dateCreated;
-        this.imageURL = imageURL;
+        this.imageHex = imageHex;
     }
 
     /**
@@ -52,8 +51,7 @@ public class Recipe {
         this.title = jsonRecipe.getString("title");
         this.instructions = jsonRecipe.getString("instructions");
         this.recipeID = jsonRecipe.getString("recipeID");
-
-        this.imageURL = jsonRecipe.getString("imageURL");
+        this.imageHex = jsonRecipe.getString("imageHex");
     }
 
     /**
@@ -102,8 +100,8 @@ public class Recipe {
         this.instructions = instructions;
     }
 
-    public String getImageURL() {
-        return this.imageURL;
+    public String getImageHex() {
+        return this.imageHex;
     }
 
     /**
@@ -126,8 +124,7 @@ public class Recipe {
         out.put("recipeID", this.recipeID);
         out.put("title", this.title);
         out.put("instructions", this.instructions);
-        out.put("imageURL", this.imageURL); // I deleted the imagetoHex because I am currently stuck on retrieving the
-                                            // hex representation from the server. Reverting changes.
+        out.put("imageHex", this.imageHex);
         out.put("dateCreated", this.formatter.format(this.dateCreated));
         return out;
     }

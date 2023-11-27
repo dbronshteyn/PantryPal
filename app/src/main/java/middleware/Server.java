@@ -10,9 +10,6 @@ import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HexFormat;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
 
@@ -22,8 +19,9 @@ import backend.RecipeList;
 import backend.AccountList;
 import backend.ChatGPT;
 import backend.Whisper;
-import javafx.scene.image.Image;
 import backend.DallE;
+import backend.HexUtils;
+
 
 /**
  * This class represents a server that handles requests from the frontend.
@@ -139,6 +137,7 @@ class RequestHandler implements HttpHandler {
                     break;
                 case "/get-recipe-image-url":
                     response = this.handleGetImage(query);
+                    break;
                 default:
                     response = "Invalid path";
                     break;
@@ -181,11 +180,10 @@ class RequestHandler implements HttpHandler {
 
     private String handleGetImage(Map<String, String> query) {
         String recipeID = query.get("recipeID");
-        if (temporaryRecipes.containsKey(recipeID))
-            return this.temporaryRecipes.get(recipeID).getImageURL();
-        System.out.println("Server worked");
-        System.out.println(this.recipeList.getRecipeByID(recipeID).getImageURL());
-        return this.recipeList.getRecipeByID(recipeID).getImageURL();
+        if (temporaryRecipes.containsKey(recipeID)) {
+            return this.temporaryRecipes.get(recipeID).getImageHex();
+        }
+        return this.recipeList.getRecipeByID(recipeID).getImageHex();
     }
 
     private String handleGetRecipeInstructions(Map<String, String> query) {
@@ -227,7 +225,7 @@ class RequestHandler implements HttpHandler {
     private String handleSpecifyRecipeCreatorElement(Map<String, String> query) {
         try {
             String hex = query.get("hex");
-            Files.write(Paths.get(this.audioFile.getAbsolutePath()), HexFormat.of().parseHex(hex));
+            HexUtils.hexToFile(hex, this.audioFile);
             String recipeID = query.get("recipeID");
             String elementName = query.get("elementName");
             String out = FAILURE_MESSAGE;
