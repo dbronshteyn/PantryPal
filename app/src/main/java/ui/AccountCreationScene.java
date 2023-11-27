@@ -33,6 +33,7 @@ public class AccountCreationScene extends VBox {
 
             cancelButton = createStyledButton("Cancel");
             cancelButton.setOnAction(e -> sceneManager.displayLoginScene());
+          
             this.getChildren().add(cancelButton);
 
             Label title = new Label("Register for account");
@@ -49,6 +50,7 @@ public class AccountCreationScene extends VBox {
     AccountCreationScene(SceneManager sceneManager, Controller controller) {
         this.sceneManager = sceneManager;
         this.controller = controller;
+
         this.setSpacing(5);
         this.setPadding(new Insets(10, 10, 10, 10));
         this.setAlignment(Pos.TOP_CENTER);

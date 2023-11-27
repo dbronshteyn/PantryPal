@@ -37,14 +37,14 @@ public class AccountList {
             JSONObject jsonAccount = new JSONObject();
             jsonAccount.put("username", this.username);
             jsonAccount.put("password", this.password);
-            // jsonAccount.put("automaticLogin", this.automaticLogin);
+            jsonAccount.put("automaticLogin", this.automaticLogin);
             return jsonAccount;
         }
 
         public String getUsername() {
             return this.username;
         }
-        
+
         public String getPassword() {
             return this.password;
         }
@@ -70,7 +70,7 @@ public class AccountList {
         this.updateDatabase();
         return true;
     }
-        
+
     public boolean attemptLogin(String username, String password) {
         for (Account account : this.accounts) {
             if (account.matchesCredentials(username, password)) {
@@ -115,4 +115,3 @@ public class AccountList {
         }
     }
 }
-

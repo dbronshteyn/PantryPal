@@ -176,6 +176,7 @@ public class Controller {
         }
         return false;
     }
+
     /**
      * Sends a request to the server and returns the response.
      * 
