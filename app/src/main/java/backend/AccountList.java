@@ -22,22 +22,15 @@ public class AccountList {
     public class Account {
         private String username;
         private String password;
-        // private boolean automaticLogin;
 
         public Account(String username, String password) {
             this.username = username;
             this.password = password;
-            // this.automaticLogin = false;
         }
 
         public Account(JSONObject jsonAccount) {
             this.username = jsonAccount.getString("username");
             this.password = jsonAccount.getString("password");
-            // if (jsonAccount.has("automaticLogin")) {
-            //     this.automaticLogin = jsonAccount.getBoolean("automaticLogin");
-            // } else {
-            //     this.automaticLogin = false;
-            // }
         }
 
         public JSONObject toJSON() {
@@ -56,9 +49,9 @@ public class AccountList {
             return this.password;
         }
 
-        // public boolean automaticLogin() {
-        //     return this.automaticLogin;
-        // }
+        public boolean matchesCredentials(String username, String password) {
+            return this.username.equals(username) && this.password.equals(password);
+        }
     }
 
     public AccountList(File databaseFile) {
@@ -78,10 +71,9 @@ public class AccountList {
         return true;
     }
         
-    public boolean login(String username, String password) {
+    public boolean attemptLogin(String username, String password) {
         for (Account account : this.accounts) {
-            if (account.getUsername().equals(username) && account.getPassword().equals(password)) {
-                this.updateDatabase();
+            if (account.matchesCredentials(username, password)) {
                 return true;
             }
         }

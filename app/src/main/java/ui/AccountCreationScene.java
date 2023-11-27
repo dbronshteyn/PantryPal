@@ -19,6 +19,7 @@ import ui.ListScene.RecipeInListUI;
 public class AccountCreationScene extends VBox {
 
     SceneManager sceneManager;
+    Controller controller;
 
     public class AccountCreationTopBar extends HBox {
 
@@ -31,7 +32,7 @@ public class AccountCreationScene extends VBox {
             this.setStyle("-fx-background-color: #c6ecc6;");
 
             cancelButton = createStyledButton("Cancel");
-            cancelButton.setOnAction(e -> sceneManager.displayRecipeList());
+            cancelButton.setOnAction(e -> sceneManager.displayLoginScene());
             this.getChildren().add(cancelButton);
 
             Label title = new Label("Register for account");
@@ -45,8 +46,9 @@ public class AccountCreationScene extends VBox {
      * 
      * @param sceneManager
      */
-    AccountCreationScene(SceneManager sceneManager) {
+    AccountCreationScene(SceneManager sceneManager, Controller controller) {
         this.sceneManager = sceneManager;
+        this.controller = controller;
         this.setSpacing(5);
         this.setPadding(new Insets(10, 10, 10, 10));
         this.setAlignment(Pos.TOP_CENTER);
@@ -71,7 +73,7 @@ public class AccountCreationScene extends VBox {
         Button createAccountButton = createStyledButton("Create Account");
         createAccountButton.setDisable(true);
         createAccountButton.setOnAction(e -> {
-            String response = Controller.addAccount(usernameField.getText(), passwordField.getText());
+            String response = controller.addAccount(usernameField.getText(), passwordField.getText());
             if (response == null) {
                 this.getChildren().add(new Label("Username already in use, try another"));
             } else {

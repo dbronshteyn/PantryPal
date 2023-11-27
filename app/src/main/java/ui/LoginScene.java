@@ -17,6 +17,7 @@ import ui.ListScene.RecipeInListUI;
 public class LoginScene extends VBox {
 
     SceneManager sceneManager;
+    Controller controller;
     private Label statusLabel = new Label("");
 
     public class LoginSceneTopBar extends HBox {
@@ -39,8 +40,9 @@ public class LoginScene extends VBox {
      * 
      * @param sceneManager
      */
-    LoginScene(SceneManager sceneManager) {
+    LoginScene(SceneManager sceneManager, Controller controller) {
         this.sceneManager = sceneManager;
+        this.controller = controller;
         this.setSpacing(5);
         this.setPadding(new Insets(10, 10, 10, 10));
         this.setAlignment(Pos.TOP_CENTER);
@@ -67,8 +69,7 @@ public class LoginScene extends VBox {
         Button loginButton = createStyledButton("Login");
         loginButton.setDisable(true);
         loginButton.setOnAction(e -> {
-            Boolean response = Controller.login(usernameField.getText(), passwordField.getText());
-            if (response == true) {
+            if (controller.login(usernameField.getText(), passwordField.getText())) {
                 statusLabel.setText("Login successful");
                 if (autoLogin.isSelected()) {
                     // Implement automatic login

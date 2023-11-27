@@ -66,10 +66,12 @@ public class RecipeList {
      * 
      * @return list of recipe IDs
      */
-    public List<String> getRecipeIDs() {
+    public List<String> getRecipeIDs(String accountUsername) {
         List<String> recipeIDs = new ArrayList<>();
         for (Recipe recipe : this.recipes) {
-            recipeIDs.add(recipe.getRecipeID());
+            if (recipe.getAccountUsername().equals(accountUsername)) {
+                recipeIDs.add(recipe.getRecipeID());
+            }
         }
         return recipeIDs;
     }

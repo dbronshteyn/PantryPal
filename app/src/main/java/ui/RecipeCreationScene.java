@@ -20,6 +20,7 @@ import middleware.Controller;
 class RecipeCreationScene extends VBox {
 
     SceneManager sceneManager;
+    Controller controller;
     Button completedButton;
     File ingredientsAudioFile;
     File mealTypeAudioFile;
@@ -134,8 +135,9 @@ class RecipeCreationScene extends VBox {
      * @param ingredientsAudioFile
      * @param mealTypeAudioFile
      */
-    RecipeCreationScene(SceneManager sceneManager, File ingredientsAudioFile, File mealTypeAudioFile) {
+    RecipeCreationScene(SceneManager sceneManager, Controller controller, File ingredientsAudioFile, File mealTypeAudioFile) {
         this.sceneManager = sceneManager;
+        this.controller = controller;
         this.setSpacing(10);
         this.setPadding(new Insets(20, 20, 20, 20));
         this.setAlignment(Pos.TOP_CENTER);
@@ -176,7 +178,7 @@ class RecipeCreationScene extends VBox {
         button.setOnAction(e -> {
             if (button.isSelected()) {
                 // disables all other buttons when recording
-                Controller.resetRecipeCreatorElement(recipeID, elementName);
+                controller.resetRecipeCreatorElement(recipeID, elementName);
                 completeButton.setDisable(true);
                 otherButton.setDisable(true);
                 cancelButton.setDisable(true);
@@ -185,7 +187,7 @@ class RecipeCreationScene extends VBox {
             } else {
                 // send recording to the server and display the response
                 audioRecorder.stopRecordingAudio();
-                String result = Controller.specifyRecipeCreatorElement(recipeID, elementName, audioFile);
+                String result = controller.specifyRecipeCreatorElement(recipeID, elementName, audioFile);
                 if (result == null) {
                     label.setText(invalidTypeMessage);
                 } else {
@@ -195,7 +197,7 @@ class RecipeCreationScene extends VBox {
                 button.setText(originalText);
                 otherButton.setDisable(false);
                 cancelButton.setDisable(false);
-                if (Controller.isRecipeCreatorCompleted(recipeID)) {
+                if (controller.isRecipeCreatorCompleted(recipeID)) {
                     completeButton.setDisable(false);
                 }
             }
@@ -297,7 +299,7 @@ class RecipeCreationScene extends VBox {
 
         // Set the complete button trigger
         completeButton.setOnAction(e -> {
-            Controller.generateRecipe(recipeID);
+            controller.generateRecipe(recipeID);
             sceneManager.displayNewlyCreatedRecipe(recipeID);
         });
         completeButton.setDisable(true);

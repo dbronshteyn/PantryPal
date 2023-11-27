@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import middleware.Controller;
+
 import java.io.File;
 
 
@@ -23,7 +25,8 @@ public class Main extends Application {
         File ingredientsAudioFile = new File("ingredients.wav");
         File mealTypeAudioFile = new File("mealType.wav");
 
-        SceneManager sceneManager = new SceneManager(ingredientsAudioFile, mealTypeAudioFile);
+        Controller controller = new Controller();
+        SceneManager sceneManager = new SceneManager(controller, ingredientsAudioFile, mealTypeAudioFile);
 
         primaryStage.setTitle("PantryPal2");
         primaryStage.setScene(new Scene(sceneManager, WINDOW_WIDTH, WINDOW_HEIGHT));

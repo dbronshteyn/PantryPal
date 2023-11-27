@@ -15,6 +15,7 @@ public class SceneManager extends BorderPane {
     public static final String FONT = "Arial";
 
     ListScene listScene;
+    Controller controller;
     RecipeScene recipeScene;
     RecipeCreationScene recipeCreationScene;
     AccountCreationScene accountCreationScene;
@@ -26,14 +27,15 @@ public class SceneManager extends BorderPane {
      * @param ingredientsAudioFile
      * @param mealTypeAudioFile
      */
-    public SceneManager(File ingredientsAudioFile, File mealTypeAudioFile) {
-        this.setStyle("-fx-background-color: #e7ffe6;");
+    public SceneManager(Controller controller, File ingredientsAudioFile, File mealTypeAudioFile) {
+        this.controller = controller;
 
-        this.listScene = new ListScene(this);
-        this.recipeScene = new RecipeScene(this);
-        this.recipeCreationScene = new RecipeCreationScene(this, ingredientsAudioFile, mealTypeAudioFile);
-        this.accountCreationScene = new AccountCreationScene(this);
-        this.loginScene = new LoginScene(this);
+        this.setStyle("-fx-background-color: #e7ffe6;");
+        this.listScene = new ListScene(this, controller);
+        this.recipeScene = new RecipeScene(this, controller);
+        this.recipeCreationScene = new RecipeCreationScene(this, controller, ingredientsAudioFile, mealTypeAudioFile);
+        this.accountCreationScene = new AccountCreationScene(this, controller);
+        this.loginScene = new LoginScene(this, controller);
         this.setCenter(listScene);
     }
 
@@ -66,7 +68,7 @@ public class SceneManager extends BorderPane {
      * Displays the recipe creation scene.
      */
     public void displayRecipeCreationScene() {
-        recipeCreationScene.displayRecipeCreationScene(Controller.generateNewRecipeBuilder());
+        recipeCreationScene.displayRecipeCreationScene(controller.generateNewRecipeBuilder());
     }
 
     /**

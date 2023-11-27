@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
+import java.util.List;
 
 import backend.Recipe;
 import backend.RecipeBuilder;
@@ -105,7 +106,7 @@ class RequestHandler implements HttpHandler {
                     response = this.handleGetRecipeInstructions(query);
                     break;
                 case "/get-recipe-ids":
-                    response = this.handleGetRecipeIDs();
+                    response = this.handleGetRecipeIDs(query);
                     break;
                 case "/reset-recipe-creator-element":
                     response = this.handleResetRecipeCreatorElement(query);
@@ -188,11 +189,13 @@ class RequestHandler implements HttpHandler {
         }
     }
 
-    private String handleGetRecipeIDs() {
-        if (this.recipeList.getRecipeIDs().isEmpty()) {
+    private String handleGetRecipeIDs(Map<String, String> query) {
+        String accountUsername = query.get("accountUsername");
+        List<String> ids = this.recipeList.getRecipeIDs(accountUsername);
+        if (ids.isEmpty()) {
             return ".";
         }
-        return String.join(",", this.recipeList.getRecipeIDs());
+        return String.join(",", ids);
     }
 
     private String handleResetRecipeCreatorElement(Map<String, String> query) {
@@ -237,8 +240,9 @@ class RequestHandler implements HttpHandler {
 
     private String handleGenerateRecipe(Map<String, String> query) {
         String recipeID = query.get("recipeID");
+        String accountUsername = query.get("accountUsername");
         try {
-            Recipe recipe = this.recipeBuilders.remove(recipeID).returnRecipe();
+            Recipe recipe = this.recipeBuilders.remove(recipeID).returnRecipe(accountUsername);
             this.temporaryRecipes.put(recipe.getRecipeID(), recipe);
         } catch (IOException e) {
             e.printStackTrace();
@@ -285,9 +289,9 @@ class RequestHandler implements HttpHandler {
     private String handleLogin(Map<String, String> query) {
         String username = query.get("username");
         String password = query.get("password");
-        if (this.accountList.login(username, password)) {
-            return "true";
+        if (this.accountList.attemptLogin(username, password)) {
+            return SUCCESS_MESSAGE;
         }
-        return "false";
+        return FAILURE_MESSAGE;
     }
 }

@@ -14,6 +14,7 @@ public class Recipe {
     private String title;
     private String instructions;
     private Date dateCreated;
+    private String accountUsername;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     /**
@@ -26,11 +27,12 @@ public class Recipe {
      * @param instructions Instructions for preparing the recipe.
      * @param dateCreated  Date when the recipe was generated.
      */
-    public Recipe(String recipeID, String title, String instructions, Date dateCreated) {
+    public Recipe(String recipeID, String title, String instructions, Date dateCreated, String accountUsername) {
         this.recipeID = recipeID;
         this.title = title;
         this.instructions = instructions;
         this.dateCreated = dateCreated;
+        this.accountUsername = accountUsername;
     }
 
     /**
@@ -49,6 +51,7 @@ public class Recipe {
         this.title = jsonRecipe.getString("title");
         this.instructions = jsonRecipe.getString("instructions");
         this.recipeID = jsonRecipe.getString("recipeID");
+        this.accountUsername = jsonRecipe.getString("accountUsername");
     }
 
     /**
@@ -87,6 +90,10 @@ public class Recipe {
         return this.recipeID;
     }
 
+    public String getAccountUsername() {
+        return this.accountUsername;
+    }
+
     /**
      * Sets the instructions for preparing the recipe and updates the creation date.
      * 
@@ -118,6 +125,7 @@ public class Recipe {
         out.put("title", this.title);
         out.put("instructions", this.instructions);
         out.put("dateCreated", this.formatter.format(this.dateCreated));
+        out.put("accountUsername", this.accountUsername);
         return out;
     }
 }

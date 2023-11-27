@@ -17,6 +17,7 @@ public class ListScene extends VBox {
 
     SceneManager sceneManager;
     ScrollPane scroller;
+    Controller controller;
 
     /**
      * This class represents a recipe entry in the list of recipes.
@@ -33,7 +34,7 @@ public class ListScene extends VBox {
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
 
-            Label title = new Label(Controller.getRecipeTitle(recipeID));
+            Label title = new Label(controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 16));
             title.setWrapText(true);
 
@@ -76,8 +77,9 @@ public class ListScene extends VBox {
      * 
      * @param sceneManager
      */
-    ListScene(SceneManager sceneManager) {
+    ListScene(SceneManager sceneManager, Controller controller) {
         this.sceneManager = sceneManager;
+        this.controller = controller;
         this.setSpacing(5);
         this.setPadding(new Insets(10, 10, 10, 10));
         this.setPrefSize(500, 560);
@@ -92,7 +94,7 @@ public class ListScene extends VBox {
      */
     public void displayRecipeList() {
         this.getChildren().clear();
-        for (String recipeID : Controller.getRecipeIDs()) {
+        for (String recipeID : controller.getRecipeIDs()) {
             RecipeInListUI recipeEntry = new RecipeInListUI(recipeID, this.sceneManager);
             this.getChildren().add(recipeEntry);
         }
