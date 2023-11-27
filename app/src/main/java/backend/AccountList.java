@@ -37,7 +37,6 @@ public class AccountList {
             JSONObject jsonAccount = new JSONObject();
             jsonAccount.put("username", this.username);
             jsonAccount.put("password", this.password);
-            jsonAccount.put("automaticLogin", this.automaticLogin);
             return jsonAccount;
         }
 

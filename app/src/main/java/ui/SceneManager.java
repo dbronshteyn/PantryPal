@@ -72,13 +72,6 @@ public class SceneManager extends BorderPane {
         recipeCreationScene.displayRecipeCreationScene(controller.generateNewRecipeBuilder());
     }
 
-    /**
-     * Displays the account creation scene.
-     */
-    public void displayAccountCreationScene() {
-        accountCreationScene.displayAccountCreationScene();
-    }
-
     public void displayLoginScene() {
         loginScene.displayLoginScene();
     }
