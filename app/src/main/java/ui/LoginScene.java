@@ -5,20 +5,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+
+import org.json.JSONObject;
+import java.io.FileWriter;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
 import javafx.scene.control.TextField;
 
 import middleware.Controller;
-import ui.ListScene.ListSceneTopBar;
-import ui.ListScene.RecipeInListUI;
 
 public class LoginScene extends VBox {
 
     SceneManager sceneManager;
     Controller controller;
     private Label statusLabel = new Label("");
+    private File automaticLoginFile = new File("automaticLogin.json");
 
     public class LoginSceneTopBar extends HBox {
 
@@ -51,9 +56,21 @@ public class LoginScene extends VBox {
     }
 
     /**
-     * Displays the account creation scene
+     * Displays the login scene, or automatically logs in if file is present
      */
     public void displayLoginScene() {
+        if (automaticLoginFile.exists()) {
+            try {
+                JSONObject in = new JSONObject(new String(Files.readAllBytes(Paths.get(automaticLoginFile.getAbsolutePath()))));
+                if (controller.login(in.getString("username"), in.getString("password"))) {
+                    sceneManager.displayRecipeList();
+                    return;
+                }
+            } catch (Exception e) {
+                System.out.println("Error reading automatic login file");
+            }
+        }
+
         this.getChildren().clear();
 
         TextField usernameField = new TextField();
@@ -72,8 +89,7 @@ public class LoginScene extends VBox {
             if (controller.login(usernameField.getText(), passwordField.getText())) {
                 statusLabel.setText("Login successful");
                 if (autoLogin.isSelected()) {
-                    // Implement automatic login
-                    System.out.println("Automatic login set");
+                    this.setAutomaticLogin(usernameField.getText(), passwordField.getText());
                 }
                 sceneManager.displayRecipeList();
             } else {
@@ -122,5 +138,19 @@ public class LoginScene extends VBox {
         button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #a3d9a5; -fx-text-fill: #000000;"));
 
         return button;
+    }
+
+    private void setAutomaticLogin(String username, String password) {
+        JSONObject out = new JSONObject();
+        out.put("username", username);
+        out.put("password", password);
+        try {
+            FileWriter fw = new FileWriter(automaticLoginFile);
+            fw.write(out.toString());
+            fw.flush();
+            fw.close();
+        } catch (Exception e) {
+            System.out.println("Error writing automatic login file");
+        }
     }
 }

@@ -32,10 +32,8 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(sceneManager, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();
 
-        // displays the home screen at startup
-        // sceneManager.displayAccountCreationScene();
+        // displays the login screen at startup
         sceneManager.displayLoginScene();
-        // sceneManager.displayRecipeList();
     }
 
     /**
