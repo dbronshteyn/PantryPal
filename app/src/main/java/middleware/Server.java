@@ -22,6 +22,7 @@ import backend.RecipeList;
 import backend.AccountList;
 import backend.ChatGPT;
 import backend.Whisper;
+import javafx.scene.image.Image;
 import backend.DallE;
 
 /**
@@ -136,6 +137,8 @@ class RequestHandler implements HttpHandler {
                 case "/add-account":
                     response = this.handleAddAccount(query);
                     break;
+                case "/get-recipe-image-url":
+                    response = this.handleGetImage(query);
                 default:
                     response = "Invalid path";
                     break;
@@ -174,6 +177,15 @@ class RequestHandler implements HttpHandler {
         if (temporaryRecipes.containsKey(recipeID))
             return this.temporaryRecipes.get(recipeID).getTitle();
         return this.recipeList.getRecipeByID(recipeID).getTitle();
+    }
+
+    private String handleGetImage(Map<String, String> query) {
+        String recipeID = query.get("recipeID");
+        if (temporaryRecipes.containsKey(recipeID))
+            return this.temporaryRecipes.get(recipeID).getImageURL();
+        System.out.println("Server worked");
+        System.out.println(this.recipeList.getRecipeByID(recipeID).getImageURL());
+        return this.recipeList.getRecipeByID(recipeID).getImageURL();
     }
 
     private String handleGetRecipeInstructions(Map<String, String> query) {

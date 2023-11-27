@@ -67,7 +67,15 @@ public class Controller {
      * @return the image URL
      */
     public static String getRecipeImageURL(String recipeID) {
-        return sendRequest("/get-recipe-image-url", "recipeID=" + recipeID, "GET");
+        try {
+            System.out.println("Controller worked");
+            System.out.println(sendRequest("/get-recipe-image-url", "recipeID=" + recipeID, "GET"));
+            return URLDecoder.decode(sendRequest("/get-recipe-image-url", "recipeID=" + recipeID, "GET"),
+                    "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**

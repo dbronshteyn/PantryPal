@@ -2,7 +2,6 @@ package backend;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -12,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import java.util.HexFormat;
 
 // import javafx.scene.shape.Path;
 
@@ -28,7 +29,7 @@ public class DallE {
     public String generateImage(String recipeTitle, String recipeBody)
             throws IOException, InterruptedException, URISyntaxException {
         // Set request parameters
-        String prompt = recipeTitle + "\n" + recipeBody;
+        String prompt = recipeTitle;
         int n = 1;
 
         // Create a request body which you will pass into request object
@@ -68,11 +69,5 @@ public class DallE {
         System.out.println(generatedImageURL);
 
         return generatedImageURL;
-    }
-
-    public void viewImage(String imageURL) throws MalformedURLException, IOException, URISyntaxException {
-        try (InputStream in = new URI(imageURL).toURL().openStream()) {
-            Files.copy(in, Paths.get("image.jpg"));
-        }
     }
 }

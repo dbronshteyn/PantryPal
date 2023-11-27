@@ -11,9 +11,17 @@ import javafx.scene.control.TextArea;
 
 import middleware.Controller;
 
+import backend.ImageConvertor;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import java.util.HexFormat;
 
 /**
  * This class represents the scene that displays the details of a recipe.
@@ -37,11 +45,24 @@ class RecipeScene extends ScrollPane {
             Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
-            Image image = new Image(new File("generated_image.png").toURI().toString());
+            String url = Controller.getRecipeImageURL(recipeID);
+
+            // Currently the image is in hex format, I would like for it to be in File
+            // format
+            // so that I can use it in the ImageView
+            String hex = Controller.getRecipeImageURL(recipeID);
+            byte[] bytes = hex.getBytes();
+            try {
+                Files.write(Paths.get("generated_image.png"), bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            File file = new File("generated_image.png");
+            Image image = new Image(file.toURI().toString());
             ImageView imageView = new ImageView(image);
 
-            imageView.setFitWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
-            imageView.setFitHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
+            imageView.setFitWidth(400);
+            imageView.setFitHeight(400);
 
             Button backButton = createStyledButton("Back");
             backButton.setOnAction(e -> sceneManager.displayRecipeList());
@@ -72,11 +93,12 @@ class RecipeScene extends ScrollPane {
             Label title = new Label(Controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
-            Image image = new Image(new File("generated_image.png").toURI().toString());
-            ImageView imageView = new ImageView(image);
+            // String url = Controller.getRecipeImageURL(recipeID);
+            // Image image = new Image(url);
+            // ImageView imageView = new ImageView(image);
 
-            imageView.setFitWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
-            imageView.setFitHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
+            // imageView.setFitWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
+            // imageView.setFitHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
 
             Button cancelButton = createStyledButton("Cancel");
             cancelButton.setOnAction(e -> sceneManager.displayRecipeList());
@@ -87,7 +109,7 @@ class RecipeScene extends ScrollPane {
                 sceneManager.displayRecipeList();
             });
 
-            this.getChildren().addAll(cancelButton, title, imageView, saveButton);
+            this.getChildren().addAll(cancelButton, title, saveButton);
         }
     }
 

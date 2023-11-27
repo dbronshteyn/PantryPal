@@ -126,8 +126,9 @@ public class Recipe {
         out.put("recipeID", this.recipeID);
         out.put("title", this.title);
         out.put("instructions", this.instructions);
+        out.put("imageURL", this.imageURL); // I deleted the imagetoHex because I am currently stuck on retrieving the
+                                            // hex representation from the server. Reverting changes.
         out.put("dateCreated", this.formatter.format(this.dateCreated));
-        out.put("imageURL", this.imageURL);
         return out;
     }
 }
