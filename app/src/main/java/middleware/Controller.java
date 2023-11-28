@@ -203,7 +203,7 @@ public class Controller {
      * @param method
      * @return the response from the server
      */
-    private String sendRequest(String path, String query, String method) {
+    private static String sendRequest(String path, String query, String method) {
         try {
             String urlString = "http://localhost:8100" + path;
             if (query != null) {

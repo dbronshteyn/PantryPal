@@ -9,6 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import java.net.URISyntaxException;
+
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -29,6 +31,7 @@ class IntegrationTest {
 
     private ChatGPTMock chatGPTMock;
     private WhisperMock whisperMock;
+    private DallEMock dallEMock;
     private RecipeBuilder recipeBuilder;
     private RecipeList recipeList;
     private File databaseFile;
@@ -40,7 +43,8 @@ class IntegrationTest {
     public void setUp() {
         this.chatGPTMock = new ChatGPTMock();
         this.whisperMock = new WhisperMock();
-        this.recipeBuilder = new RecipeBuilder(this.chatGPTMock, this.whisperMock);
+        this.dallEMock = new DallEMock();
+        this.recipeBuilder = new RecipeBuilder(this.chatGPTMock, this.whisperMock, this.dallEMock);
 
         databaseFile = new File("test-database.json");
         if (databaseFile.exists()) {
@@ -62,9 +66,9 @@ class IntegrationTest {
      * Tests Scenario-based Milestone Test 1.1 (user stories 1, 2, 5)
      */
     @Test
-    void testScenarioOneOne() throws IOException {
+    void testScenarioOneOne() throws IOException, InterruptedException, URISyntaxException {
         // preset the database contents
-        String databaseContents = "[{\"instructions\":\"Fry the egg and fry the bacon\",\"dateCreated\":\"2023-11-12T15:57:23-08:00\",\"title\":\"Eggs and bacon\",\"recipeID\":\"id 1\",\"accountUsername\":\"\"},{\"instructions\":\"Cook pasta then add pesto\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Pesto pasta\",\"recipeID\":\"id 2\",\"accountUsername\":\"\"}]";
+        String databaseContents = "[{\"instructions\":\"Fry the egg and fry the bacon\",\"dateCreated\":\"2023-11-12T15:57:23-08:00\",\"title\":\"Eggs and bacon\",\"recipeID\":\"id 1\",\"accountUsername\":\"\",\"imageHex\":\"hex1\"},{\"instructions\":\"Cook pasta then add pesto\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Pesto pasta\",\"recipeID\":\"id 2\",\"accountUsername\":\"\",\"imageHex\":\"hex2\"}]";
         FileWriter fw = new FileWriter(this.databaseFile);
         fw.write(databaseContents);
         fw.flush();
@@ -85,7 +89,7 @@ class IntegrationTest {
 
         // create a new recipe (user story 2)
         // also Feature 1 in MS1 document
-        recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock);
+        recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         String recipeID = recipeBuilder.getRecipeID();
         assertTrue(recipeID.length() > 10); // make sure it has an ID
         assertFalse(recipeBuilder.isCompleted());
@@ -103,6 +107,7 @@ class IntegrationTest {
 
         chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: I have eggs, cheese, and bread.", 
                 "Title: Cheesy Egg Bread\n\n2 eggs, 3 cheese, 1 bread");
+        dallEMock.setMockScenario("Cheesy Egg Bread", "https://food.fnr.sndimg.com/content/dam/images/food/fullset/2021/02/05/Baked-Feta-Pasta-4_s4x3.jpg.rend.hgtvcom.1280.1280.suffix/1615916524567.jpeg"); // random URL of a pasta image
         assertTrue(recipeBuilder.isCompleted());
         Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals(recipeID, recipe.getRecipeID()); // make sure recipeID persists across builder and recipe
@@ -126,9 +131,9 @@ class IntegrationTest {
      * This is also Chef Caitlin's test
      */
     @Test
-    void testScenarioOneTwo() throws IOException {
+    void testScenarioOneTwo() throws IOException, InterruptedException, URISyntaxException {
         // this test is very similar to the one above, so I'll omit the comments
-        String databaseContents = "[{\"instructions\":\"Cook spaghetti and then add the tomato sauce and meatballs.\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Spaghetti with Tomato Sauce and Meatballs\",\"recipeID\":\"id 1\",\"accountUsername\":\"\"}]";
+        String databaseContents = "[{\"instructions\":\"Cook spaghetti and then add the tomato sauce and meatballs.\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Spaghetti with Tomato Sauce and Meatballs\",\"recipeID\":\"id 1\",\"accountUsername\":\"\",\"imageHex\":\"hex1\"}]";
         FileWriter fw = new FileWriter(this.databaseFile);
         fw.write(databaseContents);
         fw.flush();
@@ -142,7 +147,7 @@ class IntegrationTest {
         assertEquals("Cook spaghetti and then add the tomato sauce and meatballs.", recipeList.getRecipeByID(recipeIDs.get(0)).getInstructions());
 
         whisperMock.setMockScenario("chicken-broccoli.wav", "I have chicken, broccoli, garlic, and rice.");
-        recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock);
+        recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         String recipeID = recipeBuilder.getRecipeID();
         assertTrue(recipeID.length() > 10);
         assertFalse(recipeBuilder.isCompleted());
@@ -153,6 +158,7 @@ class IntegrationTest {
 
         chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: I have chicken, broccoli, garlic, and rice.", 
                 "Title: Chicken Broccoli Stir-Fry\n\nGood instructions");
+        dallEMock.setMockScenario("Chicken Broccoli Stir-Fry", "https://www.lecremedelacrumb.com/wp-content/uploads/2019/03/chicken-broccoli-stir-fry-1-2.jpg");
         assertTrue(recipeBuilder.isCompleted());
         Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals(recipeID, recipe.getRecipeID());
@@ -176,13 +182,13 @@ class IntegrationTest {
      * Tests Scenario-based Milestone Test 2.1 (user stories 3, 4, 6)
      */
     @Test
-    void testScenarioTwoOne() throws IOException{
+    void testScenarioTwoOne() throws IOException, InterruptedException, URISyntaxException {
         // start with empty database
         recipeList = new RecipeList(databaseFile);
         assertEquals(0, recipeList.getRecipeIDs("").size());
 
         // create a new recipe
-        recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock);
+        recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         String recipeID = recipeBuilder.getRecipeID();
         
         // specify invalid meal type (user story 3)
@@ -205,6 +211,7 @@ class IntegrationTest {
         // generate recipe
         chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Eggs and cheese.", 
                 "Title: Cheesy Eggs\n\n2 eggs, 3 cheese");
+        dallEMock.setMockScenario("Cheesy Eggs", "https://www.9010nutrition.com/wp-content/uploads/2019/01/cheesy-eggs-2.jpg");
         Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals("Cheesy Eggs", recipe.getTitle());
         assertEquals("2 eggs, 3 cheese", recipe.getInstructions());
@@ -231,9 +238,9 @@ class IntegrationTest {
      * This is also Chef Caitlin's test
      */
     @Test
-    void testScenarioTwoTwo() throws IOException {
+    void testScenarioTwoTwo() throws IOException, InterruptedException, URISyntaxException {
         recipeList = new RecipeList(databaseFile);
-        RecipeBuilder recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock);
+        RecipeBuilder recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         whisperMock.setMockScenario("dinner.wav", "Dinner.");
         assertEquals("dinner", recipeBuilder.getMealTypeElement().specify(new File("dinner.wav")));
         whisperMock.setMockScenario("chicken-broccoli.wav", "I have chicken, broccoli, garlic, and rice.");
@@ -241,6 +248,7 @@ class IntegrationTest {
 
         chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: I have chicken, broccoli, garlic, and rice.", 
                 "Title: Chicken Broccoli Stir-Fry\n\nGood instructions");
+        dallEMock.setMockScenario("Chicken Broccoli Stir-Fry", "https://www.lecremedelacrumb.com/wp-content/uploads/2019/03/chicken-broccoli-stir-fry-1-2.jpg");
         Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals("Chicken Broccoli Stir-Fry", recipe.getTitle());
         assertEquals("Good instructions", recipe.getInstructions());

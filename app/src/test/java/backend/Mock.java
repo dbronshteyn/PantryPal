@@ -65,3 +65,30 @@ class WhisperMock extends Whisper {
         return mockOutput;
     }
 }
+
+/**
+ * Mock class for DallE
+ */
+class DallEMock extends DallE {
+
+    String mockInput;
+    String mockOutput;
+
+    public DallEMock() {
+        super("");
+    }
+
+    public void setMockScenario(String input, String output) {
+        this.mockInput = input;
+        this.mockOutput = output;
+    }
+
+    /**
+     * Generates mock images.
+     */
+    @Override
+    public String generateImage(String prompt) throws IOException {
+        assertEquals(mockInput, prompt);
+        return mockOutput;
+    }
+}

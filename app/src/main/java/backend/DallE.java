@@ -1,7 +1,6 @@
 package backend;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -9,12 +8,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
-import java.util.HexFormat;
-
-// import javafx.scene.shape.Path;
 
 public class DallE {
 
@@ -26,7 +20,7 @@ public class DallE {
         this.apiKey = apiKey;
     }
 
-    public String generateImage(String recipeTitle, String recipeBody)
+    public String generateImage(String recipeTitle)
             throws IOException, InterruptedException, URISyntaxException {
         // Set request parameters
         String prompt = recipeTitle;
