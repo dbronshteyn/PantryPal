@@ -166,7 +166,7 @@ public class RecipeBuilder {
      * @throws URISyntaxException
      * @throws InterruptedException
      */
-    public Recipe returnRecipe() throws IOException, InterruptedException, URISyntaxException {
+    public Recipe returnRecipe(String accountUsername) throws IOException, InterruptedException, URISyntaxException {
         String prompt = String.format(PROMPT, this.mealType.getValue(), this.ingredients.getValue());
         String response = this.chatGPT.generateText(prompt, MAX_TOKENS);
         List<String> responseLines = Arrays.asList(response.split("Title:")[1].split("\n"));
@@ -183,7 +183,7 @@ public class RecipeBuilder {
         String imageHex = HexUtils.fileToHex(imageFile);
         imageFile.delete();
 
-        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date(), imageHex);
+        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date(), accountUsername, imageHex);
     }
 
     /**

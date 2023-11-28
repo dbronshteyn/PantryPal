@@ -22,12 +22,18 @@ import backend.HexUtils;
  */
 public class Controller {
 
+    private String accountUsername;
+
+    public Controller() {
+        this.accountUsername = null;
+    }
+
     /**
      * Generates a new recipe builder and returns the ID of the recipe builder.
      * 
      * @return
      */
-    public static String generateNewRecipeBuilder() {
+    public String generateNewRecipeBuilder() {
         return sendRequest("/generate-new-recipe-builder", null, "GET");
     }
 
@@ -37,7 +43,7 @@ public class Controller {
      * @param recipeID
      * @return the recipe title
      */
-    public static String getRecipeTitle(String recipeID) {
+    public String getRecipeTitle(String recipeID) {
         return sendRequest("/get-recipe-title", "recipeID=" + recipeID, "GET");
     }
 
@@ -47,7 +53,7 @@ public class Controller {
      * @param recipeID
      * @return the instructions
      */
-    public static String getRecipeInstructions(String recipeID) {
+    public String getRecipeInstructions(String recipeID) {
         try {
             return URLDecoder.decode(sendRequest("/get-recipe-instructions", "recipeID=" + recipeID, "GET"),
                     "UTF-8");
@@ -58,7 +64,7 @@ public class Controller {
     }
 
     public static File getRecipeImage(String recipeID) {
-        String response = sendRequest("/get-recipe-image-url", "recipeID=" + recipeID, "GET");
+        String response = sendRequest("/get-recipe-image", "recipeID=" + recipeID, "GET");
         File imageFile = new File("generated-image.png");
         try {
             HexUtils.hexToFile(response, imageFile);
@@ -73,8 +79,8 @@ public class Controller {
      * 
      * @return list of recipe IDs
      */
-    public static List<String> getRecipeIDs() {
-        String response = sendRequest("/get-recipe-ids", null, "GET");
+    public List<String> getRecipeIDs() {
+        String response = sendRequest("/get-recipe-ids", "accountUsername=" + accountUsername, "GET");
         if (response.equals(".")) {
             return new ArrayList<>();
         }
@@ -87,7 +93,7 @@ public class Controller {
      * @param recipeID
      * @param elementName
      */
-    public static void resetRecipeCreatorElement(String recipeID, String elementName) {
+    public void resetRecipeCreatorElement(String recipeID, String elementName) {
         sendRequest("/reset-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName,
                 "PUT");
     }
@@ -100,10 +106,9 @@ public class Controller {
      * @param audioFile
      * @return the new value of the element if it was set, otherwise null
      */
-    public static String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
+    public String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
         String hex = HexUtils.fileToHex(audioFile);
-        String response = sendRequest("/specify-recipe-creator-element",
-                "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "POST");
+        String response = sendRequest("/specify-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "POST");
         if (response.equals("invalid")) {
             return null;
         }
@@ -116,7 +121,7 @@ public class Controller {
      * @param recipeID
      * @return true if the recipe builder is completed, false otherwise
      */
-    public static boolean isRecipeCreatorCompleted(String recipeID) {
+    public boolean isRecipeCreatorCompleted(String recipeID) {
         String response = sendRequest("/is-recipe-creator-completed", "recipeID=" + recipeID, "GET");
         return response.equals("true");
     }
@@ -126,8 +131,8 @@ public class Controller {
      * 
      * @param recipeID
      */
-    public static void generateRecipe(String recipeID) {
-        sendRequest("/generate-recipe", "recipeID=" + recipeID, "PUT");
+    public void generateRecipe(String recipeID) {
+        sendRequest("/generate-recipe", "recipeID=" + recipeID + "&accountUsername=" + this.accountUsername, "PUT");
     }
 
     /**
@@ -135,7 +140,7 @@ public class Controller {
      * 
      * @param recipeID
      */
-    public static void removeRecipe(String recipeID) {
+    public void removeRecipe(String recipeID) {
         sendRequest("/remove-recipe", "recipeID=" + recipeID, "DELETE");
     }
 
@@ -144,7 +149,7 @@ public class Controller {
      * 
      * @param recipeID
      */
-    public static void saveRecipe(String recipeID) {
+    public void saveRecipe(String recipeID) {
         sendRequest("/save-recipe", "recipeID=" + recipeID, "GET");
     }
 
@@ -154,7 +159,7 @@ public class Controller {
      * @param recipeID
      * @param newInstructions
      */
-    public static void editRecipe(String recipeID, String newInstructions) {
+    public void editRecipe(String recipeID, String newInstructions) {
         try {
             sendRequest("/edit-recipe",
                     "recipeID=" + recipeID + "&newInstructions=" + URLEncoder.encode(newInstructions, "UTF-8"), "PUT");
@@ -163,12 +168,31 @@ public class Controller {
         }
     }
 
-    public static String addAccount(String username, String password) {
+    public String addAccount(String username, String password) {
         String response = sendRequest("/add-account", "username=" + username + "&password=" + password, "POST");
         if (response.equals("created")) {
+            this.accountUsername = username;
             return username;
         }
         return null;
+    }
+
+    public boolean login(String username, String password) {
+        String response = sendRequest("/login", "username=" + username + "&password=" + password, "GET");
+        if (response.equals("success")) {
+            this.accountUsername = username;
+            return true;
+        }
+        return false;
+    }
+
+    public void logout() {
+        String response = sendRequest("/logout", "accountUsername=" + accountUsername, "GET");
+        if(response.equals("success")) {
+            this.accountUsername = null;
+            return;
+        }
+        return;
     }
 
     /**
@@ -179,7 +203,7 @@ public class Controller {
      * @param method
      * @return the response from the server
      */
-    private static String sendRequest(String path, String query, String method) {
+    private String sendRequest(String path, String query, String method) {
         try {
             String urlString = "http://localhost:8100" + path;
             if (query != null) {

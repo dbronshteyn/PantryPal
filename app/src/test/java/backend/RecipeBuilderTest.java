@@ -101,25 +101,22 @@
 // recipeBuilder.getIngredientsElement().getValue());
 // }
 
-// /**
-// * Tests the recipe that the builder returns
-// *
-// * @throws IOException
-// */
-// @Test
-// void testReturnRecipe() throws IOException {
-// chatGPTMock.setMockScenario("Please provide a recipe with a title denoted
-// with \"Title:\", a new line, and then a detailed recipe. Create a breakfast
-// recipe with the following ingredients: Ingredient 1 and ingredient 2",
-// "Title: Test Title\n\nIngredient 1 and ingredient 2");
-// String recipeID = recipeBuilder.getRecipeID();
-// recipeBuilder.getMealTypeElement().setValue("breakfast");
-// recipeBuilder.getIngredientsElement().setValue("Ingredient 1 and ingredient
-// 2");
-// Recipe recipe = recipeBuilder.returnRecipe();
-// assertNotNull(recipe);
-// assertEquals("Test Title", recipe.getTitle());
-// assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());
-// assertEquals(recipeID, recipe.getRecipeID());
-// }
-// }
+    /**
+     * Tests the recipe that the builder returns
+     * 
+     * @throws IOException
+     */
+    @Test
+    void testReturnRecipe() throws IOException {
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2", 
+                "Title: Test Title\n\nIngredient 1 and ingredient 2");
+        String recipeID = recipeBuilder.getRecipeID();
+        recipeBuilder.getMealTypeElement().setValue("breakfast");
+        recipeBuilder.getIngredientsElement().setValue("Ingredient 1 and ingredient 2");
+        Recipe recipe = recipeBuilder.returnRecipe("");
+        assertNotNull(recipe);
+        assertEquals("Test Title", recipe.getTitle());
+        assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());
+        assertEquals(recipeID, recipe.getRecipeID());
+    }
+}
