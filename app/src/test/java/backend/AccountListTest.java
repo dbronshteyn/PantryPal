@@ -14,7 +14,6 @@ import java.nio.file.Files;
 
 import java.io.IOException;
 
-
 class AccountListTest {
 
     private AccountList accountList;

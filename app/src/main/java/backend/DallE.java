@@ -8,7 +8,18 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.net.URL;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class DallE {
 
@@ -59,9 +70,16 @@ public class DallE {
 
         String generatedImageURL = dataArray.getJSONObject(0).getString("url");
 
-        System.out.println("DALL-E Response:");
-        System.out.println(generatedImageURL);
+        // Convert to Hex
+        URL imageURL = new URL(generatedImageURL);
+        ReadableByteChannel rbc = Channels.newChannel(imageURL.openStream());
+        FileOutputStream fos = new FileOutputStream("temp.png");
+        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        fos.close();
+        File imageFile = new File("temp.png");
+        String imageHex = HexUtils.fileToHex(imageFile);
+        imageFile.delete();
 
-        return generatedImageURL;
+        return imageHex;
     }
 }

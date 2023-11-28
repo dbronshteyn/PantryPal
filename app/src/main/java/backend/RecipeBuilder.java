@@ -173,15 +173,7 @@ public class RecipeBuilder {
         String recipeTitle = responseLines.get(0).strip();
         String recipeBody = String.join("\n", responseLines.subList(1, responseLines.size())).strip();
 
-        // from https://stackoverflow.com/questions/921262/how-can-i-download-and-save-a-file-from-the-internet-using-java
-        URL imageURL = new URL(this.dallE.generateImage(recipeTitle));
-        ReadableByteChannel rbc = Channels.newChannel(imageURL.openStream());
-        FileOutputStream fos = new FileOutputStream("temp.png");
-        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        fos.close();
-        File imageFile = new File("temp.png");
-        String imageHex = HexUtils.fileToHex(imageFile);
-        imageFile.delete();
+        String imageHex = this.dallE.generateImage(recipeTitle);
 
         return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date(), accountUsername, imageHex);
     }

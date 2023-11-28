@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 /**
-* Unit testing for RecipeBuilder class
-*/
+ * Unit testing for RecipeBuilder class
+ */
 class RecipeBuilderTest {
 
     private RecipeBuilder recipeBuilder;
@@ -25,8 +25,8 @@ class RecipeBuilderTest {
     private DallEMock dallEMock;
 
     /**
-    * Sets up the RecipeBuilder for testing.
-    */
+     * Sets up the RecipeBuilder for testing.
+     */
     @BeforeEach
     public void setUp() {
         this.chatGPTMock = new ChatGPTMock();
@@ -36,8 +36,8 @@ class RecipeBuilderTest {
     }
 
     /**
-    * Tests the isCompleted method.
-    */
+     * Tests the isCompleted method.
+     */
     @Test
     void testIsCompleted() {
         assertFalse(recipeBuilder.isCompleted());
@@ -50,10 +50,10 @@ class RecipeBuilderTest {
     }
 
     /**
-    * Tests specifying a valid meal type
-    *
-    * @throws IOException
-    */
+     * Tests specifying a valid meal type
+     *
+     * @throws IOException
+     */
     @Test
     void testSpecifyOne() throws IOException {
         whisperMock.setMockScenario("breakfast-meal-type.wav", "BREAKFAST");
@@ -62,8 +62,8 @@ class RecipeBuilderTest {
     }
 
     /**
-    * Tests that specifying throws an exception when there is a network error
-    */
+     * Tests that specifying throws an exception when there is a network error
+     */
     @Test
     void testSpecifyTwo() {
         try {
@@ -75,10 +75,10 @@ class RecipeBuilderTest {
     }
 
     /**
-    * Tests that null is returned when specifying an invalid meal type
-    *
-    * @throws IOException
-    */
+     * Tests that null is returned when specifying an invalid meal type
+     *
+     * @throws IOException
+     */
     @Test
     void testSpecifyThree() throws IOException {
         whisperMock.setMockScenario("invalid-meal-type.wav", "Brunch");
@@ -87,17 +87,17 @@ class RecipeBuilderTest {
     }
 
     /**
-    * Tests specifying an ingredient list
-    *
-    * @throws IOException
-    */
+     * Tests specifying an ingredient list
+     *
+     * @throws IOException
+     */
     @Test
     void testSpecifyFour() throws IOException {
         whisperMock.setMockScenario("ingredients.wav", "Ingredient 1 and ingredient 2");
         assertEquals("Ingredient 1 and ingredient 2",
-        recipeBuilder.getIngredientsElement().specify(new File("ingredients.wav")));
+                recipeBuilder.getIngredientsElement().specify(new File("ingredients.wav")));
         assertEquals("Ingredient 1 and ingredient 2",
-        recipeBuilder.getIngredientsElement().getValue());
+                recipeBuilder.getIngredientsElement().getValue());
     }
 
     /**
@@ -107,9 +107,10 @@ class RecipeBuilderTest {
      */
     @Test
     void testReturnRecipe() throws IOException, InterruptedException, URISyntaxException {
-        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2", 
+        chatGPTMock.setMockScenario(
+                "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2",
                 "Title: Test Title\n\nIngredient 1 and ingredient 2");
-        dallEMock.setMockScenario("Test Title", "https://food.fnr.sndimg.com/content/dam/images/food/fullset/2021/02/05/Baked-Feta-Pasta-4_s4x3.jpg.rend.hgtvcom.1280.1280.suffix/1615916524567.jpeg");
+        dallEMock.setMockScenario("Test Title", "hex 1");
         String recipeID = recipeBuilder.getRecipeID();
         recipeBuilder.getMealTypeElement().setValue("breakfast");
         recipeBuilder.getIngredientsElement().setValue("Ingredient 1 and ingredient 2");

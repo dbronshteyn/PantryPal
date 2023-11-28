@@ -85,7 +85,8 @@ class IntegrationTest {
         // view recipe instructions (user story 1)
         assertEquals("Fry the egg and fry the bacon", recipeList.getRecipeByID(recipeIDs.get(1)).getInstructions());
 
-        // this part of the scenario involved navigating back to the home page, but can't really test that
+        // this part of the scenario involved navigating back to the home page, but
+        // can't really test that
 
         // create a new recipe (user story 2)
         // also Feature 1 in MS1 document
@@ -94,20 +95,23 @@ class IntegrationTest {
         assertTrue(recipeID.length() > 10); // make sure it has an ID
         assertFalse(recipeBuilder.isCompleted());
 
-        // we had something here to test if whisper didn't recognize any audio, but turns out
+        // we had something here to test if whisper didn't recognize any audio, but
+        // turns out
         // whisper always returns some text even if you say nothing
 
         whisperMock.setMockScenario("ingredients.wav", "I have eggs, cheese, and bread.");
         recipeBuilder.getIngredientsElement().specify(new File("ingredients.wav"));
         assertFalse(recipeBuilder.isCompleted());
 
-        // this was not part of the original Iteration 1 test because meal type wasn't included
+        // this was not part of the original Iteration 1 test because meal type wasn't
+        // included
         whisperMock.setMockScenario("mealType.wav", "breakfast");
         recipeBuilder.getMealTypeElement().specify(new File("mealType.wav"));
 
-        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: I have eggs, cheese, and bread.", 
+        chatGPTMock.setMockScenario(
+                "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: I have eggs, cheese, and bread.",
                 "Title: Cheesy Egg Bread\n\n2 eggs, 3 cheese, 1 bread");
-        dallEMock.setMockScenario("Cheesy Egg Bread", "https://food.fnr.sndimg.com/content/dam/images/food/fullset/2021/02/05/Baked-Feta-Pasta-4_s4x3.jpg.rend.hgtvcom.1280.1280.suffix/1615916524567.jpeg"); // random URL of a pasta image
+        dallEMock.setMockScenario("Cheesy Egg Bread", "hex 1"); // random URL of a pasta image
         assertTrue(recipeBuilder.isCompleted());
         Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals(recipeID, recipe.getRecipeID()); // make sure recipeID persists across builder and recipe
@@ -123,7 +127,8 @@ class IntegrationTest {
         assertEquals(3, recipeList.getRecipeIDs("").size());
         assertEquals("Cheesy Egg Bread", recipeList.getRecipeByID(recipeID).getTitle());
         assertEquals("Cheesy Egg Bread", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getTitle());
-        assertEquals("2 eggs, 3 cheese, 1 bread", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
+        assertEquals("2 eggs, 3 cheese, 1 bread",
+                recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
     }
 
     /*
@@ -142,40 +147,48 @@ class IntegrationTest {
         recipeList = new RecipeList(databaseFile);
         List<String> recipeIDs = recipeList.getRecipeIDs("");
         assertEquals(1, recipeIDs.size());
-        assertEquals("Spaghetti with Tomato Sauce and Meatballs", recipeList.getRecipeByID(recipeIDs.get(0)).getTitle());
+        assertEquals("Spaghetti with Tomato Sauce and Meatballs",
+                recipeList.getRecipeByID(recipeIDs.get(0)).getTitle());
 
-        assertEquals("Cook spaghetti and then add the tomato sauce and meatballs.", recipeList.getRecipeByID(recipeIDs.get(0)).getInstructions());
+        assertEquals("Cook spaghetti and then add the tomato sauce and meatballs.",
+                recipeList.getRecipeByID(recipeIDs.get(0)).getInstructions());
 
         whisperMock.setMockScenario("chicken-broccoli.wav", "I have chicken, broccoli, garlic, and rice.");
         recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         String recipeID = recipeBuilder.getRecipeID();
         assertTrue(recipeID.length() > 10);
         assertFalse(recipeBuilder.isCompleted());
-        assertEquals("I have chicken, broccoli, garlic, and rice.", recipeBuilder.getIngredientsElement().specify(new File("chicken-broccoli.wav")));
+        assertEquals("I have chicken, broccoli, garlic, and rice.",
+                recipeBuilder.getIngredientsElement().specify(new File("chicken-broccoli.wav")));
         assertFalse(recipeBuilder.isCompleted());
         whisperMock.setMockScenario("dinner.wav", "Dinner.");
         assertEquals("dinner", recipeBuilder.getMealTypeElement().specify(new File("dinner.wav")));
 
-        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: I have chicken, broccoli, garlic, and rice.", 
+        chatGPTMock.setMockScenario(
+                "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: I have chicken, broccoli, garlic, and rice.",
                 "Title: Chicken Broccoli Stir-Fry\n\nGood instructions");
-        dallEMock.setMockScenario("Chicken Broccoli Stir-Fry", "https://www.lecremedelacrumb.com/wp-content/uploads/2019/03/chicken-broccoli-stir-fry-1-2.jpg");
+        dallEMock.setMockScenario("Chicken Broccoli Stir-Fry", "hex 1");
         assertTrue(recipeBuilder.isCompleted());
         Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals(recipeID, recipe.getRecipeID());
         assertEquals("Chicken Broccoli Stir-Fry", recipe.getTitle());
         assertEquals("Good instructions", recipe.getInstructions());
-        
+
         recipeList.addRecipe(recipe);
         assertEquals(2, recipeList.getRecipeIDs("").size());
-        assertEquals("Chicken Broccoli Stir-Fry", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getTitle());
-        assertEquals("Good instructions", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
+        assertEquals("Chicken Broccoli Stir-Fry",
+                recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getTitle());
+        assertEquals("Good instructions",
+                recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
 
         // this test also makes sure recipes persist across restarts (user story 5)
         // also Feature 4 in MS1 document
         recipeList = new RecipeList(databaseFile);
         assertEquals(2, recipeList.getRecipeIDs("").size());
-        assertEquals("Chicken Broccoli Stir-Fry", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getTitle());
-        assertEquals("Good instructions", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
+        assertEquals("Chicken Broccoli Stir-Fry",
+                recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getTitle());
+        assertEquals("Good instructions",
+                recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
     }
 
     /*
@@ -190,7 +203,7 @@ class IntegrationTest {
         // create a new recipe
         recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         String recipeID = recipeBuilder.getRecipeID();
-        
+
         // specify invalid meal type (user story 3)
         whisperMock.setMockScenario("invalid-meal.wav", "Brunch.");
         assertNull(recipeBuilder.getMealTypeElement().specify(new File("invalid-meal.wav")));
@@ -205,13 +218,15 @@ class IntegrationTest {
         assertFalse(recipeBuilder.isCompleted());
 
         whisperMock.setMockScenario("eggs-and-cheese.wav", "Eggs and cheese.");
-        assertEquals("Eggs and cheese.", recipeBuilder.getIngredientsElement().specify(new File("eggs-and-cheese.wav")));
+        assertEquals("Eggs and cheese.",
+                recipeBuilder.getIngredientsElement().specify(new File("eggs-and-cheese.wav")));
         assertTrue(recipeBuilder.isCompleted());
 
         // generate recipe
-        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Eggs and cheese.", 
+        chatGPTMock.setMockScenario(
+                "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Eggs and cheese.",
                 "Title: Cheesy Eggs\n\n2 eggs, 3 cheese");
-        dallEMock.setMockScenario("Cheesy Eggs", "https://www.9010nutrition.com/wp-content/uploads/2019/01/cheesy-eggs-2.jpg");
+        dallEMock.setMockScenario("Cheesy Eggs", "hex 1");
         Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals("Cheesy Eggs", recipe.getTitle());
         assertEquals("2 eggs, 3 cheese", recipe.getInstructions());
@@ -221,7 +236,8 @@ class IntegrationTest {
         // also Feature 6 in MS1 document
         recipeList.getRecipeByID(recipeID).setInstructions("3 eggs, 2 cheese");
         assertEquals("3 eggs, 2 cheese", recipeList.getRecipeByID(recipeID).getInstructions());
-        assertEquals("3 eggs, 2 cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
+        assertEquals("3 eggs, 2 cheese",
+                recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
 
         // delete recipe (user story 6)
         // also Feature 7 in MS1 document
@@ -244,11 +260,13 @@ class IntegrationTest {
         whisperMock.setMockScenario("dinner.wav", "Dinner.");
         assertEquals("dinner", recipeBuilder.getMealTypeElement().specify(new File("dinner.wav")));
         whisperMock.setMockScenario("chicken-broccoli.wav", "I have chicken, broccoli, garlic, and rice.");
-        assertEquals("I have chicken, broccoli, garlic, and rice.", recipeBuilder.getIngredientsElement().specify(new File("chicken-broccoli.wav")));
+        assertEquals("I have chicken, broccoli, garlic, and rice.",
+                recipeBuilder.getIngredientsElement().specify(new File("chicken-broccoli.wav")));
 
-        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: I have chicken, broccoli, garlic, and rice.", 
+        chatGPTMock.setMockScenario(
+                "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: I have chicken, broccoli, garlic, and rice.",
                 "Title: Chicken Broccoli Stir-Fry\n\nGood instructions");
-        dallEMock.setMockScenario("Chicken Broccoli Stir-Fry", "https://www.lecremedelacrumb.com/wp-content/uploads/2019/03/chicken-broccoli-stir-fry-1-2.jpg");
+        dallEMock.setMockScenario("Chicken Broccoli Stir-Fry", "hex 1");
         Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals("Chicken Broccoli Stir-Fry", recipe.getTitle());
         assertEquals("Good instructions", recipe.getInstructions());
