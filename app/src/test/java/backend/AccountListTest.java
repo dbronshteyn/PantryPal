@@ -54,6 +54,19 @@ class AccountListTest {
     }
 
     @Test
+    void testAttemptLoginSuccess() {
+        accountList.getAccounts().add(accountList.new Account("test username", "test password"));
+        assertTrue(accountList.attemptLogin("test username", "test password"));
+    }
+
+    @Test
+    void testAttemptLoginFail() {
+        accountList.getAccounts().add(accountList.new Account("test username", "test password"));
+        assertFalse(accountList.attemptLogin("test username", "test password 2"));
+        assertFalse(accountList.attemptLogin("test username 2", "test password"));
+    }
+
+    @Test
     void testLoadAccountsFromFile() throws IOException {
         String fileContents = "[{\"password\":\"p1\",\"username\":\"abc\"},{\"password\":\"p2\",\"username\":\"abcd\"}]";
         FileWriter fileWriter = new FileWriter(databaseFile);
