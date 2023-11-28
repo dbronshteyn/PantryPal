@@ -177,6 +177,15 @@ public class Controller {
         return false;
     }
 
+    public void logout() {
+        String response = sendRequest("/logout", "accountUsername=" + accountUsername, "GET");
+        if(response.equals("success")) {
+            this.accountUsername = null;
+            return;
+        }
+        return;
+    }
+
     /**
      * Sends a request to the server and returns the response.
      * 

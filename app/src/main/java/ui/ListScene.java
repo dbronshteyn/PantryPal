@@ -67,7 +67,20 @@ public class ListScene extends VBox {
             Button newRecipeButton = createStyledButton("New Recipe");
             newRecipeButton.setOnAction(e -> sceneManager.displayRecipeCreationScene());
 
-            this.getChildren().addAll(recipesLabel, newRecipeButton);
+            Button logoutButton = createStyledButton("Logout");
+            logoutButton.setOnAction(e -> {
+                controller.logout();
+                sceneManager.displayLoginScene();
+            });
+
+            HBox rightContainer = new HBox(logoutButton);
+            rightContainer.setAlignment(Pos.CENTER_RIGHT);
+            HBox.setHgrow(rightContainer, Priority.ALWAYS);
+
+            HBox leftContainer = new HBox(recipesLabel);
+            leftContainer.setAlignment(Pos.CENTER_LEFT);
+
+            this.getChildren().addAll(leftContainer, newRecipeButton, rightContainer);
             this.setStyle("-fx-background-color: #c6ecc6;");
         }
     }

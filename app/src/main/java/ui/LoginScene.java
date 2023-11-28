@@ -87,7 +87,7 @@ public class LoginScene extends VBox {
         loginButton.setDisable(true);
         loginButton.setOnAction(e -> {
             if (controller.login(usernameField.getText(), passwordField.getText())) {
-                statusLabel.setText("Login successful");
+                statusLabel.setText("");
                 if (autoLogin.isSelected()) {
                     this.setAutomaticLogin(usernameField.getText(), passwordField.getText());
                 }

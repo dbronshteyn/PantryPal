@@ -79,6 +79,15 @@ public class AccountList {
         return false;
     }
 
+    public boolean attemptLogout(String username) {
+        File automaticLoginFile = new File("automaticLogin.json");
+        if (automaticLoginFile.exists()) {
+            automaticLoginFile.delete();
+            return true;
+        }
+        return false;
+    }
+
     public List<Account> getAccounts() {
         return this.accounts;
     }
@@ -113,4 +122,5 @@ public class AccountList {
             e.printStackTrace();
         }
     }
+
 }
