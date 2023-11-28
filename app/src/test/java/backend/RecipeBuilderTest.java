@@ -108,7 +108,7 @@ class RecipeBuilderTest {
         String recipeID = recipeBuilder.getRecipeID();
         recipeBuilder.getMealTypeElement().setValue("breakfast");
         recipeBuilder.getIngredientsElement().setValue("Ingredient 1 and ingredient 2");
-        Recipe recipe = recipeBuilder.returnRecipe();
+        Recipe recipe = recipeBuilder.returnRecipe("");
         assertNotNull(recipe);
         assertEquals("Test Title", recipe.getTitle());
         assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());

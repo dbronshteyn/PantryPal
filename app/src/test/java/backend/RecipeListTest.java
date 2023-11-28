@@ -53,7 +53,7 @@ class RecipeListTest {
      */
     @Test
     void testAddRecipe() {
-        Recipe recipe = new Recipe("", "Test Recipe", "Test Instructions", new Date());
+        Recipe recipe = new Recipe("", "Test Recipe", "Test Instructions", new Date(), "");
         recipeList.addRecipe(recipe);
 
         List<Recipe> recipes = recipeList.getRecipes();
@@ -67,11 +67,11 @@ class RecipeListTest {
      */
     @Test
     void testGetRecipeIDs() {
-        recipeList.getRecipes().add(new Recipe("id 1", "Test Recipe", "Test Instructions", new Date()));
-        recipeList.getRecipes().add(new Recipe("id 2", "Test Recipe 2", "Test Instructions 2", new Date()));
-        recipeList.getRecipes().add(new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date()));
+        recipeList.getRecipes().add(new Recipe("id 1", "Test Recipe", "Test Instructions", new Date(), ""));
+        recipeList.getRecipes().add(new Recipe("id 2", "Test Recipe 2", "Test Instructions 2", new Date(), ""));
+        recipeList.getRecipes().add(new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date(), ""));
 
-        List<String> recipeIDs = recipeList.getRecipeIDs();
+        List<String> recipeIDs = recipeList.getRecipeIDs("");
 
         assertEquals(3, recipeIDs.size());
         assertEquals("id 1", recipeIDs.get(0));
@@ -84,9 +84,9 @@ class RecipeListTest {
      */
     @Test
     void testGetRecipeByID() {
-        Recipe recipe1 = new Recipe("id 1", "Test Recipe", "Test Instructions", new Date());
-        Recipe recipe2 = new Recipe("id 2", "Test Recipe 2", "Test Instructions 2", new Date());
-        Recipe recipe3 = new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date());
+        Recipe recipe1 = new Recipe("id 1", "Test Recipe", "Test Instructions", new Date(), "");
+        Recipe recipe2 = new Recipe("id 2", "Test Recipe 2", "Test Instructions 2", new Date(), "");
+        Recipe recipe3 = new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date(), "");
 
         recipeList.getRecipes().add(recipe1);
         recipeList.getRecipes().add(recipe2);
@@ -104,9 +104,9 @@ class RecipeListTest {
     @Test
     void testSortRecipesByDate() {
         long currentTime = System.currentTimeMillis();
-        Recipe recipe1 = new Recipe("", "Test Recipe", "Test Instructions", new Date(currentTime - 1000));
-        Recipe recipe2 = new Recipe("", "Test Recipe 2", "Test Instructions 2", new Date(currentTime));
-        Recipe recipe3 = new Recipe("", "Test Recipe 3", "Test Instructions 3", new Date(currentTime + 1000));
+        Recipe recipe1 = new Recipe("", "Test Recipe", "Test Instructions", new Date(currentTime - 1000), "");
+        Recipe recipe2 = new Recipe("", "Test Recipe 2", "Test Instructions 2", new Date(currentTime), "");
+        Recipe recipe3 = new Recipe("", "Test Recipe 3", "Test Instructions 3", new Date(currentTime + 1000), "");
 
         recipeList.getRecipes().add(recipe1);
         recipeList.getRecipes().add(recipe2);
@@ -128,9 +128,9 @@ class RecipeListTest {
     @Test
     void testUpdateDatabase() throws IOException {
         long currentTime = System.currentTimeMillis();
-        Recipe recipe1 = new Recipe("id 1", "Test Recipe", "Test Instructions", new Date(currentTime - 1000)); // oldest
-        Recipe recipe2 = new Recipe("id 2 ", "Test Recipe 2", "Test Instructions 2", new Date(currentTime)); // middle
-        Recipe recipe3 = new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date(currentTime + 1000)); // newest
+        Recipe recipe1 = new Recipe("id 1", "Test Recipe", "Test Instructions", new Date(currentTime - 1000), ""); // oldest
+        Recipe recipe2 = new Recipe("id 2 ", "Test Recipe 2", "Test Instructions 2", new Date(currentTime), ""); // middle
+        Recipe recipe3 = new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date(currentTime + 1000), ""); // newest
 
         recipeList.getRecipes().add(recipe1);
         recipeList.getRecipes().add(recipe2);
@@ -164,7 +164,7 @@ class RecipeListTest {
     void testLoadRecipesFromFile() throws IOException {
         FileWriter fw = new FileWriter(databaseFile);
         fw.write(
-                "[{\"instructions\":\"Test Instructions\",\"dateCreated\":\"2023-11-11T00:55:14-08:00\",\"title\":\"Test Recipe\",\"recipeID\":\"id 1\"},{\"instructions\":\"Test Instructions 2\",\"dateCreated\":\"2023-11-11T00:55:15-08:00\",\"title\":\"Test Recipe 2\",\"recipeID\":\"id 2 \"},{\"instructions\":\"Test Instructions 3\",\"dateCreated\":\"2023-11-11T00:55:16-08:00\",\"title\":\"Test Recipe 3\",\"recipeID\":\"id 3\"}]");
+                "[{\"instructions\":\"Test Instructions\",\"dateCreated\":\"2023-11-11T00:55:14-08:00\",\"title\":\"Test Recipe\",\"recipeID\":\"id 1\",\"accountUsername\":\"username 1\"},{\"instructions\":\"Test Instructions 2\",\"dateCreated\":\"2023-11-11T00:55:15-08:00\",\"title\":\"Test Recipe 2\",\"recipeID\":\"id 2\",\"accountUsername\":\"username 2\"},{\"instructions\":\"Test Instructions 3\",\"dateCreated\":\"2023-11-11T00:55:16-08:00\",\"title\":\"Test Recipe 3\",\"recipeID\":\"id 3\",\"accountUsername\":\"username 3\"}]");
         fw.flush();
         fw.close();
         recipeList.loadRecipesFromFile();
@@ -172,6 +172,7 @@ class RecipeListTest {
         assertEquals("Test Recipe", recipeList.getRecipes().get(0).getTitle());
         assertEquals("Test Instructions 2", recipeList.getRecipes().get(1).getInstructions());
         assertEquals("id 3", recipeList.getRecipes().get(2).getRecipeID());
+        assertEquals("username 3", recipeList.getRecipes().get(2).getAccountUsername());
         String dateString = recipeList.getRecipes().get(2).getDateCreated().toString();
 
         // depends on the timezone you run the code from
@@ -196,8 +197,8 @@ class RecipeListTest {
      */
     @Test
     void testRemoveRecipe() {
-        Recipe recipe1 = new Recipe("", "Test Recipe", "Test Instructions", new Date());
-        Recipe recipe2 = new Recipe("", "Test Recipe 2", "Test Instructions 2", new Date());
+        Recipe recipe1 = new Recipe("", "Test Recipe", "Test Instructions", new Date(), "");
+        Recipe recipe2 = new Recipe("", "Test Recipe 2", "Test Instructions 2", new Date(), "");
 
         recipeList.getRecipes().add(recipe1);
         recipeList.getRecipes().add(recipe2);

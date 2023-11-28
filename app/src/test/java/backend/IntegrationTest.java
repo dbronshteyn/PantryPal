@@ -64,7 +64,7 @@ class IntegrationTest {
     @Test
     void testScenarioOneOne() throws IOException {
         // preset the database contents
-        String databaseContents = "[{\"instructions\":\"Fry the egg and fry the bacon\",\"dateCreated\":\"2023-11-12T15:57:23-08:00\",\"title\":\"Eggs and bacon\",\"recipeID\":\"id 1\"},{\"instructions\":\"Cook pasta then add pesto\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Pesto pasta\",\"recipeID\":\"id 2\"}]";
+        String databaseContents = "[{\"instructions\":\"Fry the egg and fry the bacon\",\"dateCreated\":\"2023-11-12T15:57:23-08:00\",\"title\":\"Eggs and bacon\",\"recipeID\":\"id 1\",\"accountUsername\":\"\"},{\"instructions\":\"Cook pasta then add pesto\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Pesto pasta\",\"recipeID\":\"id 2\",\"accountUsername\":\"\"}]";
         FileWriter fw = new FileWriter(this.databaseFile);
         fw.write(databaseContents);
         fw.flush();
@@ -73,7 +73,7 @@ class IntegrationTest {
         // load the recipes from the database file and view (user story 1)
         // also Features 3 and 5 in MS1 document
         recipeList = new RecipeList(databaseFile);
-        List<String> recipeIDs = recipeList.getRecipeIDs(); // we do this because the UI also pulls the IDs first
+        List<String> recipeIDs = recipeList.getRecipeIDs(""); // we do this because the UI also pulls the IDs first
         assertEquals(2, recipeIDs.size());
         assertEquals("Pesto pasta", recipeList.getRecipeByID(recipeIDs.get(0)).getTitle());
         assertEquals("Eggs and bacon", recipeList.getRecipeByID(recipeIDs.get(1)).getTitle());
@@ -104,21 +104,21 @@ class IntegrationTest {
         chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: I have eggs, cheese, and bread.", 
                 "Title: Cheesy Egg Bread\n\n2 eggs, 3 cheese, 1 bread");
         assertTrue(recipeBuilder.isCompleted());
-        Recipe recipe = recipeBuilder.returnRecipe();
+        Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals(recipeID, recipe.getRecipeID()); // make sure recipeID persists across builder and recipe
         assertEquals("Cheesy Egg Bread", recipe.getTitle());
         assertEquals("2 eggs, 3 cheese, 1 bread", recipe.getInstructions());
 
         // make sure recipe isn't saved yet
-        assertEquals(2, recipeList.getRecipeIDs().size());
+        assertEquals(2, recipeList.getRecipeIDs("").size());
 
         // save recipe (user story 5)
         // also Feature 4 in MS1 document
         recipeList.addRecipe(recipe);
-        assertEquals(3, recipeList.getRecipeIDs().size());
+        assertEquals(3, recipeList.getRecipeIDs("").size());
         assertEquals("Cheesy Egg Bread", recipeList.getRecipeByID(recipeID).getTitle());
-        assertEquals("Cheesy Egg Bread", recipeList.getRecipeByID(recipeList.getRecipeIDs().get(0)).getTitle());
-        assertEquals("2 eggs, 3 cheese, 1 bread", recipeList.getRecipeByID(recipeList.getRecipeIDs().get(0)).getInstructions());
+        assertEquals("Cheesy Egg Bread", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getTitle());
+        assertEquals("2 eggs, 3 cheese, 1 bread", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
     }
 
     /*
@@ -128,14 +128,14 @@ class IntegrationTest {
     @Test
     void testScenarioOneTwo() throws IOException {
         // this test is very similar to the one above, so I'll omit the comments
-        String databaseContents = "[{\"instructions\":\"Cook spaghetti and then add the tomato sauce and meatballs.\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Spaghetti with Tomato Sauce and Meatballs\",\"recipeID\":\"id 1\"}]";
+        String databaseContents = "[{\"instructions\":\"Cook spaghetti and then add the tomato sauce and meatballs.\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Spaghetti with Tomato Sauce and Meatballs\",\"recipeID\":\"id 1\",\"accountUsername\":\"\"}]";
         FileWriter fw = new FileWriter(this.databaseFile);
         fw.write(databaseContents);
         fw.flush();
         fw.close();
 
         recipeList = new RecipeList(databaseFile);
-        List<String> recipeIDs = recipeList.getRecipeIDs();
+        List<String> recipeIDs = recipeList.getRecipeIDs("");
         assertEquals(1, recipeIDs.size());
         assertEquals("Spaghetti with Tomato Sauce and Meatballs", recipeList.getRecipeByID(recipeIDs.get(0)).getTitle());
 
@@ -154,22 +154,22 @@ class IntegrationTest {
         chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: I have chicken, broccoli, garlic, and rice.", 
                 "Title: Chicken Broccoli Stir-Fry\n\nGood instructions");
         assertTrue(recipeBuilder.isCompleted());
-        Recipe recipe = recipeBuilder.returnRecipe();
+        Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals(recipeID, recipe.getRecipeID());
         assertEquals("Chicken Broccoli Stir-Fry", recipe.getTitle());
         assertEquals("Good instructions", recipe.getInstructions());
         
         recipeList.addRecipe(recipe);
-        assertEquals(2, recipeList.getRecipeIDs().size());
-        assertEquals("Chicken Broccoli Stir-Fry", recipeList.getRecipeByID(recipeList.getRecipeIDs().get(0)).getTitle());
-        assertEquals("Good instructions", recipeList.getRecipeByID(recipeList.getRecipeIDs().get(0)).getInstructions());
+        assertEquals(2, recipeList.getRecipeIDs("").size());
+        assertEquals("Chicken Broccoli Stir-Fry", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getTitle());
+        assertEquals("Good instructions", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
 
         // this test also makes sure recipes persist across restarts (user story 5)
         // also Feature 4 in MS1 document
         recipeList = new RecipeList(databaseFile);
-        assertEquals(2, recipeList.getRecipeIDs().size());
-        assertEquals("Chicken Broccoli Stir-Fry", recipeList.getRecipeByID(recipeList.getRecipeIDs().get(0)).getTitle());
-        assertEquals("Good instructions", recipeList.getRecipeByID(recipeList.getRecipeIDs().get(0)).getInstructions());
+        assertEquals(2, recipeList.getRecipeIDs("").size());
+        assertEquals("Chicken Broccoli Stir-Fry", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getTitle());
+        assertEquals("Good instructions", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
     }
 
     /*
@@ -179,7 +179,7 @@ class IntegrationTest {
     void testScenarioTwoOne() throws IOException{
         // start with empty database
         recipeList = new RecipeList(databaseFile);
-        assertEquals(0, recipeList.getRecipeIDs().size());
+        assertEquals(0, recipeList.getRecipeIDs("").size());
 
         // create a new recipe
         recipeBuilder = new RecipeBuilder(chatGPTMock, whisperMock);
@@ -205,7 +205,7 @@ class IntegrationTest {
         // generate recipe
         chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Eggs and cheese.", 
                 "Title: Cheesy Eggs\n\n2 eggs, 3 cheese");
-        Recipe recipe = recipeBuilder.returnRecipe();
+        Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals("Cheesy Eggs", recipe.getTitle());
         assertEquals("2 eggs, 3 cheese", recipe.getInstructions());
         recipeList.addRecipe(recipe);
@@ -214,16 +214,16 @@ class IntegrationTest {
         // also Feature 6 in MS1 document
         recipeList.getRecipeByID(recipeID).setInstructions("3 eggs, 2 cheese");
         assertEquals("3 eggs, 2 cheese", recipeList.getRecipeByID(recipeID).getInstructions());
-        assertEquals("3 eggs, 2 cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs().get(0)).getInstructions());
+        assertEquals("3 eggs, 2 cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)).getInstructions());
 
         // delete recipe (user story 6)
         // also Feature 7 in MS1 document
-        recipeList.removeRecipe(recipeList.getRecipeByID(recipeList.getRecipeIDs().get(0)));
-        assertEquals(0, recipeList.getRecipeIDs().size());
+        recipeList.removeRecipe(recipeList.getRecipeByID(recipeList.getRecipeIDs("").get(0)));
+        assertEquals(0, recipeList.getRecipeIDs("").size());
 
         // make sure recipe is deleted
         recipeList = new RecipeList(databaseFile);
-        assertEquals(0, recipeList.getRecipeIDs().size());
+        assertEquals(0, recipeList.getRecipeIDs("").size());
     }
 
     /*
@@ -241,14 +241,14 @@ class IntegrationTest {
 
         chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: I have chicken, broccoli, garlic, and rice.", 
                 "Title: Chicken Broccoli Stir-Fry\n\nGood instructions");
-        Recipe recipe = recipeBuilder.returnRecipe();
+        Recipe recipe = recipeBuilder.returnRecipe("");
         assertEquals("Chicken Broccoli Stir-Fry", recipe.getTitle());
         assertEquals("Good instructions", recipe.getInstructions());
         recipeList.addRecipe(recipe);
 
-        assertEquals(1, recipeList.getRecipeIDs().size());
+        assertEquals(1, recipeList.getRecipeIDs("").size());
 
         recipeList.removeRecipe(recipe);
-        assertEquals(0, recipeList.getRecipeIDs().size());
+        assertEquals(0, recipeList.getRecipeIDs("").size());
     }
 }

@@ -154,13 +154,13 @@ public class RecipeBuilder {
      * @return the generated recipe
      * @throws IOException if there is an error generating the recipe
      */
-    public Recipe returnRecipe() throws IOException {
+    public Recipe returnRecipe(String accountUsername) throws IOException {
         String prompt = String.format(PROMPT, this.mealType.getValue(), this.ingredients.getValue());
         String response = this.chatGPT.generateText(prompt, MAX_TOKENS);
         List<String> responseLines = Arrays.asList(response.split("Title:")[1].split("\n"));
         String recipeTitle = responseLines.get(0).strip();
         String recipeBody = String.join("\n", responseLines.subList(1, responseLines.size())).strip();
-        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date());
+        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date(), accountUsername);
     }
 
     /**

@@ -17,6 +17,7 @@ import middleware.Controller;
 class RecipeScene extends ScrollPane {
 
     SceneManager sceneManager;
+    Controller controller;
     Label instructionsLabel;
     TextArea instructionsTextArea;
 
@@ -30,7 +31,7 @@ class RecipeScene extends ScrollPane {
             this.setSpacing(10);
             this.setStyle("-fx-background-color: #c6ecc6;");
 
-            Label title = new Label(Controller.getRecipeTitle(recipeID));
+            Label title = new Label(controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
             Button backButton = createStyledButton("Back");
@@ -41,7 +42,7 @@ class RecipeScene extends ScrollPane {
 
             Button deleteButton = createStyledButton("Delete");
             deleteButton.setOnAction(e -> {
-                Controller.removeRecipe(recipeID);
+                controller.removeRecipe(recipeID);
                 sceneManager.displayRecipeList();
             });
 
@@ -59,7 +60,7 @@ class RecipeScene extends ScrollPane {
             this.setSpacing(10);
             this.setStyle("-fx-background-color: #c6ecc6;");
 
-            Label title = new Label(Controller.getRecipeTitle(recipeID));
+            Label title = new Label(controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
             Button cancelButton = createStyledButton("Cancel");
@@ -67,7 +68,7 @@ class RecipeScene extends ScrollPane {
 
             Button saveButton = createStyledButton("Save");
             saveButton.setOnAction(e -> {
-                Controller.saveRecipe(recipeID);
+                controller.saveRecipe(recipeID);
                 sceneManager.displayRecipeList();
             });
 
@@ -85,7 +86,7 @@ class RecipeScene extends ScrollPane {
             this.setSpacing(10);
             this.setStyle("-fx-background-color: #c6ecc6;");
 
-            Label title = new Label(Controller.getRecipeTitle(recipeID));
+            Label title = new Label(controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
             Button cancelButton = createStyledButton("Cancel");
@@ -93,7 +94,7 @@ class RecipeScene extends ScrollPane {
 
             Button saveButton = createStyledButton("Save Edits");
             saveButton.setOnAction(e -> {
-                Controller.editRecipe(recipeID, instructionsTextArea.getText());
+                controller.editRecipe(recipeID, instructionsTextArea.getText());
                 sceneManager.displayRecipeDetails(recipeID);
             });
 
@@ -106,8 +107,9 @@ class RecipeScene extends ScrollPane {
      * 
      * @param sceneManager
      */
-    RecipeScene(SceneManager sceneManager) {
+    RecipeScene(SceneManager sceneManager, Controller controller) {
         this.sceneManager = sceneManager;
+        this.controller = controller;
 
         instructionsLabel = new Label();
         instructionsLabel.setWrapText(true);
@@ -129,7 +131,7 @@ class RecipeScene extends ScrollPane {
      */
     public void displayRecipeEditScene(String recipeID) {
         this.displayRecipeDetails(recipeID);
-        this.instructionsTextArea.setText(Controller.getRecipeInstructions(recipeID));
+        this.instructionsTextArea.setText(controller.getRecipeInstructions(recipeID));
         this.instructionsTextArea.setWrapText(true);
         this.setContent(instructionsTextArea);
         sceneManager.setCenter(this);
@@ -142,7 +144,7 @@ class RecipeScene extends ScrollPane {
      * @param recipeID
      */
     public void displayRecipeDetails(String recipeID) {
-        instructionsLabel.setText(Controller.getRecipeInstructions(recipeID));
+        instructionsLabel.setText(controller.getRecipeInstructions(recipeID));
         this.setContent(instructionsLabel);
         sceneManager.setCenter(this);
         sceneManager.setTop(new RecipeSceneTopBar(recipeID));
@@ -154,7 +156,7 @@ class RecipeScene extends ScrollPane {
      * @param recipeID
      */
     public void displayNewlyCreatedRecipe(String recipeID) {
-        instructionsLabel.setText(Controller.getRecipeInstructions(recipeID));
+        instructionsLabel.setText(controller.getRecipeInstructions(recipeID));
         sceneManager.setCenter(this);
         sceneManager.setTop(new NewlyCreatedRecipeSceneTopBar(recipeID));
     }

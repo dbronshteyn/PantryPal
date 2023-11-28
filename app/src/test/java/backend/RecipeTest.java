@@ -21,7 +21,7 @@ class RecipeTest {
     @BeforeEach
     public void setUp() {
         dateCreated = new Date(0);
-        recipe = new Recipe("id 1", "Chocolate Cake", "Mix ingredients and bake for 30 minutes.", dateCreated);
+        recipe = new Recipe("id 1", "Chocolate Cake", "Mix ingredients and bake for 30 minutes.", dateCreated, "");
     }
 
     /**
@@ -50,12 +50,13 @@ class RecipeTest {
     @Test
     void testFromJSON() {
         JSONObject json = new JSONObject(
-                "{\"title\":\"abc\",\"instructions\":\"ab\",\"dateCreated\":\"1970-01-01T00:00:00-00:00\",\"recipeID\":\"id 1\"}");
+                "{\"title\":\"abc\",\"instructions\":\"ab\",\"dateCreated\":\"1970-01-01T00:00:00-00:00\",\"recipeID\":\"id 1\",\"accountUsername\":\"username 1\"}");
         Recipe recipe = new Recipe(json);
         assertEquals("id 1", recipe.getRecipeID());
         assertEquals("abc", recipe.getTitle());
         assertEquals("ab", recipe.getInstructions());
         assertEquals(new Date(0), recipe.getDateCreated());
+        assertEquals("username 1", recipe.getAccountUsername());
     }
 
     /**
@@ -78,7 +79,7 @@ class RecipeTest {
     @Test
     void testEditRecipe() {
         long currentTime = System.currentTimeMillis();
-        Recipe recipe = new Recipe("", "Muffins", "Add 1 cup of sugar and flour.", new Date(currentTime - 1000));
+        Recipe recipe = new Recipe("", "Muffins", "Add 1 cup of sugar and flour.", new Date(currentTime - 1000), "");
         recipe.setInstructions("Add 1/2 cup of sugar and flour.");
         assertEquals("Add 1/2 cup of sugar and flour.", recipe.getInstructions());
         assertTrue(recipe.getDateCreated().after(new Date(currentTime - 1000)));

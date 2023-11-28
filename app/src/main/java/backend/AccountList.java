@@ -43,6 +43,14 @@ public class AccountList {
         public String getUsername() {
             return this.username;
         }
+
+        public String getPassword() {
+            return this.password;
+        }
+
+        public boolean matchesCredentials(String username, String password) {
+            return this.username.equals(username) && this.password.equals(password);
+        }
     }
 
     public AccountList(File databaseFile) {
@@ -60,6 +68,24 @@ public class AccountList {
         this.accounts.add(new Account(username, password));
         this.updateDatabase();
         return true;
+    }
+
+    public boolean attemptLogin(String username, String password) {
+        for (Account account : this.accounts) {
+            if (account.matchesCredentials(username, password)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean attemptLogout(String username) {
+        File automaticLoginFile = new File("automaticLogin.json");
+        if (automaticLoginFile.exists()) {
+            automaticLoginFile.delete();
+            return true;
+        }
+        return false;
     }
 
     public List<Account> getAccounts() {
@@ -96,4 +122,5 @@ public class AccountList {
             e.printStackTrace();
         }
     }
+
 }
