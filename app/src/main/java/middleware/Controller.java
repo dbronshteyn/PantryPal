@@ -25,6 +25,7 @@ public class Controller {
 
     private String accountUsername;
     private String sortBy;
+    private String filterBy;
 
     private SceneManager sceneManager;
     private static final String SERVER_URL = "http://localhost:8100";
@@ -32,6 +33,7 @@ public class Controller {
     public Controller() {
         this.accountUsername = null;
         this.sortBy = "most-recent";
+        this.filterBy = "all";
     }
 
     public void setSceneManager(SceneManager sceneManager) {
@@ -112,7 +114,8 @@ public class Controller {
      * @return list of recipe IDs
      */
     public List<String> getRecipeIDs() {
-        String response = sendRequest("/get-recipe-ids", "accountUsername=" + accountUsername + "&sortBy=" + sortBy, "GET");
+        String response = sendRequest("/get-recipe-ids",
+                "accountUsername=" + accountUsername + "&sortBy=" + sortBy + "&filterBy=" + filterBy, "GET");
         if (response.equals(".")) {
             return new ArrayList<>();
         }
@@ -232,6 +235,14 @@ public class Controller {
 
     public String getSortBy() {
         return this.sortBy;
+    }
+
+    public void setFilterBy(String filterBy) {
+        this.filterBy = filterBy;
+    }
+
+    public String getFilterBy() {
+        return this.filterBy;
     }
 
     /**

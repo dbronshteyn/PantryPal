@@ -66,7 +66,7 @@ public class RecipeList {
      * 
      * @return list of recipe IDs
      */
-    public List<String> getRecipeIDs(String accountUsername, String sortBy) {
+    public List<String> getRecipeIDs(String accountUsername, String sortBy, String filterBy) {
         List<String> recipeIDs = new ArrayList<>();
         for (Recipe recipe : this.recipes) {
             if (recipe.getAccountUsername().equals(accountUsername)) {
@@ -90,6 +90,23 @@ public class RecipeList {
                 recipeIDs.sort((a, b) -> this.getRecipeByID(b).getTitle()
                         .compareTo(this.getRecipeByID(a).getTitle()));
                 break;
+        }
+        // Filter by "all", "breakfast", "lunch", "dinner"
+        switch (filterBy) {
+            case "all":
+                break;
+            case "breakfast":
+                recipeIDs.removeIf(recipeID -> !this.getRecipeByID(recipeID).getMealType().equals("breakfast"));
+                break;
+            case "lunch":
+                recipeIDs.removeIf(recipeID -> !this.getRecipeByID(recipeID).getMealType().equals("lunch"));
+                break;
+            case "dinner":
+                recipeIDs.removeIf(recipeID -> !this.getRecipeByID(recipeID).getMealType().equals("dinner"));
+                break;
+            default:
+                break;
+
         }
         return recipeIDs;
     }
