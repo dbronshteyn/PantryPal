@@ -23,7 +23,6 @@ import backend.Whisper;
 import backend.DallE;
 import backend.HexUtils;
 
-
 /**
  * This class represents a server that handles requests from the frontend.
  */
@@ -103,6 +102,9 @@ class RequestHandler implements HttpHandler {
                 case "/generate-new-recipe-builder":
                     response = this.handleGenerateNewRecipeBuilder();
                     break;
+                case "/get-recipe-meal-type":
+                    response = this.handleGetRecipeMealType(query);
+                    break;
                 case "/get-recipe-title":
                     response = this.handleGetRecipeTitle(query);
                     break;
@@ -176,6 +178,13 @@ class RequestHandler implements HttpHandler {
         RecipeBuilder recipeBuilder = new RecipeBuilder(chatGPT, whisper, dallE);
         this.recipeBuilders.put(recipeBuilder.getRecipeID(), recipeBuilder);
         return recipeBuilder.getRecipeID();
+    }
+
+    private String handleGetRecipeMealType(Map<String, String> query) {
+        String recipeID = query.get("recipeID");
+        if (temporaryRecipes.containsKey(recipeID))
+            return this.temporaryRecipes.get(recipeID).getMealType();
+        return this.recipeList.getRecipeByID(recipeID).getMealType();
     }
 
     private String handleGetRecipeTitle(Map<String, String> query) {
@@ -314,7 +323,7 @@ class RequestHandler implements HttpHandler {
         }
         return FAILURE_MESSAGE;
     }
-    
+
     private String handleLogout(Map<String, String> query) {
         String username = query.get("username");
         if (this.accountList.attemptLogout(username)) {
