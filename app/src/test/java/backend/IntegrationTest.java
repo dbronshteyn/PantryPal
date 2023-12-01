@@ -77,8 +77,9 @@ class IntegrationTest {
                 // load the recipes from the database file and view (user story 1)
                 // also Features 3 and 5 in MS1 document
                 recipeList = new RecipeList(databaseFile);
-                List<String> recipeIDs = recipeList.getRecipeIDs("", "most-recent"); // we do this because the UI also pulls the IDs
-                                                                      // first
+                List<String> recipeIDs = recipeList.getRecipeIDs("", "most-recent"); // we do this because the UI also
+                                                                                     // pulls the IDs
+                // first
                 assertEquals(2, recipeIDs.size());
                 assertEquals("Pesto pasta", recipeList.getRecipeByID(recipeIDs.get(0)).getTitle());
                 assertEquals("Eggs and bacon", recipeList.getRecipeByID(recipeIDs.get(1)).getTitle());
@@ -135,7 +136,8 @@ class IntegrationTest {
                 assertEquals("Cheesy Egg Bread",
                                 recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0)).getTitle());
                 assertEquals("2 eggs, 3 cheese, 1 bread",
-                                recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0)).getInstructions());
+                                recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0))
+                                                .getInstructions());
         }
 
         /*
@@ -186,7 +188,8 @@ class IntegrationTest {
                 assertEquals("Chicken Broccoli Stir-Fry",
                                 recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0)).getTitle());
                 assertEquals("Good instructions",
-                                recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0)).getInstructions());
+                                recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0))
+                                                .getInstructions());
 
                 // this test also makes sure recipes persist across restarts (user story 5)
                 // also Feature 4 in MS1 document
@@ -195,7 +198,8 @@ class IntegrationTest {
                 assertEquals("Chicken Broccoli Stir-Fry",
                                 recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0)).getTitle());
                 assertEquals("Good instructions",
-                                recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0)).getInstructions());
+                                recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0))
+                                                .getInstructions());
         }
 
         /*
@@ -244,7 +248,8 @@ class IntegrationTest {
                 recipeList.getRecipeByID(recipeID).setInstructions("3 eggs, 2 cheese");
                 assertEquals("3 eggs, 2 cheese", recipeList.getRecipeByID(recipeID).getInstructions());
                 assertEquals("3 eggs, 2 cheese",
-                                recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0)).getInstructions());
+                                recipeList.getRecipeByID(recipeList.getRecipeIDs("", "most-recent").get(0))
+                                                .getInstructions());
 
                 // delete recipe (user story 6)
                 // also Feature 7 in MS1 document
@@ -283,5 +288,66 @@ class IntegrationTest {
 
                 recipeList.removeRecipe(recipe);
                 assertEquals(0, recipeList.getRecipeIDs("", "most-recent").size());
+        }
+
+        /*
+         * Interation 2 Test 1 #104 BDD Scenarios for User Story 8
+         * 
+         * Use later in full Integration test
+         * 
+         * The scenarios in the project board should be most-recent, least-recent, a-z,
+         * z-a.
+         */
+        @Test
+        void testSortRecipeList() throws IOException, InterruptedException, URISyntaxException {
+                // preset the database contents
+                String databaseContents = "[{\"instructions\":\"Fry the egg and cook the cheese\",\"dateCreated\":\"2023-11-12T15:57:23-08:00\",\"title\":\"Eggs and cheese\",\"recipeID\":\"id 1\",\"accountUsername\":\"\",\"mealType\":\"breakfast\",\"imageHex\":\"hex1\"},{\"instructions\":\"Cook pasta\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Pasta\",\"recipeID\":\"id 2\",\"accountUsername\":\"\",\"mealType\":\"dinner\",\"imageHex\":\"hex2\"}]";
+                FileWriter fw = new FileWriter(this.databaseFile);
+                fw.write(databaseContents);
+                fw.flush();
+                fw.close();
+
+                recipeList = new RecipeList(databaseFile);
+
+                /*
+                 * Scenario 1: User does not sort by anything [most-recent by default]
+                 */
+                List<String> recipeIDs = recipeList.getRecipeIDs("", "");
+                assertEquals(2, recipeIDs.size());
+                assertEquals("Pasta", recipeList.getRecipeByID(recipeIDs.get(0)).getTitle());
+                assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeIDs.get(1)).getTitle());
+
+                /*
+                 * Scenario 1.1: User sorts by most-recent
+                 */
+                recipeIDs = recipeList.getRecipeIDs("", "most-recent");
+                assertEquals(2, recipeIDs.size());
+                assertEquals("Pasta", recipeList.getRecipeByID(recipeIDs.get(0)).getTitle());
+                assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeIDs.get(1)).getTitle());
+
+                /*
+                 * Scenario 2: User sorts by a-z
+                 */
+                recipeIDs = recipeList.getRecipeIDs("", "a-z");
+                assertEquals(2, recipeIDs.size());
+                assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeIDs.get(0)).getTitle());
+                assertEquals("Pasta", recipeList.getRecipeByID(recipeIDs.get(1)).getTitle());
+
+                /*
+                 * Scenario 3: User sorts by z-a
+                 */
+                recipeIDs = recipeList.getRecipeIDs("", "z-a");
+                assertEquals(2, recipeIDs.size());
+                assertEquals("Pasta", recipeList.getRecipeByID(recipeIDs.get(0)).getTitle());
+                assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeIDs.get(1)).getTitle());
+
+                /*
+                 * Scenario 4: User sorts by least-recent
+                 */
+                recipeIDs = recipeList.getRecipeIDs("", "least-recent");
+                assertEquals(2, recipeIDs.size());
+                assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeIDs.get(0)).getTitle());
+                assertEquals("Pasta", recipeList.getRecipeByID(recipeIDs.get(1)).getTitle());
+
         }
 }
