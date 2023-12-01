@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 
 import java.io.File;
 
-
 public class AccountList {
 
     private File databaseFile;
@@ -121,6 +120,10 @@ public class AccountList {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Account> getList() {
+        return accounts;
     }
 
 }

@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Unit testing for RecipeBuilder class
@@ -21,6 +22,7 @@ class RecipeBuilderTest {
     private RecipeBuilder recipeBuilder;
     private ChatGPTMock chatGPTMock;
     private WhisperMock whisperMock;
+    private DallEMock dallEMock;
 
     /**
      * Sets up the RecipeBuilder for testing.
@@ -29,7 +31,8 @@ class RecipeBuilderTest {
     public void setUp() {
         this.chatGPTMock = new ChatGPTMock();
         this.whisperMock = new WhisperMock();
-        recipeBuilder = new RecipeBuilder(this.chatGPTMock, this.whisperMock);
+        this.dallEMock = new DallEMock();
+        recipeBuilder = new RecipeBuilder(this.chatGPTMock, this.whisperMock, this.dallEMock);
     }
 
     /**
@@ -48,7 +51,7 @@ class RecipeBuilderTest {
 
     /**
      * Tests specifying a valid meal type
-     * 
+     *
      * @throws IOException
      */
     @Test
@@ -73,7 +76,7 @@ class RecipeBuilderTest {
 
     /**
      * Tests that null is returned when specifying an invalid meal type
-     * 
+     *
      * @throws IOException
      */
     @Test
@@ -85,7 +88,7 @@ class RecipeBuilderTest {
 
     /**
      * Tests specifying an ingredient list
-     * 
+     *
      * @throws IOException
      */
     @Test
@@ -93,7 +96,8 @@ class RecipeBuilderTest {
         whisperMock.setMockScenario("ingredients.wav", "Ingredient 1 and ingredient 2");
         assertEquals("Ingredient 1 and ingredient 2",
                 recipeBuilder.getIngredientsElement().specify(new File("ingredients.wav")));
-        assertEquals("Ingredient 1 and ingredient 2", recipeBuilder.getIngredientsElement().getValue());
+        assertEquals("Ingredient 1 and ingredient 2",
+                recipeBuilder.getIngredientsElement().getValue());
     }
 
     /**
@@ -102,9 +106,11 @@ class RecipeBuilderTest {
      * @throws IOException
      */
     @Test
-    void testReturnRecipe() throws IOException {
-        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2", 
+    void testReturnRecipe() throws IOException, InterruptedException, URISyntaxException {
+        chatGPTMock.setMockScenario(
+                "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2",
                 "Title: Test Title\n\nIngredient 1 and ingredient 2");
+        dallEMock.setMockScenario("Test Title", "hex 1");
         String recipeID = recipeBuilder.getRecipeID();
         recipeBuilder.getMealTypeElement().setValue("breakfast");
         recipeBuilder.getIngredientsElement().setValue("Ingredient 1 and ingredient 2");

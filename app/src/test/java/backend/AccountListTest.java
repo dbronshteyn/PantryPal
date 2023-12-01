@@ -8,16 +8,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Paths;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 
 import java.io.IOException;
-
-import java.util.Date;
-
 
 class AccountListTest {
 
@@ -56,6 +51,19 @@ class AccountListTest {
         assertFalse(accountList.addAccount("test username", "test password 2"));
         assertEquals(1, accountList.getAccounts().size());
         assertEquals("test username", accountList.getAccounts().get(0).getUsername());
+    }
+
+    @Test
+    void testAttemptLoginSuccess() {
+        accountList.getAccounts().add(accountList.new Account("test username", "test password"));
+        assertTrue(accountList.attemptLogin("test username", "test password"));
+    }
+
+    @Test
+    void testAttemptLoginFail() {
+        accountList.getAccounts().add(accountList.new Account("test username", "test password"));
+        assertFalse(accountList.attemptLogin("test username", "test password 2"));
+        assertFalse(accountList.attemptLogin("test username 2", "test password"));
     }
 
     @Test

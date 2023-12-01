@@ -1,11 +1,17 @@
 package backend;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import java.net.URL;
 
 /**
  * This class represents a Recipe Builder that allows the user to create a
@@ -122,6 +128,8 @@ public class RecipeBuilder {
     private ResettableElement ingredients;
     private String recipeID;
 
+    private DallE dallE;
+
     /**
      * Constructs a Recipe Builder with the specified ChatGPT and Whisper.
      * Initializes the meal type and ingredients resettable elements and generates a
@@ -130,12 +138,14 @@ public class RecipeBuilder {
      * @param chatGPT the ChatGPT used to generate the recipe
      * @param whisper the Whisper used to transcribe audio files
      */
-    public RecipeBuilder(ChatGPT chatGPT, Whisper whisper) {
+    public RecipeBuilder(ChatGPT chatGPT, Whisper whisper, DallE dallE) {
         this.chatGPT = chatGPT;
         this.whisper = whisper;
         this.mealType = new ResettableElement(MEAL_TYPES);
         this.ingredients = new ResettableElement(null);
         this.recipeID = UUID.randomUUID().toString();
+
+        this.dallE = dallE;
     }
 
     /**
@@ -152,15 +162,20 @@ public class RecipeBuilder {
      * Returns the produced Recipe object
      * 
      * @return the generated recipe
-     * @throws IOException if there is an error generating the recipe
+     * @throws IOException          if there is an error generating the recipe
+     * @throws URISyntaxException
+     * @throws InterruptedException
      */
-    public Recipe returnRecipe(String accountUsername) throws IOException {
+    public Recipe returnRecipe(String accountUsername) throws IOException, InterruptedException, URISyntaxException {
         String prompt = String.format(PROMPT, this.mealType.getValue(), this.ingredients.getValue());
         String response = this.chatGPT.generateText(prompt, MAX_TOKENS);
         List<String> responseLines = Arrays.asList(response.split("Title:")[1].split("\n"));
         String recipeTitle = responseLines.get(0).strip();
         String recipeBody = String.join("\n", responseLines.subList(1, responseLines.size())).strip();
-        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date(), accountUsername);
+
+        String imageHex = this.dallE.generateImage(recipeTitle);
+
+        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date(), accountUsername, imageHex);
     }
 
     /**

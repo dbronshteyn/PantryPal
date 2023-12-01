@@ -8,8 +8,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.text.Font;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
 
 import middleware.Controller;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.io.File;
 
 /**
  * This class represents the scene that displays the details of a recipe.
@@ -20,6 +25,8 @@ class RecipeScene extends ScrollPane {
     Controller controller;
     Label instructionsLabel;
     TextArea instructionsTextArea;
+    ImageView imageView;
+    VBox content;
 
     /**
      * This class represents the top bar of the recipe scene.
@@ -89,6 +96,9 @@ class RecipeScene extends ScrollPane {
             Label title = new Label(controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 20));
 
+            Image image = new Image(new File("generated_image.png").toURI().toString());
+            ImageView imageView = new ImageView(image);
+
             Button cancelButton = createStyledButton("Cancel");
             cancelButton.setOnAction(e -> sceneManager.displayRecipeList());
 
@@ -98,7 +108,7 @@ class RecipeScene extends ScrollPane {
                 sceneManager.displayRecipeDetails(recipeID);
             });
 
-            this.getChildren().addAll(cancelButton, title, saveButton);
+            this.getChildren().addAll(cancelButton, title, imageView, saveButton);
         }
     }
 
@@ -115,8 +125,18 @@ class RecipeScene extends ScrollPane {
         instructionsLabel.setWrapText(true);
         instructionsLabel.setFont(new Font(SceneManager.FONT, 14));
         instructionsLabel.setStyle("-fx-background-color: #e7ffe6;");
+
+        this.imageView = new ImageView();
+        this.imageView.setFitWidth(200);
+        this.imageView.setFitHeight(200);
+
+        this.content = new VBox();
+        this.content.setAlignment(Pos.CENTER);
+        this.content.setSpacing(20);
+        this.content.getChildren().addAll(imageView, instructionsLabel);
+
         this.setFitToWidth(true);
-        this.setContent(instructionsLabel);
+        this.setContent(this.content);
         this.setPadding(new Insets(30, 30, 30, 30));
         this.setStyle("-fx-background: #e7ffe6;");
 
@@ -145,7 +165,10 @@ class RecipeScene extends ScrollPane {
      */
     public void displayRecipeDetails(String recipeID) {
         instructionsLabel.setText(controller.getRecipeInstructions(recipeID));
-        this.setContent(instructionsLabel);
+        File imageFile = Controller.getRecipeImage(recipeID);
+        Image image = new Image(imageFile.toURI().toString());
+        this.imageView.setImage(image);
+        this.setContent(this.content);
         sceneManager.setCenter(this);
         sceneManager.setTop(new RecipeSceneTopBar(recipeID));
     }
@@ -157,6 +180,10 @@ class RecipeScene extends ScrollPane {
      */
     public void displayNewlyCreatedRecipe(String recipeID) {
         instructionsLabel.setText(controller.getRecipeInstructions(recipeID));
+        File imageFile = Controller.getRecipeImage(recipeID);
+        Image image = new Image(imageFile.toURI().toString());
+        this.imageView.setImage(image);
+        this.setContent(this.content);
         sceneManager.setCenter(this);
         sceneManager.setTop(new NewlyCreatedRecipeSceneTopBar(recipeID));
     }

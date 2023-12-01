@@ -4,14 +4,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
 import javafx.scene.control.TextField;
 
 import middleware.Controller;
-import ui.ListScene.ListSceneTopBar;
-import ui.ListScene.RecipeInListUI;
 
 /**
  * This class represents the scene that displays the list of recipes.
@@ -33,7 +31,7 @@ public class AccountCreationScene extends VBox {
 
             cancelButton = createStyledButton("Cancel");
             cancelButton.setOnAction(e -> sceneManager.displayLoginScene());
-          
+
             this.getChildren().add(cancelButton);
 
             Label title = new Label("Register for account");
@@ -41,7 +39,7 @@ public class AccountCreationScene extends VBox {
             this.getChildren().add(title);
         }
     }
-    
+
     /**
      * Constructs a new AccountCreationScene with the provided scene manager.
      * 
@@ -87,7 +85,7 @@ public class AccountCreationScene extends VBox {
         setTextFieldTriggers(passwordField, createAccountButton, usernameField);
 
         this.getChildren().addAll(usernameField, passwordField, createAccountButton);
-        
+
         sceneManager.setCenter(this);
         sceneManager.setTop(new AccountCreationTopBar());
     }
