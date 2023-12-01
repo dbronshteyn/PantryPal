@@ -71,7 +71,7 @@ class RecipeListTest {
         recipeList.getRecipes().add(new Recipe("id 2", "Test Recipe 2", "Test Instructions 2", new Date(), "", "", ""));
         recipeList.getRecipes().add(new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date(), "", "", ""));
 
-        List<String> recipeIDs = recipeList.getRecipeIDs("");
+        List<String> recipeIDs = recipeList.getRecipeIDs("", "most-recent");
 
         assertEquals(3, recipeIDs.size());
         assertEquals("id 1", recipeIDs.get(0));

@@ -23,9 +23,11 @@ import backend.HexUtils;
 public class Controller {
 
     private String accountUsername;
+    private String sortBy;
 
     public Controller() {
         this.accountUsername = null;
+        this.sortBy = "most-recent";
     }
 
     /**
@@ -101,7 +103,7 @@ public class Controller {
      * @return list of recipe IDs
      */
     public List<String> getRecipeIDs() {
-        String response = sendRequest("/get-recipe-ids", "accountUsername=" + accountUsername, "GET");
+        String response = sendRequest("/get-recipe-ids", "accountUsername=" + accountUsername + "&sortBy=" + sortBy, "GET");
         if (response.equals(".")) {
             return new ArrayList<>();
         }
@@ -212,9 +214,15 @@ public class Controller {
         String response = sendRequest("/logout", "accountUsername=" + accountUsername, "GET");
         if (response.equals("success")) {
             this.accountUsername = null;
-            return;
         }
-        return;
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    public String getSortBy() {
+        return this.sortBy;
     }
 
     /**

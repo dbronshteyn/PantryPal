@@ -81,18 +81,11 @@ public class ListScene extends VBox {
 
             ChoiceBox<String> sortChoiceBox = new ChoiceBox<>();
             sortChoiceBox.getItems().addAll("most-recent", "least-recent", "a-z", "z-a");
-            String sort = sortChoiceBox.getValue();
-            sceneManager.setSort(sort);
-            sortChoiceBox.setValue(sort);
+            sortChoiceBox.setValue(controller.getSortBy());
             sortChoiceBox.setOnAction(e -> {
-                String val = sortChoiceBox.getValue();
-                System.out.println("Val" + val);
-                sortChoiceBox.setValue(val);
-                sceneManager.setSort(val);
-                displayRecipeList(sceneManager.getSort());
+                controller.setSortBy(sortChoiceBox.getValue());
+                sceneManager.displayRecipeList();
             });
-            System.out.println("Get sort: " + sceneManager.getSort());
-            sortChoiceBox.setValue(sceneManager.getSort());
 
             Button logoutButton = createStyledButton("Logout");
             logoutButton.setOnAction(e -> {
@@ -132,25 +125,9 @@ public class ListScene extends VBox {
     /**
      * Displays the list of recipes.
      */
-    public void displayRecipeList(String sort) {
+    public void displayRecipeList() {
         this.getChildren().clear();
         List<String> recipeIDs = controller.getRecipeIDs();
-        System.out.println("Function: " + sort);
-        switch (sort) {
-            case "most-recent":
-                recipeIDs.sort((a, b) -> controller.getRecipeDate(b).compareTo(controller.getRecipeDate(a)));
-                break;
-            case "least-recent":
-                recipeIDs.sort((a, b) -> controller.getRecipeDate(a).compareTo(controller.getRecipeDate(b)));
-                break;
-            case "a-z":
-                recipeIDs.sort((a, b) -> controller.getRecipeTitle(a).compareTo(controller.getRecipeTitle(b)));
-                break;
-            case "z-a":
-                recipeIDs.sort((a, b) -> controller.getRecipeTitle(b).compareTo(controller.getRecipeTitle(a)));
-                break;
-        }
-
         for (String recipeID : recipeIDs) {
             RecipeInListUI recipeEntry = new RecipeInListUI(recipeID, this.sceneManager);
             this.getChildren().add(recipeEntry);
