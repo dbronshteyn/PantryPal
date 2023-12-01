@@ -79,6 +79,9 @@ public class ListScene extends VBox {
             Button newRecipeButton = createStyledButton("New Recipe");
             newRecipeButton.setOnAction(e -> sceneManager.displayRecipeCreationScene());
 
+            Label sortByLabel = new Label("Sort by:");
+            sortByLabel.setFont(new Font("Arial", 14));
+
             ChoiceBox<String> sortChoiceBox = new ChoiceBox<>();
             sortChoiceBox.getItems().addAll("most-recent", "least-recent", "a-z", "z-a");
             sortChoiceBox.setValue(controller.getSortBy());
@@ -100,7 +103,7 @@ public class ListScene extends VBox {
             HBox leftContainer = new HBox(recipesLabel);
             leftContainer.setAlignment(Pos.CENTER_LEFT);
 
-            this.getChildren().addAll(leftContainer, newRecipeButton, sortChoiceBox, rightContainer);
+            this.getChildren().addAll(leftContainer, newRecipeButton, sortByLabel, sortChoiceBox, rightContainer);
             this.setStyle("-fx-background-color: #c6ecc6;");
         }
     }

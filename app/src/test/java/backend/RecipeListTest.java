@@ -67,9 +67,15 @@ class RecipeListTest {
      */
     @Test
     void testGetRecipeIDs() {
-        recipeList.getRecipes().add(new Recipe("id 1", "Test Recipe", "Test Instructions", new Date(), "", "", ""));
-        recipeList.getRecipes().add(new Recipe("id 2", "Test Recipe 2", "Test Instructions 2", new Date(), "", "", ""));
-        recipeList.getRecipes().add(new Recipe("id 3", "Test Recipe 3", "Test Instructions 3", new Date(), "", "", ""));
+        long currentTime = System.currentTimeMillis();
+
+        recipeList.getRecipes().add(
+                new Recipe("id 1", "A Test Recipe", "Test Instructions", new Date(currentTime + 1000), "", "", ""));
+        recipeList.getRecipes()
+                .add(new Recipe("id 2", "B Test Recipe 2", "Test Instructions 2", new Date(currentTime), "", "", ""));
+        recipeList.getRecipes()
+                .add(new Recipe("id 3", "C Test Recipe 3", "Test Instructions 3", new Date(currentTime - 1000), "", "",
+                        ""));
 
         List<String> recipeIDs = recipeList.getRecipeIDs("", "most-recent");
 
@@ -77,6 +83,28 @@ class RecipeListTest {
         assertEquals("id 1", recipeIDs.get(0));
         assertEquals("id 2", recipeIDs.get(1));
         assertEquals("id 3", recipeIDs.get(2));
+
+        recipeIDs = recipeList.getRecipeIDs("", "least-recent");
+
+        assertEquals(3, recipeIDs.size());
+        assertEquals("id 3", recipeIDs.get(0));
+        assertEquals("id 2", recipeIDs.get(1));
+        assertEquals("id 1", recipeIDs.get(2));
+
+        recipeIDs = recipeList.getRecipeIDs("", "a-z");
+
+        assertEquals(3, recipeIDs.size());
+        assertEquals("id 1", recipeIDs.get(0));
+        assertEquals("id 2", recipeIDs.get(1));
+        assertEquals("id 3", recipeIDs.get(2));
+
+        recipeIDs = recipeList.getRecipeIDs("", "z-a");
+
+        assertEquals(3, recipeIDs.size());
+        assertEquals("id 3", recipeIDs.get(0));
+        assertEquals("id 2", recipeIDs.get(1));
+        assertEquals("id 1", recipeIDs.get(2));
+
     }
 
     /**
