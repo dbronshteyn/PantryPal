@@ -145,4 +145,25 @@ public class Recipe {
         out.put("accountUsername", this.accountUsername);
         return out;
     }
+
+    public String toHTML() {
+        String htmlInstructions = escapeHTML(this.instructions).replace("\n", "<br>");
+        return "<html><body><h1>" + this.title + "</h1><p>" + htmlInstructions + "</p></body></html>";
+    }
+
+    // taken from https://stackoverflow.com/a/25228492
+    private static String escapeHTML(String s) {
+        StringBuilder out = new StringBuilder(Math.max(16, s.length()));
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c > 127 || c == '"' || c == '\'' || c == '<' || c == '>' || c == '&') {
+                out.append("&#");
+                out.append((int) c);
+                out.append(';');
+            } else {
+                out.append(c);
+            }
+        }
+        return out.toString();
+    }
 }

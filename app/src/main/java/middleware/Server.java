@@ -147,6 +147,9 @@ class RequestHandler implements HttpHandler {
                 case "/logout":
                     response = this.handleLogout(query);
                     break;
+                case "/recipe":
+                    response = this.handleGetRecipeHTML(query);
+                    break;
                 default:
                     response = "Invalid path";
                     break;
@@ -330,5 +333,15 @@ class RequestHandler implements HttpHandler {
             return SUCCESS_MESSAGE;
         }
         return FAILURE_MESSAGE;
+    }
+
+    private String handleGetRecipeHTML(Map<String, String> query) {
+        String recipeID = query.get("recipeID");
+        try {
+            return this.recipeList.getRecipeByID(recipeID).toHTML();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return FAILURE_MESSAGE;
+        }
     }
 }
