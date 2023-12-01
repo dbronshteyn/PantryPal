@@ -99,6 +99,9 @@ class RequestHandler implements HttpHandler {
 
             String response = "";
             switch (path) {
+                case "/status":
+                    response = "available";
+                    break;
                 case "/generate-new-recipe-builder":
                     response = this.handleGenerateNewRecipeBuilder();
                     break;

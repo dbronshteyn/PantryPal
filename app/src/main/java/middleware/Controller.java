@@ -14,6 +14,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import backend.HexUtils;
+import ui.SceneManager;
 
 /**
  * This class represents a controller that handles requests from the frontend
@@ -23,9 +24,16 @@ import backend.HexUtils;
 public class Controller {
 
     private String accountUsername;
+    private SceneManager sceneManager;
+    private static final String SERVER_URL = "http://localhost:8100";
 
     public Controller() {
         this.accountUsername = null;
+    }
+
+    public void setSceneManager(SceneManager sceneManager) {
+        this.sceneManager = sceneManager;
+        sendRequest("/status", null, "GET"); // makes sure server is up
     }
 
     /**
@@ -73,7 +81,7 @@ public class Controller {
         }
     }
 
-    public static File getRecipeImage(String recipeID) {
+    public File getRecipeImage(String recipeID) {
         String response = sendRequest("/get-recipe-image", "recipeID=" + recipeID, "GET");
         File imageFile = new File("generated-image.png");
         try {
@@ -214,9 +222,9 @@ public class Controller {
      * @param method
      * @return the response from the server
      */
-    private static String sendRequest(String path, String query, String method) {
+    private String sendRequest(String path, String query, String method) {
         try {
-            String urlString = "http://localhost:8100" + path;
+            String urlString = SERVER_URL + path;
             if (query != null) {
                 urlString += "?" + query;
             }
@@ -230,7 +238,7 @@ public class Controller {
             in.close();
             return response;
         } catch (Exception e) {
-            e.printStackTrace();
+            sceneManager.displayServerErrorScene();
             return null;
         }
     }

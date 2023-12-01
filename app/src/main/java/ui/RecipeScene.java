@@ -165,7 +165,7 @@ class RecipeScene extends ScrollPane {
      */
     public void displayRecipeDetails(String recipeID) {
         instructionsLabel.setText(controller.getRecipeInstructions(recipeID));
-        File imageFile = Controller.getRecipeImage(recipeID);
+        File imageFile = controller.getRecipeImage(recipeID);
         Image image = new Image(imageFile.toURI().toString());
         this.imageView.setImage(image);
         this.setContent(this.content);
@@ -180,7 +180,7 @@ class RecipeScene extends ScrollPane {
      */
     public void displayNewlyCreatedRecipe(String recipeID) {
         instructionsLabel.setText(controller.getRecipeInstructions(recipeID));
-        File imageFile = Controller.getRecipeImage(recipeID);
+        File imageFile = controller.getRecipeImage(recipeID);
         Image image = new Image(imageFile.toURI().toString());
         this.imageView.setImage(image);
         this.setContent(this.content);

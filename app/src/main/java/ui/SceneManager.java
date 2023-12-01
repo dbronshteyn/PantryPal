@@ -20,6 +20,8 @@ public class SceneManager extends BorderPane {
     RecipeCreationScene recipeCreationScene;
     AccountCreationScene accountCreationScene;
     LoginScene loginScene;
+    ServerErrorScene serverErrorScene;
+    boolean isPaused = false;
 
     /**
      * Constructs a new SceneManager with the provided controller and audio files.
@@ -36,8 +38,7 @@ public class SceneManager extends BorderPane {
         this.recipeCreationScene = new RecipeCreationScene(this, controller, ingredientsAudioFile, mealTypeAudioFile);
         this.accountCreationScene = new AccountCreationScene(this, controller);
         this.loginScene = new LoginScene(this, controller);
-
-        this.setCenter(listScene);
+        this.serverErrorScene = new ServerErrorScene(this);
     }
 
     /**
@@ -46,6 +47,9 @@ public class SceneManager extends BorderPane {
      * @param recipeID
      */
     public void displayRecipeDetails(String recipeID) {
+        if (isPaused) {
+            return;
+        }
         recipeScene.displayRecipeDetails(recipeID);
     }
 
@@ -55,6 +59,9 @@ public class SceneManager extends BorderPane {
      * @param recipeID
      */
     public void displayNewlyCreatedRecipe(String recipeID) {
+        if (isPaused) {
+            return;
+        }
         recipeScene.displayNewlyCreatedRecipe(recipeID);
     }
 
@@ -62,6 +69,9 @@ public class SceneManager extends BorderPane {
      * Displays the recipe list.
      */
     public void displayRecipeList() {
+        if (isPaused) {
+            return;
+        }
         listScene.displayRecipeList();
     }
 
@@ -69,10 +79,16 @@ public class SceneManager extends BorderPane {
      * Displays the recipe creation scene.
      */
     public void displayRecipeCreationScene() {
+        if (isPaused) {
+            return;
+        }
         recipeCreationScene.displayRecipeCreationScene(controller.generateNewRecipeBuilder());
     }
 
     public void displayLoginScene() {
+        if (isPaused) {
+            return;
+        }
         loginScene.displayLoginScene();
     }
 
@@ -80,6 +96,17 @@ public class SceneManager extends BorderPane {
      * Displays the account creation scene.
      */
     public void displayAccountCreationScene() {
+        if (isPaused) {
+            return;
+        }
         accountCreationScene.displayAccountCreationScene();
+    }
+
+    /**
+     * Displays the server error scene.
+     */
+    public void displayServerErrorScene() {
+        serverErrorScene.displayServerErrorScene();
+        isPaused = true;
     }
 }
