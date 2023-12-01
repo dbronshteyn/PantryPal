@@ -23,6 +23,7 @@ import backend.HexUtils;
 public class Controller {
 
     private String accountUsername;
+    public static final String SERVER_URL = "http://localhost:8100";
 
     public Controller() {
         this.accountUsername = null;
@@ -216,7 +217,7 @@ public class Controller {
      */
     private static String sendRequest(String path, String query, String method) {
         try {
-            String urlString = "http://localhost:8100" + path;
+            String urlString = SERVER_URL + path;
             if (query != null) {
                 urlString += "?" + query;
             }
