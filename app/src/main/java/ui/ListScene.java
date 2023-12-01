@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 
 import middleware.Controller;
 
@@ -34,6 +35,10 @@ public class ListScene extends VBox {
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
 
+            Label mealType = new Label(controller.getRecipeMealType(recipeID).toUpperCase());
+            mealType.setFont(Font.font(SceneManager.FONT, FontPosture.ITALIC, 16));
+            mealType.setWrapText(true);
+
             Label title = new Label(controller.getRecipeTitle(recipeID));
             title.setFont(new Font(SceneManager.FONT, 16));
             title.setWrapText(true);
@@ -41,7 +46,7 @@ public class ListScene extends VBox {
             Button detailButton = createStyledButton("View Details");
             detailButton.setOnAction(e -> sceneManager.displayRecipeDetails(recipeID));
 
-            this.getChildren().addAll(title, detailButton);
+            this.getChildren().addAll(mealType, title, detailButton);
             this.setStyle("-fx-background-color: #e7ffe6; -fx-border-color: #a3d9a5; -fx-border-width: 0.5;");
         }
     }

@@ -38,6 +38,16 @@ public class Controller {
     }
 
     /**
+     * Returns the meal type of the recipe with the specified ID.
+     * 
+     * @param recipeID
+     * @return the meal type
+     */
+    public String getRecipeMealType(String recipeID) {
+        return sendRequest("/get-recipe-meal-type", "recipeID=" + recipeID, "GET");
+    }
+
+    /**
      * Returns the recipe title.
      * 
      * @param recipeID
@@ -108,7 +118,8 @@ public class Controller {
      */
     public String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
         String hex = HexUtils.fileToHex(audioFile);
-        String response = sendRequest("/specify-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "POST");
+        String response = sendRequest("/specify-recipe-creator-element",
+                "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "POST");
         if (response.equals("invalid")) {
             return null;
         }
@@ -188,7 +199,7 @@ public class Controller {
 
     public void logout() {
         String response = sendRequest("/logout", "accountUsername=" + accountUsername, "GET");
-        if(response.equals("success")) {
+        if (response.equals("success")) {
             this.accountUsername = null;
             return;
         }

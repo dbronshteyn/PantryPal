@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
-* Unit testing for Recipe class
-*/
+ * Unit testing for Recipe class
+ */
 class RecipeTest {
 
     private Recipe recipe;
@@ -22,12 +22,13 @@ class RecipeTest {
     @BeforeEach
     public void setUp() {
         dateCreated = new Date(0);
-        recipe = new Recipe("id 1", "Chocolate Cake", "Mix ingredients and bake for 30 minutes.", dateCreated, "", "");
+        recipe = new Recipe("id 1", "Chocolate Cake", "Mix ingredients and bake for 30 minutes.", dateCreated, "", "",
+                "");
     }
 
     /**
-    * Tests that the Recipe properly sets the instructions.
-    */
+     * Tests that the Recipe properly sets the instructions.
+     */
     @Test
     void testSetInstructions() {
         String newInstructions = "Mix ingredients and bake for 45 minutes.";
@@ -38,8 +39,8 @@ class RecipeTest {
     }
 
     /**
-    * Tests that the Recipe properly returns the title.
-    */
+     * Tests that the Recipe properly returns the title.
+     */
     @Test
     void testToString() {
         assertEquals("Chocolate Cake", recipe.toString());
@@ -51,7 +52,7 @@ class RecipeTest {
     @Test
     void testFromJSON() {
         JSONObject json = new JSONObject(
-                "{\"title\":\"abc\",\"instructions\":\"ab\",\"dateCreated\":\"1970-01-01T00:00:00-00:00\",\"recipeID\":\"id 1\",\"accountUsername\":\"username 1\",\"imageHex\":\"hex 1\"}");
+                "{\"title\":\"abc\",\"instructions\":\"ab\",\"dateCreated\":\"1970-01-01T00:00:00-00:00\",\"recipeID\":\"id 1\",\"accountUsername\":\"username 1\",\"mealType\":\"breakfast\",\"imageHex\":\"hex 1\"}");
         Recipe recipe = new Recipe(json);
         assertEquals("id 1", recipe.getRecipeID());
         assertEquals("abc", recipe.getTitle());
@@ -62,19 +63,19 @@ class RecipeTest {
     }
 
     /**
-    * Tests to JSON file.
-    */
+     * Tests to JSON file.
+     */
     @Test
     void testToJSON() {
         JSONObject json = recipe.toJSON();
         assertEquals("Chocolate Cake", json.getString("title"));
         assertEquals("Mix ingredients and bake for 30 minutes.",
-        json.getString("instructions"));
+                json.getString("instructions"));
 
         // this one seems to depend on the system
         assertTrue(
-        json.getString("dateCreated").startsWith("1969") ||
-        json.getString("dateCreated").startsWith("1970"));
+                json.getString("dateCreated").startsWith("1969") ||
+                        json.getString("dateCreated").startsWith("1970"));
     }
 
     /*
@@ -83,20 +84,21 @@ class RecipeTest {
     @Test
     void testEditRecipe() {
         long currentTime = System.currentTimeMillis();
-        Recipe recipe = new Recipe("", "Muffins", "Add 1 cup of sugar and flour.", new Date(currentTime - 1000), "", "");
+        Recipe recipe = new Recipe("", "Muffins", "Add 1 cup of sugar and flour.", new Date(currentTime - 1000), "", "",
+                "");
         recipe.setInstructions("Add 1/2 cup of sugar and flour.");
         assertEquals("Add 1/2 cup of sugar and flour.", recipe.getInstructions());
         assertTrue(recipe.getDateCreated().after(new Date(currentTime - 1000)));
     }
 
     /**
-    * Tests retrieving recipe details
-    */
+     * Tests retrieving recipe details
+     */
     @Test
     void testGetRecipeDetails() {
         assertEquals("Chocolate Cake", recipe.getTitle());
         assertEquals("Mix ingredients and bake for 30 minutes.",
-        recipe.getInstructions());
+                recipe.getInstructions());
         assertEquals("id 1", recipe.getRecipeID());
         assertEquals(dateCreated, recipe.getDateCreated());
     }

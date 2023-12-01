@@ -175,7 +175,8 @@ public class RecipeBuilder {
 
         String imageHex = this.dallE.generateImage(recipeTitle);
 
-        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date(), accountUsername, imageHex);
+        return new Recipe(this.recipeID, recipeTitle, recipeBody, new Date(), accountUsername, imageHex,
+                this.mealType.getValue());
     }
 
     /**
