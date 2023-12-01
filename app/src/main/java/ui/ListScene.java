@@ -2,12 +2,17 @@ package ui;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
+
+import java.util.List;
+
+import org.checkerframework.checker.units.qual.s;
 
 import middleware.Controller;
 
@@ -44,7 +49,9 @@ public class ListScene extends VBox {
             title.setWrapText(true);
 
             Button detailButton = createStyledButton("View Details");
-            detailButton.setOnAction(e -> sceneManager.displayRecipeDetails(recipeID));
+            detailButton.setOnAction(e -> {
+                sceneManager.displayRecipeDetails(recipeID);
+            });
 
             this.getChildren().addAll(mealType, title, detailButton);
             this.setStyle("-fx-background-color: #e7ffe6; -fx-border-color: #a3d9a5; -fx-border-width: 0.5;");
@@ -72,6 +79,17 @@ public class ListScene extends VBox {
             Button newRecipeButton = createStyledButton("New Recipe");
             newRecipeButton.setOnAction(e -> sceneManager.displayRecipeCreationScene());
 
+            Label sortByLabel = new Label("Sort by:");
+            sortByLabel.setFont(new Font("Arial", 14));
+
+            ChoiceBox<String> sortChoiceBox = new ChoiceBox<>();
+            sortChoiceBox.getItems().addAll("most-recent", "least-recent", "a-z", "z-a");
+            sortChoiceBox.setValue(controller.getSortBy());
+            sortChoiceBox.setOnAction(e -> {
+                controller.setSortBy(sortChoiceBox.getValue());
+                sceneManager.displayRecipeList();
+            });
+
             Button logoutButton = createStyledButton("Logout");
             logoutButton.setOnAction(e -> {
                 controller.logout();
@@ -85,7 +103,7 @@ public class ListScene extends VBox {
             HBox leftContainer = new HBox(recipesLabel);
             leftContainer.setAlignment(Pos.CENTER_LEFT);
 
-            this.getChildren().addAll(leftContainer, newRecipeButton, rightContainer);
+            this.getChildren().addAll(leftContainer, newRecipeButton, sortByLabel, sortChoiceBox, rightContainer);
             this.setStyle("-fx-background-color: #c6ecc6;");
         }
     }
@@ -112,7 +130,8 @@ public class ListScene extends VBox {
      */
     public void displayRecipeList() {
         this.getChildren().clear();
-        for (String recipeID : controller.getRecipeIDs()) {
+        List<String> recipeIDs = controller.getRecipeIDs();
+        for (String recipeID : recipeIDs) {
             RecipeInListUI recipeEntry = new RecipeInListUI(recipeID, this.sceneManager);
             this.getChildren().add(recipeEntry);
         }

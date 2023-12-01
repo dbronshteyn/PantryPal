@@ -24,11 +24,14 @@ import ui.SceneManager;
 public class Controller {
 
     private String accountUsername;
+    private String sortBy;
+
     private SceneManager sceneManager;
     private static final String SERVER_URL = "http://localhost:8100";
 
     public Controller() {
         this.accountUsername = null;
+        this.sortBy = "most-recent";
     }
 
     public void setSceneManager(SceneManager sceneManager) {
@@ -66,6 +69,17 @@ public class Controller {
     }
 
     /**
+     * Get recipe date
+     * 
+     * @param recipeID
+     * @return
+     */
+
+    public String getRecipeDate(String recipeID) {
+        return sendRequest("/get-recipe-date", "recipeID=" + recipeID, "GET");
+    }
+
+    /**
      * Returns the detailed instructions for a given recipe.
      * 
      * @param recipeID
@@ -98,7 +112,7 @@ public class Controller {
      * @return list of recipe IDs
      */
     public List<String> getRecipeIDs() {
-        String response = sendRequest("/get-recipe-ids", "accountUsername=" + accountUsername, "GET");
+        String response = sendRequest("/get-recipe-ids", "accountUsername=" + accountUsername + "&sortBy=" + sortBy, "GET");
         if (response.equals(".")) {
             return new ArrayList<>();
         }
@@ -209,9 +223,15 @@ public class Controller {
         String response = sendRequest("/logout", "accountUsername=" + accountUsername, "GET");
         if (response.equals("success")) {
             this.accountUsername = null;
-            return;
         }
-        return;
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    public String getSortBy() {
+        return this.sortBy;
     }
 
     /**

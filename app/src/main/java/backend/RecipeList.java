@@ -66,12 +66,30 @@ public class RecipeList {
      * 
      * @return list of recipe IDs
      */
-    public List<String> getRecipeIDs(String accountUsername) {
+    public List<String> getRecipeIDs(String accountUsername, String sortBy) {
         List<String> recipeIDs = new ArrayList<>();
         for (Recipe recipe : this.recipes) {
             if (recipe.getAccountUsername().equals(accountUsername)) {
                 recipeIDs.add(recipe.getRecipeID());
             }
+        }
+        switch (sortBy) {
+            case "most-recent":
+                recipeIDs.sort((a, b) -> this.getRecipeByID(b).getDateCreated()
+                        .compareTo(this.getRecipeByID(a).getDateCreated()));
+                break;
+            case "least-recent":
+                recipeIDs.sort((a, b) -> this.getRecipeByID(a).getDateCreated()
+                        .compareTo(this.getRecipeByID(b).getDateCreated()));
+                break;
+            case "a-z":
+                recipeIDs.sort((a, b) -> this.getRecipeByID(a).getTitle()
+                        .compareTo(this.getRecipeByID(b).getTitle()));
+                break;
+            case "z-a":
+                recipeIDs.sort((a, b) -> this.getRecipeByID(b).getTitle()
+                        .compareTo(this.getRecipeByID(a).getTitle()));
+                break;
         }
         return recipeIDs;
     }
