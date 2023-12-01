@@ -2,12 +2,17 @@ package ui;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
+
+import java.util.List;
+
+import org.checkerframework.checker.units.qual.s;
 
 import middleware.Controller;
 
@@ -44,7 +49,9 @@ public class ListScene extends VBox {
             title.setWrapText(true);
 
             Button detailButton = createStyledButton("View Details");
-            detailButton.setOnAction(e -> sceneManager.displayRecipeDetails(recipeID));
+            detailButton.setOnAction(e -> {
+                sceneManager.displayRecipeDetails(recipeID);
+            });
 
             this.getChildren().addAll(mealType, title, detailButton);
             this.setStyle("-fx-background-color: #e7ffe6; -fx-border-color: #a3d9a5; -fx-border-width: 0.5;");
@@ -72,6 +79,21 @@ public class ListScene extends VBox {
             Button newRecipeButton = createStyledButton("New Recipe");
             newRecipeButton.setOnAction(e -> sceneManager.displayRecipeCreationScene());
 
+            ChoiceBox<String> sortChoiceBox = new ChoiceBox<>();
+            sortChoiceBox.getItems().addAll("most-recent", "least-recent", "a-z", "z-a");
+            String sort = sortChoiceBox.getValue();
+            sceneManager.setSort(sort);
+            sortChoiceBox.setValue(sort);
+            sortChoiceBox.setOnAction(e -> {
+                String val = sortChoiceBox.getValue();
+                System.out.println("Val" + val);
+                sortChoiceBox.setValue(val);
+                sceneManager.setSort(val);
+                displayRecipeList(sceneManager.getSort());
+            });
+            System.out.println("Get sort: " + sceneManager.getSort());
+            sortChoiceBox.setValue(sceneManager.getSort());
+
             Button logoutButton = createStyledButton("Logout");
             logoutButton.setOnAction(e -> {
                 controller.logout();
@@ -85,7 +107,7 @@ public class ListScene extends VBox {
             HBox leftContainer = new HBox(recipesLabel);
             leftContainer.setAlignment(Pos.CENTER_LEFT);
 
-            this.getChildren().addAll(leftContainer, newRecipeButton, rightContainer);
+            this.getChildren().addAll(leftContainer, newRecipeButton, sortChoiceBox, rightContainer);
             this.setStyle("-fx-background-color: #c6ecc6;");
         }
     }
@@ -110,9 +132,26 @@ public class ListScene extends VBox {
     /**
      * Displays the list of recipes.
      */
-    public void displayRecipeList() {
+    public void displayRecipeList(String sort) {
         this.getChildren().clear();
-        for (String recipeID : controller.getRecipeIDs()) {
+        List<String> recipeIDs = controller.getRecipeIDs();
+        System.out.println("Function: " + sort);
+        switch (sort) {
+            case "most-recent":
+                recipeIDs.sort((a, b) -> controller.getRecipeDate(b).compareTo(controller.getRecipeDate(a)));
+                break;
+            case "least-recent":
+                recipeIDs.sort((a, b) -> controller.getRecipeDate(a).compareTo(controller.getRecipeDate(b)));
+                break;
+            case "a-z":
+                recipeIDs.sort((a, b) -> controller.getRecipeTitle(a).compareTo(controller.getRecipeTitle(b)));
+                break;
+            case "z-a":
+                recipeIDs.sort((a, b) -> controller.getRecipeTitle(b).compareTo(controller.getRecipeTitle(a)));
+                break;
+        }
+
+        for (String recipeID : recipeIDs) {
             RecipeInListUI recipeEntry = new RecipeInListUI(recipeID, this.sceneManager);
             this.getChildren().add(recipeEntry);
         }

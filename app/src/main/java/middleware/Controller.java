@@ -58,6 +58,17 @@ public class Controller {
     }
 
     /**
+     * Get recipe date
+     * 
+     * @param recipeID
+     * @return
+     */
+
+    public String getRecipeDate(String recipeID) {
+        return sendRequest("/get-recipe-date", "recipeID=" + recipeID, "GET");
+    }
+
+    /**
      * Returns the detailed instructions for a given recipe.
      * 
      * @param recipeID

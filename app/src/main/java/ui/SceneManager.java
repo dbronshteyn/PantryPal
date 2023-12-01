@@ -21,6 +21,8 @@ public class SceneManager extends BorderPane {
     AccountCreationScene accountCreationScene;
     LoginScene loginScene;
 
+    private String sort = "most-recent";
+
     /**
      * Constructs a new SceneManager with the provided controller and audio files.
      * 
@@ -38,6 +40,14 @@ public class SceneManager extends BorderPane {
         this.loginScene = new LoginScene(this, controller);
 
         this.setCenter(listScene);
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
+    public String getSort() {
+        return this.sort;
     }
 
     /**
@@ -62,7 +72,7 @@ public class SceneManager extends BorderPane {
      * Displays the recipe list.
      */
     public void displayRecipeList() {
-        listScene.displayRecipeList();
+        listScene.displayRecipeList(sort);
     }
 
     /**

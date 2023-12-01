@@ -141,6 +141,9 @@ class RequestHandler implements HttpHandler {
                 case "/get-recipe-image":
                     response = this.handleGetImage(query);
                     break;
+                case "/get-recipe-date":
+                    response = this.handleGetDate(query);
+                    break;
                 case "/login":
                     response = this.handleLogin(query);
                     break;
@@ -200,6 +203,14 @@ class RequestHandler implements HttpHandler {
             return this.temporaryRecipes.get(recipeID).getImageHex();
         }
         return this.recipeList.getRecipeByID(recipeID).getImageHex();
+    }
+
+    private String handleGetDate(Map<String, String> query) {
+        String recipeID = query.get("recipeID");
+        if (temporaryRecipes.containsKey(recipeID)) {
+            return this.temporaryRecipes.get(recipeID).getDateCreated().toString();
+        }
+        return this.recipeList.getRecipeByID(recipeID).getDateCreated().toString();
     }
 
     private String handleGetRecipeInstructions(Map<String, String> query) {
