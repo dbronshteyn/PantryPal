@@ -68,7 +68,7 @@ class IntegrationTest {
         @Test
         void testScenarioOneOne() throws IOException, InterruptedException, URISyntaxException {
                 // preset the database contents
-                String databaseContents = "[{\"instructions\":\"Fry the egg and fry the bacon\",\"dateCreated\":\"2023-11-12T15:57:23-08:00\",\"title\":\"Eggs and bacon\",\"recipeID\":\"id 1\",\"accountUsername\":\"\",\"mealType\":\"dinner\",\"imageHex\":\"hex1\"},{\"instructions\":\"Cook pasta then add pesto\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Pesto pasta\",\"recipeID\":\"id 2\",\"accountUsername\":\"\",\"mealType\":\"breakfast\",\"imageHex\":\"hex2\"}]";
+                String databaseContents = "[{\"instructions\":\"Fry the egg and fry the bacon\",\"dateCreated\":\"2023-11-12T15:57:23-08:00\",\"title\":\"Eggs and bacon\",\"recipeID\":\"id 1\",\"accountUsername\":\"\",\"mealType\":\"breakfast\",\"imageHex\":\"hex1\"},{\"instructions\":\"Cook pasta then add pesto\",\"dateCreated\":\"2023-11-12T15:57:24-08:00\",\"title\":\"Pesto pasta\",\"recipeID\":\"id 2\",\"accountUsername\":\"\",\"mealType\":\"dinner\",\"imageHex\":\"hex2\"}]";
                 FileWriter fw = new FileWriter(this.databaseFile);
                 fw.write(databaseContents);
                 fw.flush();
@@ -96,6 +96,10 @@ class IntegrationTest {
                 String recipeID = recipeBuilder.getRecipeID();
                 assertTrue(recipeID.length() > 10); // make sure it has an ID
                 assertFalse(recipeBuilder.isCompleted());
+
+                // view recipe meal type (user story 7 [milestone 2])
+                assertEquals("breakfast", recipeList.getRecipeByID(recipeIDs.get(1)).getMealType());
+                assertEquals("dinner", recipeList.getRecipeByID(recipeIDs.get(0)).getMealType());
 
                 // we had something here to test if whisper didn't recognize any audio, but
                 // turns out
