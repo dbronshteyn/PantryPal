@@ -14,6 +14,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import backend.HexUtils;
+import ui.SceneManager;
 
 /**
  * This class represents a controller that handles requests from the frontend
@@ -23,10 +24,24 @@ import backend.HexUtils;
 public class Controller {
 
     private String accountUsername;
+  
     public static final String SERVER_URL = "http://localhost:8100";
+  
+    private String sortBy;
+    private String filterBy;
+
+    private SceneManager sceneManager;
+    private static final String SERVER_URL = "http://localhost:8100";
 
     public Controller() {
         this.accountUsername = null;
+        this.sortBy = "most-recent";
+        this.filterBy = "all";
+    }
+
+    public void setSceneManager(SceneManager sceneManager) {
+        this.sceneManager = sceneManager;
+        sendRequest("/status", null, "GET"); // makes sure server is up
     }
 
     /**
@@ -59,6 +74,17 @@ public class Controller {
     }
 
     /**
+     * Get recipe date
+     * 
+     * @param recipeID
+     * @return
+     */
+
+    public String getRecipeDate(String recipeID) {
+        return sendRequest("/get-recipe-date", "recipeID=" + recipeID, "GET");
+    }
+
+    /**
      * Returns the detailed instructions for a given recipe.
      * 
      * @param recipeID
@@ -74,7 +100,7 @@ public class Controller {
         }
     }
 
-    public static File getRecipeImage(String recipeID) {
+    public File getRecipeImage(String recipeID) {
         String response = sendRequest("/get-recipe-image", "recipeID=" + recipeID, "GET");
         File imageFile = new File("generated-image.png");
         try {
@@ -91,7 +117,8 @@ public class Controller {
      * @return list of recipe IDs
      */
     public List<String> getRecipeIDs() {
-        String response = sendRequest("/get-recipe-ids", "accountUsername=" + accountUsername, "GET");
+        String response = sendRequest("/get-recipe-ids",
+                "accountUsername=" + accountUsername + "&sortBy=" + sortBy + "&filterBy=" + filterBy, "GET");
         if (response.equals(".")) {
             return new ArrayList<>();
         }
@@ -193,6 +220,8 @@ public class Controller {
         String response = sendRequest("/login", "username=" + username + "&password=" + password, "GET");
         if (response.equals("success")) {
             this.accountUsername = username;
+            this.sortBy = "most-recent";
+            this.filterBy = "all";
             return true;
         }
         return false;
@@ -202,9 +231,25 @@ public class Controller {
         String response = sendRequest("/logout", "accountUsername=" + accountUsername, "GET");
         if (response.equals("success")) {
             this.accountUsername = null;
-            return;
         }
-        return;
+        this.sortBy = "most-recent";
+        this.filterBy = "all";
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    public String getSortBy() {
+        return this.sortBy;
+    }
+
+    public void setFilterBy(String filterBy) {
+        this.filterBy = filterBy;
+    }
+
+    public String getFilterBy() {
+        return this.filterBy;
     }
 
     /**
@@ -215,7 +260,7 @@ public class Controller {
      * @param method
      * @return the response from the server
      */
-    private static String sendRequest(String path, String query, String method) {
+    private String sendRequest(String path, String query, String method) {
         try {
             String urlString = SERVER_URL + path;
             if (query != null) {
@@ -231,7 +276,7 @@ public class Controller {
             in.close();
             return response;
         } catch (Exception e) {
-            e.printStackTrace();
+            sceneManager.displayServerErrorScene();
             return null;
         }
     }

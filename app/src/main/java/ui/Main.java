@@ -28,6 +28,10 @@ public class Main extends Application {
         Controller controller = new Controller();
         SceneManager sceneManager = new SceneManager(controller, ingredientsAudioFile, mealTypeAudioFile);
 
+        // this is a circular dependency, but the controller only
+        // uses the scene manager to display the server error scene
+        controller.setSceneManager(sceneManager);
+
         primaryStage.setTitle("PantryPal2");
         primaryStage.setScene(new Scene(sceneManager, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();
