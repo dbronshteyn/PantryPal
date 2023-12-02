@@ -83,15 +83,6 @@ public class DallE {
         String imageHex = HexUtils.fileToHex(imageFile);
         imageFile.delete();
 
-        // ...
-
-        // Read the image file
-        Path imagePath = Path.of("temp.png");
-        byte[] imageBytes = Files.readAllBytes(imagePath);
-
-        // Convert the image bytes to Base64
-        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-
         return imageHex;
     }
 }
