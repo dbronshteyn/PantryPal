@@ -1,5 +1,7 @@
 package backend;
 
+import java.io.IOException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -144,5 +146,36 @@ public class Recipe {
         out.put("dateCreated", this.formatter.format(this.dateCreated));
         out.put("accountUsername", this.accountUsername);
         return out;
+    }
+
+    public String toHTML() throws IOException {
+
+        String hexType = this.imageHex;
+        String base64String = HexUtils.hexToBase64(hexType);
+
+        String htmlInstructions = escapeHTML(this.instructions).replace("\n", "<br>");
+        String imageTag = "<img src=\"data:image/png;base64," + base64String + "\" alt=\"Recipe Image\">";
+
+        return "<html><body style=\"background-color: #e7ffe6; font-family: Arial;\"><h1>" + this.title
+                + "</h1>"
+                + imageTag + "<p>"
+                + htmlInstructions
+                + "</p></body></html>";
+    }
+
+    // taken from https://stackoverflow.com/a/25228492
+    private static String escapeHTML(String s) {
+        StringBuilder out = new StringBuilder(Math.max(16, s.length()));
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c > 127 || c == '"' || c == '\'' || c == '<' || c == '>' || c == '&') {
+                out.append("&#");
+                out.append((int) c);
+                out.append(';');
+            } else {
+                out.append(c);
+            }
+        }
+        return out.toString();
     }
 }
