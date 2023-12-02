@@ -6,6 +6,9 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
+
+import org.checkerframework.checker.units.qual.m;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
@@ -287,7 +290,7 @@ class RequestHandler implements HttpHandler {
         String recipeID = query.get("recipeID");
         String accountUsername = query.get("accountUsername");
         try {
-            Recipe recipe = this.recipeBuilders.remove(recipeID).returnRecipe(accountUsername);
+            Recipe recipe = this.recipeBuilders.get(recipeID).returnRecipe(accountUsername);
             this.temporaryRecipes.put(recipe.getRecipeID(), recipe);
         } catch (IOException e) {
             e.printStackTrace();
@@ -304,8 +307,12 @@ class RequestHandler implements HttpHandler {
 
     private String handleSaveRecipe(Map<String, String> query) {
         String recipeID = query.get("recipeID");
-        this.recipeList.addRecipe(this.temporaryRecipes.remove(recipeID));
-        return SUCCESS_MESSAGE;
+        if (this.temporaryRecipes.containsKey(recipeID)) {
+            this.recipeList.addRecipe(this.temporaryRecipes.remove(recipeID));
+            return SUCCESS_MESSAGE;
+        } else {
+            return FAILURE_MESSAGE;
+        }
     }
 
     private String handleEditRecipe(Map<String, String> query) {
