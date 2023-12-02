@@ -77,28 +77,28 @@ class RecipeListTest {
                 .add(new Recipe("id 3", "C Test Recipe 3", "Test Instructions 3", new Date(currentTime - 1000), "", "",
                         ""));
 
-        List<String> recipeIDs = recipeList.getRecipeIDs("", "most-recent");
+        List<String> recipeIDs = recipeList.getRecipeIDs("", "most-recent", "all");
 
         assertEquals(3, recipeIDs.size());
         assertEquals("id 1", recipeIDs.get(0));
         assertEquals("id 2", recipeIDs.get(1));
         assertEquals("id 3", recipeIDs.get(2));
 
-        recipeIDs = recipeList.getRecipeIDs("", "least-recent");
+        recipeIDs = recipeList.getRecipeIDs("", "least-recent", "all");
 
         assertEquals(3, recipeIDs.size());
         assertEquals("id 3", recipeIDs.get(0));
         assertEquals("id 2", recipeIDs.get(1));
         assertEquals("id 1", recipeIDs.get(2));
 
-        recipeIDs = recipeList.getRecipeIDs("", "a-z");
+        recipeIDs = recipeList.getRecipeIDs("", "a-z", "all");
 
         assertEquals(3, recipeIDs.size());
         assertEquals("id 1", recipeIDs.get(0));
         assertEquals("id 2", recipeIDs.get(1));
         assertEquals("id 3", recipeIDs.get(2));
 
-        recipeIDs = recipeList.getRecipeIDs("", "z-a");
+        recipeIDs = recipeList.getRecipeIDs("", "z-a", "all");
 
         assertEquals(3, recipeIDs.size());
         assertEquals("id 3", recipeIDs.get(0));

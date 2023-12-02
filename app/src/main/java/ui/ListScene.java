@@ -90,6 +90,17 @@ public class ListScene extends VBox {
                 sceneManager.displayRecipeList();
             });
 
+            Label filterByLabel = new Label("Filter by:");
+            filterByLabel.setFont(new Font("Arial", 14));
+
+            ChoiceBox<String> filterChoiceBox = new ChoiceBox<>();
+            filterChoiceBox.getItems().addAll("all", "breakfast", "lunch", "dinner");
+            filterChoiceBox.setValue(controller.getFilterBy());
+            filterChoiceBox.setOnAction(e -> {
+                controller.setFilterBy(filterChoiceBox.getValue());
+                sceneManager.displayRecipeList();
+            });
+
             Button logoutButton = createStyledButton("Logout");
             logoutButton.setOnAction(e -> {
                 controller.logout();
@@ -103,7 +114,8 @@ public class ListScene extends VBox {
             HBox leftContainer = new HBox(recipesLabel);
             leftContainer.setAlignment(Pos.CENTER_LEFT);
 
-            this.getChildren().addAll(leftContainer, newRecipeButton, sortByLabel, sortChoiceBox, rightContainer);
+            this.getChildren().addAll(leftContainer, newRecipeButton, sortByLabel, sortChoiceBox, filterByLabel,
+                    filterChoiceBox, rightContainer);
             this.setStyle("-fx-background-color: #c6ecc6;");
         }
     }

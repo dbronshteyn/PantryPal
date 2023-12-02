@@ -235,7 +235,8 @@ class RequestHandler implements HttpHandler {
     private String handleGetRecipeIDs(Map<String, String> query) {
         String accountUsername = query.get("accountUsername");
         String sortBy = query.get("sortBy");
-        List<String> ids = this.recipeList.getRecipeIDs(accountUsername, sortBy);
+        String filterBy = query.get("filterBy");
+        List<String> ids = this.recipeList.getRecipeIDs(accountUsername, sortBy, filterBy);
         if (ids.isEmpty()) {
             return ".";
         }
