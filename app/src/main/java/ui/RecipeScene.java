@@ -9,7 +9,9 @@ import javafx.geometry.Pos;
 import javafx.scene.text.Font;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
-
+import javafx.animation.PauseTransition;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import middleware.Controller;
 
 import javafx.scene.image.Image;
@@ -47,13 +49,29 @@ class RecipeScene extends ScrollPane {
             Button editButton = createStyledButton("Edit");
             editButton.setOnAction(e -> displayRecipeEditScene(recipeID));
 
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent clipboardContent = new ClipboardContent();
+            Button shareButton = createStyledButton("Share");
+            PauseTransition pause = new PauseTransition(javafx.util.Duration.seconds(2));
+            pause.setOnFinished(e -> {
+                shareButton.setText("Share");
+                shareButton.setDisable(false);
+            });
+            shareButton.setOnAction(e -> {
+                shareButton.setDisable(true);
+                shareButton.setText("Copied to clipboard!");
+                clipboardContent.putString(Controller.getServerURL() + "/recipe?recipeID=" + recipeID);
+                clipboard.setContent(clipboardContent);
+                pause.playFromStart();
+            });
+
             Button deleteButton = createStyledButton("Delete");
             deleteButton.setOnAction(e -> {
                 controller.removeRecipe(recipeID);
                 sceneManager.displayRecipeList();
             });
 
-            this.getChildren().addAll(backButton, title, editButton, deleteButton);
+            this.getChildren().addAll(backButton, title, editButton, shareButton, deleteButton);
         }
     }
 
@@ -165,7 +183,7 @@ class RecipeScene extends ScrollPane {
      */
     public void displayRecipeDetails(String recipeID) {
         instructionsLabel.setText(controller.getRecipeInstructions(recipeID));
-        File imageFile = Controller.getRecipeImage(recipeID);
+        File imageFile = controller.getRecipeImage(recipeID);
         Image image = new Image(imageFile.toURI().toString());
         this.imageView.setImage(image);
         this.setContent(this.content);
@@ -180,7 +198,7 @@ class RecipeScene extends ScrollPane {
      */
     public void displayNewlyCreatedRecipe(String recipeID) {
         instructionsLabel.setText(controller.getRecipeInstructions(recipeID));
-        File imageFile = Controller.getRecipeImage(recipeID);
+        File imageFile = controller.getRecipeImage(recipeID);
         Image image = new Image(imageFile.toURI().toString());
         this.imageView.setImage(image);
         this.setContent(this.content);

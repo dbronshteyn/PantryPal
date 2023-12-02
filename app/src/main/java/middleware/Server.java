@@ -99,6 +99,9 @@ class RequestHandler implements HttpHandler {
 
             String response = "";
             switch (path) {
+                case "/status":
+                    response = "available";
+                    break;
                 case "/generate-new-recipe-builder":
                     response = this.handleGenerateNewRecipeBuilder();
                     break;
@@ -140,6 +143,9 @@ class RequestHandler implements HttpHandler {
                     break;
                 case "/get-recipe-image":
                     response = this.handleGetImage(query);
+                    break;
+                case "/get-recipe-date":
+                    response = this.handleGetDate(query);
                     break;
                 case "/login":
                     response = this.handleLogin(query);
@@ -205,6 +211,14 @@ class RequestHandler implements HttpHandler {
         return this.recipeList.getRecipeByID(recipeID).getImageHex();
     }
 
+    private String handleGetDate(Map<String, String> query) {
+        String recipeID = query.get("recipeID");
+        if (temporaryRecipes.containsKey(recipeID)) {
+            return this.temporaryRecipes.get(recipeID).getDateCreated().toString();
+        }
+        return this.recipeList.getRecipeByID(recipeID).getDateCreated().toString();
+    }
+
     private String handleGetRecipeInstructions(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         try {
@@ -223,7 +237,9 @@ class RequestHandler implements HttpHandler {
 
     private String handleGetRecipeIDs(Map<String, String> query) {
         String accountUsername = query.get("accountUsername");
-        List<String> ids = this.recipeList.getRecipeIDs(accountUsername);
+        String sortBy = query.get("sortBy");
+        String filterBy = query.get("filterBy");
+        List<String> ids = this.recipeList.getRecipeIDs(accountUsername, sortBy, filterBy);
         if (ids.isEmpty()) {
             return ".";
         }
