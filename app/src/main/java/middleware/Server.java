@@ -307,12 +307,8 @@ class RequestHandler implements HttpHandler {
 
     private String handleSaveRecipe(Map<String, String> query) {
         String recipeID = query.get("recipeID");
-        if (this.temporaryRecipes.containsKey(recipeID)) {
-            this.recipeList.addRecipe(this.temporaryRecipes.remove(recipeID));
-            return SUCCESS_MESSAGE;
-        } else {
-            return FAILURE_MESSAGE;
-        }
+        this.recipeList.addRecipe(this.temporaryRecipes.remove(recipeID));
+        return SUCCESS_MESSAGE;
     }
 
     private String handleEditRecipe(Map<String, String> query) {
