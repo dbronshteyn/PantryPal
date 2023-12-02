@@ -159,20 +159,8 @@ public class Recipe {
 
     public String toHTML() throws IOException {
 
-        // File store = new File("store.png");
-
-        // HexUtils.hexToFile(this.imageHex, store);
-
-        // byte[] fileBytes = Files.readAllBytes(Paths.get(store.getAbsolutePath()));
-        // String base64String = Base64.getEncoder().encodeToString(fileBytes);
-
-        // // Write base64String to test.txt
-        // PrintWriter out = new PrintWriter("test.txt");
-        // out.println(base64String);
-        // out.close();
-
-        // Temp, should not be hex
-        String base64String = this.imageHex;
+        String hexType = this.imageHex;
+        String base64String = HexUtils.hexToBase64(hexType);
 
         String htmlInstructions = escapeHTML(this.instructions).replace("\n", "<br>");
         String imageTag = "<img src=\"data:image/png;base64," + base64String + "\" alt=\"Recipe Image\">";
