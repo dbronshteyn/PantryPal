@@ -24,6 +24,7 @@ import ui.SceneManager;
 public class Controller {
 
     private String accountUsername;
+
     private String sortBy;
     private String filterBy;
 
@@ -34,6 +35,10 @@ public class Controller {
         this.accountUsername = null;
         this.sortBy = "most-recent";
         this.filterBy = "all";
+    }
+
+    public static String getServerURL() {
+        return SERVER_URL;
     }
 
     public void setSceneManager(SceneManager sceneManager) {
