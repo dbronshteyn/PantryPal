@@ -217,6 +217,8 @@ public class Controller {
         String response = sendRequest("/login", "username=" + username + "&password=" + password, "GET");
         if (response.equals("success")) {
             this.accountUsername = username;
+            this.sortBy = "most-recent";
+            this.filterBy = "all";
             return true;
         }
         return false;
@@ -227,6 +229,8 @@ public class Controller {
         if (response.equals("success")) {
             this.accountUsername = null;
         }
+        this.sortBy = "most-recent";
+        this.filterBy = "all";
     }
 
     public void setSortBy(String sortBy) {
