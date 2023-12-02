@@ -1,20 +1,11 @@
 package backend;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.json.JSONObject;
-
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import javafx.scene.image.Image;
-
-import java.util.Base64;
 
 /**
  * Represents a recipe with a unique ID, title, instructions, and creation date.
@@ -165,7 +156,9 @@ public class Recipe {
         String htmlInstructions = escapeHTML(this.instructions).replace("\n", "<br>");
         String imageTag = "<img src=\"data:image/png;base64," + base64String + "\" alt=\"Recipe Image\">";
 
-        return "<html><body style=\"background-color: #e7ffe6;\"><h1>" + this.title + "</h1>" + imageTag + "<p>"
+        return "<html><body style=\"background-color: #e7ffe6; font-family: Arial;\"><h1>" + this.title
+                + "</h1>"
+                + imageTag + "<p>"
                 + htmlInstructions
                 + "</p></body></html>";
     }

@@ -12,17 +12,8 @@ import java.net.URL;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Base64;
 
 public class DallE {
 
