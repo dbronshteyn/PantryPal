@@ -191,7 +191,7 @@ public class Recipe {
      * @param s the string to escape
      * @return the escaped string
      * 
-     * @see also from https://stackoverflow.com/a/25228492
+     * @see code from https://stackoverflow.com/a/25228492
      */
     private static String escapeHTML(String s) {
         StringBuilder out = new StringBuilder(Math.max(16, s.length()));
