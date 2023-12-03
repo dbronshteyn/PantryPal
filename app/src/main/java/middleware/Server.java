@@ -98,6 +98,8 @@ class RequestHandler implements HttpHandler {
             Map<String, String> query = this.parseQuery(uri.getQuery());
 
             String response = "";
+
+            // handle request based on path
             switch (path) {
                 case "/status":
                     response = "available";
@@ -161,6 +163,7 @@ class RequestHandler implements HttpHandler {
                     break;
             }
 
+            // send response
             httpExchange.sendResponseHeaders(200, response.length());
             OutputStream outStream = httpExchange.getResponseBody();
             outStream.write(response.getBytes());
@@ -171,7 +174,6 @@ class RequestHandler implements HttpHandler {
     }
 
     // these are the same methods as in Controller.java, just on the server side
-
     private Map<String, String> parseQuery(String queryString) {
         Map<String, String> queryMap = new HashMap<>();
         if (queryString != null) {
@@ -183,12 +185,23 @@ class RequestHandler implements HttpHandler {
         return queryMap;
     }
 
+    /**
+     * Creates a RecipeBuilder object and adds it to the recipeBuilders map.
+     * 
+     * @return the recipeID of the RecipeBuilder object
+     */
     private String handleGenerateNewRecipeBuilder() {
         RecipeBuilder recipeBuilder = new RecipeBuilder(chatGPT, whisper, dallE);
         this.recipeBuilders.put(recipeBuilder.getRecipeID(), recipeBuilder);
         return recipeBuilder.getRecipeID();
     }
 
+    /**
+     * Returns the meal type of the recipe with the specified recipeID.
+     * 
+     * @param query
+     * @return meal type of the recipe
+     */
     private String handleGetRecipeMealType(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         if (temporaryRecipes.containsKey(recipeID))
@@ -196,6 +209,12 @@ class RequestHandler implements HttpHandler {
         return this.recipeList.getRecipeByID(recipeID).getMealType();
     }
 
+    /**
+     * Returns the title of the recipe with the specified recipeID.
+     * 
+     * @param query
+     * @return title of the recipe
+     */
     private String handleGetRecipeTitle(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         if (temporaryRecipes.containsKey(recipeID))
@@ -203,6 +222,12 @@ class RequestHandler implements HttpHandler {
         return this.recipeList.getRecipeByID(recipeID).getTitle();
     }
 
+    /**
+     * Returns the image of the recipe with the specified recipeID.
+     * 
+     * @param query
+     * @return hex string of the image associated with the recipe
+     */
     private String handleGetImage(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         if (temporaryRecipes.containsKey(recipeID)) {
@@ -211,6 +236,12 @@ class RequestHandler implements HttpHandler {
         return this.recipeList.getRecipeByID(recipeID).getImageHex();
     }
 
+    /**
+     * Returns the date of the recipe with the specified recipeID.
+     * 
+     * @param query
+     * @return date of the recipe
+     */
     private String handleGetDate(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         if (temporaryRecipes.containsKey(recipeID)) {
@@ -219,6 +250,12 @@ class RequestHandler implements HttpHandler {
         return this.recipeList.getRecipeByID(recipeID).getDateCreated().toString();
     }
 
+    /**
+     * Returns the instructions of the recipe with the specified recipeID.
+     * 
+     * @param query
+     * @return recipe instructions
+     */
     private String handleGetRecipeInstructions(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         try {
@@ -235,6 +272,12 @@ class RequestHandler implements HttpHandler {
         }
     }
 
+    /**
+     * Returns a list of recipe IDs associated with account
+     * 
+     * @param query
+     * @return list of recipe IDs associated with account
+     */
     private String handleGetRecipeIDs(Map<String, String> query) {
         String accountUsername = query.get("accountUsername");
         String sortBy = query.get("sortBy");
@@ -246,6 +289,12 @@ class RequestHandler implements HttpHandler {
         return String.join(",", ids);
     }
 
+    /**
+     * Resets the specified element of the recipe builder.
+     * 
+     * @param query
+     * @return success message if reset was successful
+     */
     private String handleResetRecipeCreatorElement(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         String elementName = query.get("elementName");
@@ -259,6 +308,13 @@ class RequestHandler implements HttpHandler {
         return SUCCESS_MESSAGE;
     }
 
+    /**
+     * Specifies the specified element of the recipe builder.
+     * 
+     * @param query
+     * @return the specified value if the element is specified successfully,
+     *         otherwise return FAILURE_MESSAGE
+     */
     private String handleSpecifyRecipeCreatorElement(Map<String, String> query) {
         try {
             String hex = query.get("hex");
@@ -281,11 +337,27 @@ class RequestHandler implements HttpHandler {
         }
     }
 
+    /**
+     * Returns whether the recipe builder is completed.
+     * 
+     * @param query
+     * @return true if the recipe builder is completed, false otherwise
+     */
     private String handleIsRecipeCreatorCompleted(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         return Boolean.toString(this.recipeBuilders.get(recipeID).isCompleted());
     }
 
+    /**
+     * Generates a recipe from the recipe builder and adds it to the temporary list
+     * of recipes.
+     * 
+     * @param query
+     * @return success message if the recipe was generated successfully, otherwise
+     *         failure message
+     * @throws InterruptedException
+     * @throws URISyntaxException
+     */
     private String handleGenerateRecipe(Map<String, String> query) throws InterruptedException, URISyntaxException {
         String recipeID = query.get("recipeID");
         String accountUsername = query.get("accountUsername");
@@ -299,18 +371,38 @@ class RequestHandler implements HttpHandler {
         return SUCCESS_MESSAGE;
     }
 
+    /**
+     * Removes the recipe with the specified recipeID from the recipe list.
+     * 
+     * @param query
+     * @return success message if the recipe was removed successfully
+     */
     private String handleRemoveRecipe(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         this.recipeList.removeRecipe(this.recipeList.getRecipeByID(recipeID));
         return SUCCESS_MESSAGE;
     }
 
+    /**
+     * Saves the recipe with the specified recipeID from temporary list to the
+     * recipe list.
+     * 
+     * @param query
+     * @return success message if the recipe was saved successfully
+     */
     private String handleSaveRecipe(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         this.recipeList.addRecipe(this.temporaryRecipes.remove(recipeID));
         return SUCCESS_MESSAGE;
     }
 
+    /**
+     * Edits the instructions of the recipe with the specified recipeID.
+     * 
+     * @param query
+     * @return success message if the recipe was edited successfully, otherwise
+     *         failure message
+     */
     private String handleEditRecipe(Map<String, String> query) {
         try {
             String recipeID = query.get("recipeID");
@@ -325,6 +417,13 @@ class RequestHandler implements HttpHandler {
         }
     }
 
+    /**
+     * Adds an account with the specified username and password.
+     * 
+     * @param query
+     * @return "created" if account was created successfully, "in use" if username
+     *         is already in use
+     */
     private String handleAddAccount(Map<String, String> query) {
         String username = query.get("username");
         String password = query.get("password");
@@ -334,6 +433,12 @@ class RequestHandler implements HttpHandler {
         return "in use";
     }
 
+    /**
+     * Attempts to login with the specified username and password.
+     * 
+     * @param query
+     * @return success message if the login was successful, otherwise failure
+     */
     private String handleLogin(Map<String, String> query) {
         String username = query.get("username");
         String password = query.get("password");
@@ -343,6 +448,12 @@ class RequestHandler implements HttpHandler {
         return FAILURE_MESSAGE;
     }
 
+    /**
+     * Attempts to logout with the specified username.
+     * 
+     * @param query
+     * @return success message if the logout was successful, otherwise failure
+     */
     private String handleLogout(Map<String, String> query) {
         String username = query.get("username");
         if (this.accountList.attemptLogout(username)) {
@@ -351,6 +462,13 @@ class RequestHandler implements HttpHandler {
         return FAILURE_MESSAGE;
     }
 
+    /**
+     * Returns the HTML representation of the recipe with the specified recipeID.
+     * 
+     * @param query
+     * @return HTML representation of the recipe if successful, otherwise failure
+     *         message
+     */
     private String handleGetRecipeHTML(Map<String, String> query) {
         String recipeID = query.get("recipeID");
         try {

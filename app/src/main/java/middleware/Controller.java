@@ -23,24 +23,36 @@ import ui.SceneManager;
  */
 public class Controller {
 
+    // variables
     private String accountUsername;
-
     private String sortBy;
     private String filterBy;
-
     private SceneManager sceneManager;
     private static final String SERVER_URL = "http://localhost:8100";
 
+    /**
+     * Constructs a new Controller.
+     */
     public Controller() {
         this.accountUsername = null;
         this.sortBy = "most-recent";
         this.filterBy = "all";
     }
 
+    /**
+     * Returns the server URL.
+     * 
+     * @return the server URL
+     */
     public static String getServerURL() {
         return SERVER_URL;
     }
 
+    /**
+     * Sets the scene manager.
+     * 
+     * @param sceneManager
+     */
     public void setSceneManager(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
         sendRequest("/status", null, "GET"); // makes sure server is up
@@ -102,6 +114,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Returns the image for a given recipe.
+     * 
+     * @param recipeID
+     * @return the image
+     */
     public File getRecipeImage(String recipeID) {
         String response = sendRequest("/get-recipe-image", "recipeID=" + recipeID, "GET");
         File imageFile = new File("generated-image.png");
@@ -209,6 +227,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Adds an account with the specified username and password.
+     * 
+     * @param username
+     * @param password
+     * @return the username of the account if it was created, otherwise null
+     */
     public String addAccount(String username, String password) {
         String response = sendRequest("/add-account", "username=" + username + "&password=" + password, "POST");
         if (response.equals("created")) {
@@ -218,6 +243,15 @@ public class Controller {
         return null;
     }
 
+    /**
+     * Returns true if the specified username and password match the username and
+     * password of the account. Furthermore, sets sort and filter back to default.
+     * 
+     * @param username
+     * @param password
+     * @return true if the specified username and password match the username and
+     *         password of the account
+     */
     public boolean login(String username, String password) {
         String response = sendRequest("/login", "username=" + username + "&password=" + password, "GET");
         if (response.equals("success")) {
@@ -229,6 +263,12 @@ public class Controller {
         return false;
     }
 
+    /**
+     * Returns true if the user is logged in, false otherwise. Also resets the sort
+     * and filter back to default.
+     * 
+     * @return true if the user is logged in, false otherwise
+     */
     public void logout() {
         String response = sendRequest("/logout", "accountUsername=" + accountUsername, "GET");
         if (response.equals("success")) {
@@ -238,18 +278,38 @@ public class Controller {
         this.filterBy = "all";
     }
 
+    /**
+     * Sets the sort type
+     * 
+     * @param sortBy
+     */
     public void setSortBy(String sortBy) {
         this.sortBy = sortBy;
     }
 
+    /**
+     * Returns the sort type
+     * 
+     * @return sortBy
+     */
     public String getSortBy() {
         return this.sortBy;
     }
 
+    /**
+     * Sets the filter type
+     * 
+     * @param filterBy
+     */
     public void setFilterBy(String filterBy) {
         this.filterBy = filterBy;
     }
 
+    /**
+     * Returns the filter type
+     * 
+     * @return filterBy
+     */
     public String getFilterBy() {
         return this.filterBy;
     }
