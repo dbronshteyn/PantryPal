@@ -85,6 +85,11 @@ public class SceneManager extends BorderPane {
         recipeCreationScene.displayRecipeCreationScene(controller.generateNewRecipeBuilder());
     }
 
+    /**
+     * Displays the login scene.
+     * 
+     * @param recipeID
+     */
     public void displayLoginScene() {
         if (isPaused) {
             return;
