@@ -16,13 +16,22 @@ import middleware.Controller;
  */
 public class AccountCreationScene extends VBox {
 
+    // The SceneMangager that displays the scene
     SceneManager sceneManager;
+
+    // The Controller that communicates with the backend
     Controller controller;
 
+    /**
+     * This class represents the top bar of the account creation scene.
+     */
     public class AccountCreationTopBar extends HBox {
 
         private Button cancelButton;
 
+        /**
+         * Constructs a new AccountCreationTopBar.
+         */
         AccountCreationTopBar() {
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
@@ -62,14 +71,17 @@ public class AccountCreationScene extends VBox {
     public void displayAccountCreationScene() {
         this.getChildren().clear();
 
+        // Username and password fields
         TextField usernameField = new TextField();
         usernameField.setPromptText("Username");
         usernameField.setMaxWidth(300);
-
         TextField passwordField = new TextField();
         passwordField.setPromptText("Password");
         passwordField.setMaxWidth(300);
 
+        /**
+         * Create account button executes functionality
+         */
         Button createAccountButton = createStyledButton("Create Account");
         createAccountButton.setDisable(true);
         createAccountButton.setOnAction(e -> {
@@ -90,6 +102,15 @@ public class AccountCreationScene extends VBox {
         sceneManager.setTop(new AccountCreationTopBar());
     }
 
+    /**
+     * Sets the triggers for the provided text field. The create account button will
+     * be disabled if either the provided text field or the other text field is
+     * empty.
+     * 
+     * @param textField
+     * @param createAccountButton
+     * @param otherTextField
+     */
     private void setTextFieldTriggers(TextField textField, Button createAccountButton, TextField otherTextField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             createAccountButton.setDisable(textField.getText().length() == 0 || otherTextField.getText().length() == 0);

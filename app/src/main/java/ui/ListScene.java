@@ -11,9 +11,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 
 import java.util.List;
-
-import org.checkerframework.checker.units.qual.s;
-
 import middleware.Controller;
 
 /**
@@ -72,16 +69,28 @@ public class ListScene extends VBox {
             this.setPadding(new Insets(10, 10, 10, 10));
             this.setSpacing(10);
 
+            /**
+             * This label displays the text "Recipes" in bold font.
+             */
             Label recipesLabel = new Label("Recipes");
             recipesLabel.setFont(new Font("Arial", 20));
             recipesLabel.setStyle("-fx-font-weight: bold;");
 
+            /**
+             * This button takes the user to the recipe creation scene.
+             */
             Button newRecipeButton = createStyledButton("New Recipe");
             newRecipeButton.setOnAction(e -> sceneManager.displayRecipeCreationScene());
 
+            /**
+             * This label displays the text "Sort by:" in regular font.
+             */
             Label sortByLabel = new Label("Sort by:");
             sortByLabel.setFont(new Font("Arial", 14));
 
+            /**
+             * This choice box allows the user to select how to sort the recipes.
+             */
             ChoiceBox<String> sortChoiceBox = new ChoiceBox<>();
             sortChoiceBox.getItems().addAll("most-recent", "least-recent", "a-z", "z-a");
             sortChoiceBox.setValue(controller.getSortBy());
@@ -90,9 +99,15 @@ public class ListScene extends VBox {
                 sceneManager.displayRecipeList();
             });
 
+            /**
+             * This label displays the text "Filter by:" in regular font.
+             */
             Label filterByLabel = new Label("Filter by:");
             filterByLabel.setFont(new Font("Arial", 14));
 
+            /**
+             * This choice box allows the user to select how to filter the recipes.
+             */
             ChoiceBox<String> filterChoiceBox = new ChoiceBox<>();
             filterChoiceBox.getItems().addAll("all", "breakfast", "lunch", "dinner");
             filterChoiceBox.setValue(controller.getFilterBy());
@@ -101,12 +116,16 @@ public class ListScene extends VBox {
                 sceneManager.displayRecipeList();
             });
 
+            /**
+             * This button logs the user out and takes them to the login scene.
+             */
             Button logoutButton = createStyledButton("Logout");
             logoutButton.setOnAction(e -> {
                 controller.logout();
                 sceneManager.displayLoginScene();
             });
 
+            // Containers for styling
             HBox rightContainer = new HBox(logoutButton);
             rightContainer.setAlignment(Pos.CENTER_RIGHT);
             HBox.setHgrow(rightContainer, Priority.ALWAYS);
