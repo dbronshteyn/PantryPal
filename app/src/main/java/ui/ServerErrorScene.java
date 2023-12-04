@@ -2,26 +2,24 @@ package ui;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
-
-import org.json.JSONObject;
-import java.io.FileWriter;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import javafx.geometry.Insets;
-import javafx.scene.text.Font;
-import javafx.scene.control.TextField;
 
-import middleware.Controller;
-
+/**
+ * This class represents the scene that displays the server status if server is
+ * offline.
+ */
 public class ServerErrorScene extends VBox {
 
     SceneManager sceneManager;
 
+    /**
+     * Constructs a new ServerErrorScene with the provided scene manager.
+     * 
+     * @param sceneManager
+     */
     ServerErrorScene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
         this.setSpacing(5);
@@ -31,6 +29,9 @@ public class ServerErrorScene extends VBox {
         this.setStyle("-fx-background-color: #e7ffe6;");
     }
 
+    /**
+     * Displays the server error scene.
+     */
     public void displayServerErrorScene() {
         this.getChildren().clear();
 

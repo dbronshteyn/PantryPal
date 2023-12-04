@@ -15,16 +15,34 @@ import java.io.FileOutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
+/**
+ * This class represents a Dall-E model that generates an image from a recipe
+ * title.
+ */
 public class DallE {
 
     private static final String API_ENDPOINT = "https://api.openai.com/v1/images/generations";
     private static final String MODEL = "dall-e-2";
     String apiKey;
 
+    /**
+     * Constructor for the DallE class.
+     * 
+     * @param apiKey
+     */
     public DallE(String apiKey) {
         this.apiKey = apiKey;
     }
 
+    /**
+     * Generates an image from the provided recipe title using the Dall-E model.
+     * 
+     * @param recipeTitle
+     * @return The generated image.
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws URISyntaxException
+     */
     public String generateImage(String recipeTitle)
             throws IOException, InterruptedException, URISyntaxException {
         // Set request parameters
@@ -64,7 +82,7 @@ public class DallE {
 
         String generatedImageURL = dataArray.getJSONObject(0).getString("url");
 
-        // Convert to Hex
+        // Convert image URL to hex
         URL imageURL = new URL(generatedImageURL);
         ReadableByteChannel rbc = Channels.newChannel(imageURL.openStream());
         FileOutputStream fos = new FileOutputStream("temp.png");

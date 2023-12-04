@@ -98,6 +98,7 @@ class RecipeCreationScene extends VBox {
 
         /**
          * Stops the audio recording process when the "Stop Recording" button is
+         * pressed.
          */
         public void stopRecordingAudio() {
             stopRecording();
@@ -135,7 +136,8 @@ class RecipeCreationScene extends VBox {
      * @param ingredientsAudioFile
      * @param mealTypeAudioFile
      */
-    RecipeCreationScene(SceneManager sceneManager, Controller controller, File ingredientsAudioFile, File mealTypeAudioFile) {
+    RecipeCreationScene(SceneManager sceneManager, Controller controller, File ingredientsAudioFile,
+            File mealTypeAudioFile) {
         this.sceneManager = sceneManager;
         this.controller = controller;
         this.setSpacing(10);

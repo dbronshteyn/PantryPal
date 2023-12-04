@@ -99,10 +99,20 @@ public class Recipe {
         return this.recipeID;
     }
 
+    /**
+     * Returns the username of the account that created the recipe.
+     * 
+     * @return Username of the account that created the recipe.
+     */
     public String getAccountUsername() {
         return this.accountUsername;
     }
 
+    /**
+     * Returns the meal type of the recipe.
+     * 
+     * @return Meal type of the recipe.
+     */
     public String getMealType() {
         return this.mealType;
     }
@@ -117,6 +127,11 @@ public class Recipe {
         this.instructions = instructions;
     }
 
+    /**
+     * Returns the image of the recipe.
+     * 
+     * @return Image of the recipe.
+     */
     public String getImageHex() {
         return this.imageHex;
     }
@@ -148,6 +163,13 @@ public class Recipe {
         return out;
     }
 
+    /**
+     * Returns an HTML representation of the recipe. Converts image to base64 to
+     * follow HTML standards for images.
+     * 
+     * @return HTML representation of the recipe.
+     * @throws IOException
+     */
     public String toHTML() throws IOException {
 
         String hexType = this.imageHex;
@@ -163,7 +185,14 @@ public class Recipe {
                 + "</p></body></html>";
     }
 
-    // taken from https://stackoverflow.com/a/25228492
+    /**
+     * Escapes HTML characters in a string.
+     * 
+     * @param s the string to escape
+     * @return the escaped string
+     * 
+     * @see code from https://stackoverflow.com/a/25228492
+     */
     private static String escapeHTML(String s) {
         StringBuilder out = new StringBuilder(Math.max(16, s.length()));
         for (int i = 0; i < s.length(); i++) {

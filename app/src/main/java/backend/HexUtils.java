@@ -7,7 +7,19 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HexFormat;
 
+/**
+ * This class contains utility methods for converting between different
+ * representations of data, specfically hexademical and base64 for image
+ * presentation.
+ */
 public class HexUtils {
+
+    /**
+     * Converts a file to a hexadecimal string.
+     * 
+     * @param file the file to convert
+     * @return the hexadecimal string
+     */
     public static String fileToHex(File file) {
         try {
             byte[] fileBytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
@@ -18,10 +30,23 @@ public class HexUtils {
         }
     }
 
+    /**
+     * Converts a hexadecimal string to a file.
+     * 
+     * @param hex  the hexadecimal string
+     * @param file the file to write to
+     * @throws IOException
+     */
     public static void hexToFile(String hex, File file) throws IOException {
         Files.write(Paths.get(file.getAbsolutePath()), HexFormat.of().parseHex(hex));
     }
 
+    /**
+     * Converts a hexadecimal string to a base64 string.
+     * 
+     * @param hexString the hexadecimal string
+     * @return the base64 string
+     */
     public static String hexToBase64(String hexString) {
         // Convert hexadecimal to bytes
         byte[] byteData = hexStringToByteArray(hexString);
@@ -35,6 +60,12 @@ public class HexUtils {
         return base64String;
     }
 
+    /**
+     * Converts a base64 string to a hexadecimal string.
+     * 
+     * @param base64String the base64 string
+     * @return the hexadecimal string
+     */
     private static byte[] hexStringToByteArray(String hexString) {
         int len = hexString.length();
         byte[] data = new byte[len / 2];

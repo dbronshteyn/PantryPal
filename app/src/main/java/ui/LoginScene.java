@@ -18,6 +18,9 @@ import javafx.scene.control.TextField;
 
 import middleware.Controller;
 
+/**
+ * This class represents the scene for login.
+ */
 public class LoginScene extends VBox {
 
     SceneManager sceneManager;
@@ -25,6 +28,9 @@ public class LoginScene extends VBox {
     private Label statusLabel = new Label("");
     private File automaticLoginFile = new File("automaticLogin.json");
 
+    /**
+     * This class represents the top bar of the login scene.
+     */
     public class LoginSceneTopBar extends HBox {
 
         LoginSceneTopBar() {
@@ -61,7 +67,8 @@ public class LoginScene extends VBox {
     public void displayLoginScene() {
         if (automaticLoginFile.exists()) {
             try {
-                JSONObject in = new JSONObject(new String(Files.readAllBytes(Paths.get(automaticLoginFile.getAbsolutePath()))));
+                JSONObject in = new JSONObject(
+                        new String(Files.readAllBytes(Paths.get(automaticLoginFile.getAbsolutePath()))));
                 if (controller.login(in.getString("username"), in.getString("password"))) {
                     sceneManager.displayRecipeList();
                     return;
@@ -83,6 +90,10 @@ public class LoginScene extends VBox {
 
         CheckBox autoLogin = new CheckBox("Remember Me");
 
+        /**
+         * This button logs the user in and takes them to the list scene. If the login
+         * is unsuccessful, it directs user to try again or create an account.
+         */
         Button loginButton = createStyledButton("Login");
         loginButton.setDisable(true);
         loginButton.setOnAction(e -> {
@@ -97,13 +108,13 @@ public class LoginScene extends VBox {
             }
         });
 
+        // Create account button and logic
         Button createAccountButton = createStyledButton("Create Account");
         createAccountButton.setOnAction(e -> sceneManager.displayAccountCreationScene());
 
         HBox buttonContainer = new HBox(loginButton, createAccountButton);
         buttonContainer.setSpacing(10);
         buttonContainer.setAlignment(Pos.CENTER);
-
 
         this.getChildren().add(statusLabel);
         setTextFieldTriggers(usernameField, loginButton, passwordField);
@@ -115,6 +126,14 @@ public class LoginScene extends VBox {
         sceneManager.setTop(new LoginSceneTopBar());
     }
 
+    /**
+     * Sets the triggers for the provided text field. The login button will be
+     * disabled if either the provided text field or the other text field is empty.
+     * 
+     * @param textField
+     * @param loginButton
+     * @param otherTextField
+     */
     private void setTextFieldTriggers(TextField textField, Button loginButton, TextField otherTextField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             loginButton.setDisable(textField.getText().length() == 0 || otherTextField.getText().length() == 0);
@@ -140,6 +159,12 @@ public class LoginScene extends VBox {
         return button;
     }
 
+    /**
+     * Sets the automatic login file to the provided username and password.
+     * 
+     * @param username
+     * @param password
+     */
     private void setAutomaticLogin(String username, String password) {
         JSONObject out = new JSONObject();
         out.put("username", username);

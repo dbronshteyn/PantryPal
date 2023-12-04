@@ -1,17 +1,12 @@
 package backend;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-import java.net.URL;
 
 /**
  * This class represents a Recipe Builder that allows the user to create a

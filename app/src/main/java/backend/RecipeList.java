@@ -73,6 +73,7 @@ public class RecipeList {
                 recipeIDs.add(recipe.getRecipeID());
             }
         }
+        // Sort by "most-recent", "least-recent", "a-z", "z-a"
         switch (sortBy) {
             case "most-recent":
                 recipeIDs.sort((a, b) -> this.getRecipeByID(b).getDateCreated()

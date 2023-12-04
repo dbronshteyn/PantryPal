@@ -34,6 +34,12 @@ class RecipeScene extends ScrollPane {
      * This class represents the top bar of the recipe scene.
      */
     public class RecipeSceneTopBar extends HBox {
+
+        /**
+         * Constructs a new RecipeSceneTopBar with the provided recipe ID.
+         * 
+         * @param recipeID
+         */
         RecipeSceneTopBar(String recipeID) {
             this.setAlignment(Pos.CENTER_LEFT);
             this.setPadding(new Insets(10, 10, 10, 10));
@@ -49,6 +55,10 @@ class RecipeScene extends ScrollPane {
             Button editButton = createStyledButton("Edit");
             editButton.setOnAction(e -> displayRecipeEditScene(recipeID));
 
+            /**
+             * This button copies the URL of the recipe to the user's clipboard for easy
+             * sharing and viewing.
+             */
             Clipboard clipboard = Clipboard.getSystemClipboard();
             ClipboardContent clipboardContent = new ClipboardContent();
             Button shareButton = createStyledButton("Share");
@@ -57,6 +67,7 @@ class RecipeScene extends ScrollPane {
                 shareButton.setText("Share");
                 shareButton.setDisable(false);
             });
+
             shareButton.setOnAction(e -> {
                 shareButton.setDisable(true);
                 shareButton.setText("Copied to clipboard!");
@@ -97,6 +108,8 @@ class RecipeScene extends ScrollPane {
                 sceneManager.displayRecipeList();
             });
 
+            // Refresh button creates a new recipe with meal type and ingredients data
+            // preserved
             Button refreshButton = createStyledButton("Refresh");
             refreshButton.setOnAction(e -> {
                 controller.generateRecipe(recipeID);
