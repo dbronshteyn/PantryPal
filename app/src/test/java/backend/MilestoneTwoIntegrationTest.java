@@ -73,4 +73,25 @@ class MilestoneTwoIntegrationTest {
         assertEquals("hex of eggs and bacon", recipe.getImageHex());
         recipeList.addRecipe(recipe);
     }
+
+    @Test
+    void testOurOwnTestScenario() throws IOException, InterruptedException, URISyntaxException {
+        assertTrue(accountList.addAccount("Caitlin", "password123"));
+        assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+        assertFalse(accountList.attemptLogin("Caitlin", "chefcaitlin"));
+        assertFalse(accountList.addAccount("Caitlin", "chefcaitlin123"));
+        assertTrue(accountList.attemptLogin("Caitlin", "password123"));
+        RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
+        whisperMock.setMockScenario("dinner.wav", "dinner");
+        builder.getMealTypeElement().specify(new File("dinner.wav"));
+        whisperMock.setMockScenario("salmon-and-rice.wav", "salmon and rice");
+        builder.getIngredientsElement().specify(new File("salmon-and-rice.wav"));
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: salmon and rice", "Title: Salmon and rice\nCook salmon and rice");
+        dallEMock.setMockScenario("Salmon and rice", "hex of salmon and rice");
+        Recipe recipe = builder.returnRecipe("Caitlin");
+        assertEquals("hex of salmon and rice", recipe.getImageHex());
+        recipeList.addRecipe(recipe);
+        assertEquals(1, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+        assertEquals("hex of salmon and rice", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getImageHex());
+    }
 }
