@@ -227,8 +227,8 @@ class RequestHandler implements HttpHandler {
             if (temporaryRecipes.containsKey(recipeID))
                 // we need to encode the instructions because they contain special characters
                 // like newlines
-                return "." + URLEncoder.encode(this.temporaryRecipes.get(recipeID).getInstructions(), "UTF-8");
-            return "." + URLEncoder.encode(this.recipeList.getRecipeByID(recipeID).getInstructions(), "UTF-8");
+                return URLEncoder.encode(this.temporaryRecipes.get(recipeID).getInstructions(), "UTF-8");
+            return URLEncoder.encode(this.recipeList.getRecipeByID(recipeID).getInstructions(), "UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -314,7 +314,7 @@ class RequestHandler implements HttpHandler {
     private String handleEditRecipe(Map<String, String> query) {
         try {
             String recipeID = query.get("recipeID");
-            String newInstructions = URLDecoder.decode(query.get("newInstructions"), "UTF-8").substring(1);
+            String newInstructions = URLDecoder.decode(query.get("newInstructions"), "UTF-8");
             this.recipeList.getRecipeByID(recipeID).setInstructions(newInstructions);
             this.recipeList.updateDatabase();
             this.recipeList.sortRecipesByDate();

@@ -94,7 +94,7 @@ public class Controller {
      */
     public String getRecipeInstructions(String recipeID) {
         try {
-            return URLDecoder.decode(sendRequest("/get-recipe-instructions", "recipeID=" + recipeID, "GET").substring(1),
+            return URLDecoder.decode(sendRequest("/get-recipe-instructions", "recipeID=" + recipeID, "GET"),
                     "UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
@@ -202,9 +202,8 @@ public class Controller {
      */
     public void editRecipe(String recipeID, String newInstructions) {
         try {
-            // we put the dot here to make sure we don't send an empty string
             sendRequest("/edit-recipe",
-                    "recipeID=" + recipeID + "&newInstructions=." + URLEncoder.encode(newInstructions, "UTF-8"), "PUT");
+                    "recipeID=" + recipeID + "&newInstructions=" + URLEncoder.encode(newInstructions, "UTF-8"), "PUT");
         } catch (Exception e) {
             e.printStackTrace();
         }
