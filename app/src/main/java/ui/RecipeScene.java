@@ -97,12 +97,7 @@ class RecipeScene extends ScrollPane {
                 sceneManager.displayRecipeList();
             });
 
-            Button refreshButton = createStyledButton("Refresh");
-            refreshButton.setOnAction(e -> {
-                controller.generateRecipe(recipeID);
-                sceneManager.displayNewlyCreatedRecipe(recipeID);
-            });
-            this.getChildren().addAll(cancelButton, title, saveButton, refreshButton);
+            this.getChildren().addAll(cancelButton, title, saveButton);
         }
     }
 

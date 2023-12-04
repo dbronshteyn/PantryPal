@@ -290,7 +290,7 @@ class RequestHandler implements HttpHandler {
         String recipeID = query.get("recipeID");
         String accountUsername = query.get("accountUsername");
         try {
-            Recipe recipe = this.recipeBuilders.get(recipeID).returnRecipe(accountUsername);
+            Recipe recipe = this.recipeBuilders.remove(recipeID).returnRecipe(accountUsername);
             this.temporaryRecipes.put(recipe.getRecipeID(), recipe);
         } catch (IOException e) {
             e.printStackTrace();
