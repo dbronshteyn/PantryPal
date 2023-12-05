@@ -74,11 +74,16 @@ class MilestoneTwoIntegrationTest {
         recipeList.addRecipe(recipe);
     }
 
+    /*
+     * Integration test based on scenario-based system test
+     * entitled "Caitlin enjoys the new features of PantryPal 2"
+     */
     @Test
     void testCaitlinEnjoysTheNewFeaturesOfPantryPalTwo() throws IOException, InterruptedException, URISyntaxException {
         assertTrue(accountList.addAccount("Caitlin", "password123"));
         assertTrue(accountList.attemptLogin("Caitlin", "password123"));
 
+        // set up recipes for testing
         RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         whisperMock.setMockScenario("breakfast.wav", "breakfast");
         builder.getMealTypeElement().specify(new File("breakfast.wav"));
@@ -104,24 +109,33 @@ class MilestoneTwoIntegrationTest {
         assertEquals("hex of pasta marinara", recipe.getImageHex());
         recipeList.addRecipe(recipe);
 
+        // user story 7 scenario 1
         assertEquals("dinner", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getMealType());
         assertEquals("breakfast", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(1)).getMealType());
 
+        // user story 8 scenario 1
         assertEquals("Pasta Marinara", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getTitle());
 
+        // user story 8 scenario 2
         assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "a-z", "all").get(0)).getTitle());
 
+        // user story 8 scenario 3
         assertEquals("Pasta Marinara", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "z-a", "all").get(0)).getTitle());
 
+        // user story 8 scenario 5
         assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "least-recent", "all").get(0)).getTitle());
 
+        // user story 8 scenario 6
         assertEquals(2, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
 
+        // user story 9 scenario 1
         assertEquals(1, recipeList.getRecipeIDs("Caitlin", "most-recent", "breakfast").size());
         assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "breakfast").get(0)).getTitle());
 
+        // user story 9 scenario 2
         assertEquals(2, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
 
+        // user story 5 scenario 1
         assertEquals("<html><body style=\"background-color: #e7ffe6; font-family: Arial;\"><h1>Eggs and cheese</h1><img src=\"data:image/png;base64,/u///u/vn8+/7v4=\" alt=\"Recipe Image\"><p>Cook</p></body></html>", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "a-z", "all").get(0)).toHTML());
     }
 }
