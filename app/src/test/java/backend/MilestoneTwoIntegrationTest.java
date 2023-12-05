@@ -74,7 +74,43 @@ class MilestoneTwoIntegrationTest {
         assertEquals("hex of eggs and bacon", recipe.getImageHex());
         recipeList.addRecipe(recipe);
     }
+  
+    /*
+     * Integration test for Iteration 1 scenario-based system test
+     * entitled "Our own test scenario"
+     * 
+     * Covers user stories 1, 2, 3
+     */
+    @Test
+    void testOurOwnTestScenario() throws IOException, InterruptedException, URISyntaxException {
+        // user story 2 scenario 1
+        assertTrue(accountList.addAccount("Caitlin", "password123"));
+        assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
 
+        // user story 2 scenario 3
+        assertFalse(accountList.attemptLogin("Caitlin", "chefcaitlin"));
+
+        // user story 1 scenario 3
+        assertFalse(accountList.addAccount("Caitlin", "chefcaitlin123"));
+
+        // user story 2 scenario 2
+        assertTrue(accountList.attemptLogin("Caitlin", "password123"));
+        RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
+        whisperMock.setMockScenario("dinner.wav", "dinner");
+        builder.getMealTypeElement().specify(new File("dinner.wav"));
+        whisperMock.setMockScenario("salmon-and-rice.wav", "salmon and rice");
+        builder.getIngredientsElement().specify(new File("salmon-and-rice.wav"));
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: salmon and rice", "Title: Salmon and rice\nCook salmon and rice");
+        dallEMock.setMockScenario("Salmon and rice", "hex of salmon and rice");
+        Recipe recipe = builder.returnRecipe("Caitlin");
+        assertEquals("hex of salmon and rice", recipe.getImageHex());
+        recipeList.addRecipe(recipe);
+
+        // user story 3 scenario 2
+        assertEquals(1, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+        assertEquals("hex of salmon and rice", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getImageHex());
+    }
+  
     /*
      * Integration test based on scenario-based system test
      * entitled "Our own test scenario" for Iteration 2
@@ -113,4 +149,73 @@ class MilestoneTwoIntegrationTest {
         recipeList.addRecipe(newRecipe);
         assertEquals("Lettuce and chicken 2", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getTitle());
     }
+  
+  
+    /*
+     * Integration test based on scenario-based system test
+     * entitled "Caitlin enjoys the new features of PantryPal 2"
+     * 
+     * Covers user stories 4, 5, 6, 7, 8, 9, 10
+     */
+    @Test
+    void testCaitlinEnjoysTheNewFeaturesOfPantryPalTwo() throws IOException, InterruptedException, URISyntaxException {
+        assertTrue(accountList.addAccount("Caitlin", "password123"));
+        assertTrue(accountList.attemptLogin("Caitlin", "password123"));
+
+        // set up recipes for testing
+        RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
+        whisperMock.setMockScenario("breakfast.wav", "breakfast");
+        builder.getMealTypeElement().specify(new File("breakfast.wav"));
+        whisperMock.setMockScenario("eggs-and-cheese.wav", "Eggs and cheese");
+        builder.getIngredientsElement().specify(new File("eggs-and-cheese.wav"));
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Eggs and cheese", "Title: Eggs and cheese\nCook");
+        dallEMock.setMockScenario("Eggs and cheese", "hex of eggs and cheese");
+        Recipe recipe = builder.returnRecipe("Caitlin");
+        assertEquals("hex of eggs and cheese", recipe.getImageHex());
+        recipeList.addRecipe(recipe);
+
+        // need this because sorting by most recent sometimes fails otherwise
+        Thread.sleep(1);
+        
+        builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
+        whisperMock.setMockScenario("dinner.wav", "dinner");
+        builder.getMealTypeElement().specify(new File("dinner.wav"));
+        whisperMock.setMockScenario("pasta-and-tomato-sauce.wav", "Pasta and tomato sauce");
+        builder.getIngredientsElement().specify(new File("pasta-and-tomato-sauce.wav"));
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: Pasta and tomato sauce", "Title: Pasta Marinara\nCook");
+        dallEMock.setMockScenario("Pasta Marinara", "hex of pasta marinara");
+        recipe = builder.returnRecipe("Caitlin");
+        assertEquals("hex of pasta marinara", recipe.getImageHex());
+        recipeList.addRecipe(recipe);
+
+        // user story 7 scenario 1
+        assertEquals("dinner", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getMealType());
+        assertEquals("breakfast", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(1)).getMealType());
+
+        // user story 8 scenario 1
+        assertEquals("Pasta Marinara", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getTitle());
+
+        // user story 8 scenario 2
+        assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "a-z", "all").get(0)).getTitle());
+
+        // user story 8 scenario 3
+        assertEquals("Pasta Marinara", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "z-a", "all").get(0)).getTitle());
+
+        // user story 8 scenario 5
+        assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "least-recent", "all").get(0)).getTitle());
+
+        // user story 8 scenario 6
+        assertEquals(2, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
+        // user story 9 scenario 1
+        assertEquals(1, recipeList.getRecipeIDs("Caitlin", "most-recent", "breakfast").size());
+        assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "breakfast").get(0)).getTitle());
+
+        // user story 9 scenario 2
+        assertEquals(2, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
+        // user story 5 scenario 1
+        assertEquals("<html><body style=\"background-color: #e7ffe6; font-family: Arial;\"><h1>Eggs and cheese</h1><img src=\"data:image/png;base64,/u///u/vn8+/7v4=\" alt=\"Recipe Image\"><p>Cook</p></body></html>", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "a-z", "all").get(0)).toHTML());
+    }
 }
+
