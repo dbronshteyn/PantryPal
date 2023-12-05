@@ -79,12 +79,24 @@ public class AccountCreationScene extends VBox {
         passwordField.setPromptText("Password");
         passwordField.setMaxWidth(300);
 
+        TextField reEnterPassword = new TextField("");
+        reEnterPassword.setPromptText("Re-enter Password");
+        reEnterPassword.setMaxWidth(300);
+
         /**
          * Create account button executes functionality
          */
         Button createAccountButton = createStyledButton("Create Account");
         createAccountButton.setDisable(true);
+
         createAccountButton.setOnAction(e -> {
+            // Checks that passwords match [password confirmation]
+            if (!passwordField.getText().equals(reEnterPassword.getText())) {
+                this.getChildren().add(new Label("Passwords do not match"));
+                return;
+            }
+
+            // Checks that username is not already in use [username uniqueness]
             String response = controller.addAccount(usernameField.getText(), passwordField.getText());
             if (response == null) {
                 this.getChildren().add(new Label("Username already in use, try another"));
@@ -96,7 +108,7 @@ public class AccountCreationScene extends VBox {
         setTextFieldTriggers(usernameField, createAccountButton, passwordField);
         setTextFieldTriggers(passwordField, createAccountButton, usernameField);
 
-        this.getChildren().addAll(usernameField, passwordField, createAccountButton);
+        this.getChildren().addAll(usernameField, passwordField, reEnterPassword, createAccountButton);
 
         sceneManager.setCenter(this);
         sceneManager.setTop(new AccountCreationTopBar());
