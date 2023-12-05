@@ -89,6 +89,9 @@ class MilestoneTwoIntegrationTest {
         Recipe recipe = builder.returnRecipe("Caitlin");
         assertEquals("hex of eggs and cheese", recipe.getImageHex());
         recipeList.addRecipe(recipe);
+
+        // need this because sorting by most recent sometimes fails otherwise
+        Thread.sleep(1);
         
         builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         whisperMock.setMockScenario("dinner.wav", "dinner");
