@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 
 class MilestoneTwoIntegrationTest {
@@ -73,12 +74,95 @@ class MilestoneTwoIntegrationTest {
         assertEquals("hex of eggs and bacon", recipe.getImageHex());
         recipeList.addRecipe(recipe);
     }
-
+  
+    /*
+     * Integration test for Iteration 1 scenario-based system test
+     * entitled "Our own test scenario"
+     * 
+     * Covers user stories 1, 2, 3
+     */
     @Test
-    void testCaitlinEnjoysNewFeaturesOfPantryPalTwo() throws IOException, InterruptedException, URISyntaxException {
-        accountList.addAccount("Caitlin", "password123");
+    void testOurOwnTestScenario() throws IOException, InterruptedException, URISyntaxException {
+        // user story 2 scenario 1
+        assertTrue(accountList.addAccount("Caitlin", "password123"));
+        assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
+        // user story 2 scenario 3
+        assertFalse(accountList.attemptLogin("Caitlin", "chefcaitlin"));
+
+        // user story 1 scenario 3
+        assertFalse(accountList.addAccount("Caitlin", "chefcaitlin123"));
+
+        // user story 2 scenario 2
+        assertTrue(accountList.attemptLogin("Caitlin", "password123"));
+        RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
+        whisperMock.setMockScenario("dinner.wav", "dinner");
+        builder.getMealTypeElement().specify(new File("dinner.wav"));
+        whisperMock.setMockScenario("salmon-and-rice.wav", "salmon and rice");
+        builder.getIngredientsElement().specify(new File("salmon-and-rice.wav"));
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: salmon and rice", "Title: Salmon and rice\nCook salmon and rice");
+        dallEMock.setMockScenario("Salmon and rice", "hex of salmon and rice");
+        Recipe recipe = builder.returnRecipe("Caitlin");
+        assertEquals("hex of salmon and rice", recipe.getImageHex());
+        recipeList.addRecipe(recipe);
+
+        // user story 3 scenario 2
+        assertEquals(1, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+        assertEquals("hex of salmon and rice", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getImageHex());
+    }
+  
+    /*
+     * Integration test based on scenario-based system test
+     * entitled "Our own test scenario" for Iteration 2
+     *
+     * Covers user stories 4, 5, 6, 7, 8, 9, 10
+     */
+    @Test
+    void testOurOwnTestScenarioTwo() throws IOException, InterruptedException, URISyntaxException {
+        assertTrue(accountList.addAccount("Caitlin", "password123"));
+        assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+        assertTrue(accountList.attemptLogin("Caitlin", "password123"));
+        assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
+        // set up recipes for testing
+        RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
+        whisperMock.setMockScenario("lunch.wav", "lunch");
+        builder.getMealTypeElement().specify(new File("lunch.wav"));
+        whisperMock.setMockScenario("lettuce-and-chicken.wav", "Lettuce and chicken");
+        builder.getIngredientsElement().specify(new File("lettuce-and-chicken.wav"));
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a lunch recipe with the following ingredients: Lettuce and chicken", "Title: Lettuce and chicken\nToss");
+        dallEMock.setMockScenario("Lettuce and chicken", "hex of lettuce and chicken");
+        Recipe oldRecipe = builder.returnRecipe("Caitlin");
+        
+        // regenerate recipe
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a lunch recipe with the following ingredients: Lettuce and chicken", "Title: Lettuce and chicken 2\nToss but diferent");
+        dallEMock.setMockScenario("Lettuce and chicken 2", "hex of lettuce and chicken but different");
+        Recipe newRecipe = builder.returnRecipe("Caitlin");
+
+        // user story 6 scenario 1
+        assertNotEquals(oldRecipe.getTitle(), newRecipe.getTitle());
+        assertNotEquals(oldRecipe.getInstructions(), newRecipe.getInstructions());
+        assertNotEquals(oldRecipe.getImageHex(), newRecipe.getImageHex());
+        assertEquals("hex of lettuce and chicken but different", newRecipe.getImageHex());
+
+        // user story 6 scenario 2
+        recipeList.addRecipe(newRecipe);
+        assertEquals("Lettuce and chicken 2", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getTitle());
+    }
+  
+  
+    /*
+     * Integration test based on scenario-based system test
+     * entitled "Caitlin enjoys the new features of PantryPal 2"
+     * 
+     * Covers user stories 4, 5, 6, 7, 8, 9, 10
+     */
+    @Test
+    void testCaitlinEnjoysTheNewFeaturesOfPantryPalTwo() throws IOException, InterruptedException, URISyntaxException {
+        assertTrue(accountList.addAccount("Caitlin", "password123"));
         assertTrue(accountList.attemptLogin("Caitlin", "password123"));
 
+        // set up recipes for testing
         RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         whisperMock.setMockScenario("breakfast.wav", "breakfast");
         builder.getMealTypeElement().specify(new File("breakfast.wav"));
@@ -104,6 +188,7 @@ class MilestoneTwoIntegrationTest {
         assertEquals("hex of pasta marinara", recipe.getImageHex());
         recipeList.addRecipe(recipe);
 
+        // user story 7 scenario 1
         assertEquals("dinner", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getMealType());
         assertEquals("breakfast", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(1)).getMealType());
 
@@ -122,6 +207,30 @@ class MilestoneTwoIntegrationTest {
 
         assertEquals(2, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
 
+        // user story 8 scenario 1
+        assertEquals("Pasta Marinara", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getTitle());
+
+        // user story 8 scenario 2
+        assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "a-z", "all").get(0)).getTitle());
+
+        // user story 8 scenario 3
+        assertEquals("Pasta Marinara", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "z-a", "all").get(0)).getTitle());
+
+        // user story 8 scenario 5
+        assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "least-recent", "all").get(0)).getTitle());
+
+        // user story 8 scenario 6
+        assertEquals(2, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
+        // user story 9 scenario 1
+        assertEquals(1, recipeList.getRecipeIDs("Caitlin", "most-recent", "breakfast").size());
+        assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "breakfast").get(0)).getTitle());
+
+        // user story 9 scenario 2
+        assertEquals(2, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
+        // user story 5 scenario 1
         assertEquals("<html><body style=\"background-color: #e7ffe6; font-family: Arial;\"><h1>Eggs and cheese</h1><img src=\"data:image/png;base64,/u///u/vn8+/7v4=\" alt=\"Recipe Image\"><p>Cook</p></body></html>", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "a-z", "all").get(0)).toHTML());
     }
 }
+
