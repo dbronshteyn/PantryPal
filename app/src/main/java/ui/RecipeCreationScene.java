@@ -194,7 +194,11 @@ class RecipeCreationScene extends VBox {
                 if (result == null) {
                     label.setText(invalidTypeMessage);
                 } else {
-                    if (result.contains("Audio file is too short")) { // Switch this to no audio found
+                    if (result.contains("error")) {
+                        label.setText("Error, button pressed too early. Please try again.");
+                        button.setText("Record " + elementName);
+                        return;
+                    } else if (result.contains("Audio file is too short")) { // Switch this to no audio found
                         label.setText("Error, button pressed too early. Please try again.");
                         button.setText("Record " + elementName);
                         return;
