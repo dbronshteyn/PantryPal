@@ -75,6 +75,43 @@ class MilestoneTwoIntegrationTest {
     }
 
     /*
+     * Integration test for Iteration 1 scenario-based system test
+     * entitled "Our own test scenario"
+     * 
+     * Covers user stories 1, 2, 3
+     */
+    @Test
+    void testOurOwnTestScenario() throws IOException, InterruptedException, URISyntaxException {
+        // user story 2 scenario 1
+        assertTrue(accountList.addAccount("Caitlin", "password123"));
+        assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
+        // user story 2 scenario 3
+        assertFalse(accountList.attemptLogin("Caitlin", "chefcaitlin"));
+
+        // user story 1 scenario 3
+        assertFalse(accountList.addAccount("Caitlin", "chefcaitlin123"));
+
+        // user story 2 scenario 2
+        assertTrue(accountList.attemptLogin("Caitlin", "password123"));
+        RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
+        whisperMock.setMockScenario("dinner.wav", "dinner");
+        builder.getMealTypeElement().specify(new File("dinner.wav"));
+        whisperMock.setMockScenario("salmon-and-rice.wav", "salmon and rice");
+        builder.getIngredientsElement().specify(new File("salmon-and-rice.wav"));
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: salmon and rice", "Title: Salmon and rice\nCook salmon and rice");
+        dallEMock.setMockScenario("Salmon and rice", "hex of salmon and rice");
+        Recipe recipe = builder.returnRecipe("Caitlin");
+        assertEquals("hex of salmon and rice", recipe.getImageHex());
+        recipeList.addRecipe(recipe);
+
+        // user story 3 scenario 2
+        assertEquals(1, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+        assertEquals("hex of salmon and rice", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getImageHex());
+    }
+  
+  
+    /*
      * Integration test based on scenario-based system test
      * entitled "Caitlin enjoys the new features of PantryPal 2"
      * 
@@ -141,3 +178,4 @@ class MilestoneTwoIntegrationTest {
         assertEquals("<html><body style=\"background-color: #e7ffe6; font-family: Arial;\"><h1>Eggs and cheese</h1><img src=\"data:image/png;base64,/u///u/vn8+/7v4=\" alt=\"Recipe Image\"><p>Cook</p></body></html>", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "a-z", "all").get(0)).toHTML());
     }
 }
+
