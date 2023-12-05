@@ -167,7 +167,7 @@ public class Controller {
     public String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
         String hex = HexUtils.fileToHex(audioFile);
         String response = sendRequest("/specify-recipe-creator-element",
-                "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "POST");
+                "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "POST").substring(1);
         if (response.equals("invalid")) {
             return null;
         }
