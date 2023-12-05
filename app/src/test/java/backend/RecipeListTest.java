@@ -104,7 +104,35 @@ class RecipeListTest {
         assertEquals("id 3", recipeIDs.get(0));
         assertEquals("id 2", recipeIDs.get(1));
         assertEquals("id 1", recipeIDs.get(2));
+    }
 
+    /**
+     * Tests that the RecipeList filter works
+     */
+    @Test
+    void testGetRecipeIDsFilter() {
+        long currentTime = System.currentTimeMillis();
+
+        recipeList.getRecipes().add(
+                new Recipe("id 1", "A Test Recipe", "Test Instructions", new Date(currentTime + 1000), "", "", "breakfast"));
+        recipeList.getRecipes()
+                .add(new Recipe("id 2", "B Test Recipe 2", "Test Instructions 2", new Date(currentTime), "", "", "breakfast"));
+        recipeList.getRecipes()
+                .add(new Recipe("id 3", "C Test Recipe 3", "Test Instructions 3", new Date(currentTime - 1000), "", "", "dinner"));
+
+        List<String> recipeIDs = recipeList.getRecipeIDs("", "most-recent", "all");
+        assertEquals(3, recipeIDs.size());
+
+        recipeIDs = recipeList.getRecipeIDs("", "most-recent", "breakfast");
+        assertEquals(2, recipeIDs.size());
+        assertEquals("id 1", recipeIDs.get(0));
+        assertEquals("id 2", recipeIDs.get(1));
+
+        recipeIDs = recipeList.getRecipeIDs("", "most-recent", "dinner");
+        assertEquals(1, recipeIDs.size());
+
+        recipeIDs = recipeList.getRecipeIDs("", "most-recent", "lunch");
+        assertEquals(0, recipeIDs.size());
     }
 
     /**

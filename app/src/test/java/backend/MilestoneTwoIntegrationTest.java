@@ -88,6 +88,8 @@ class MilestoneTwoIntegrationTest {
         dallEMock.setMockScenario("Eggs and cheese", "hex of eggs and cheese");
         recipeList.addRecipe(builder.returnRecipe("Caitlin"));
 
+        Thread.sleep(1);
+
         builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         whisperMock.setMockScenario("dinner.wav", "dinner");
         builder.getMealTypeElement().specify(new File("dinner.wav"));
