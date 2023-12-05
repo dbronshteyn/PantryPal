@@ -126,7 +126,22 @@ public class Whisper {
             }
         }
         JSONObject responseJson = new JSONObject(response.toString());
-        return responseJson.getString("text");
+
+        String result = responseJson.getString("text");
+
+        // Ensure that result contains ASCII characters only
+
+        /*
+         * Reasoning: When Whisper does not hear anything, it creates random special
+         * characters. This is a way to check if Whisper heard anything or not.
+         */
+        for (int i = 0; i < result.length(); i++) {
+            if (result.charAt(i) > 127) {
+                return "No ingredients specified or ingredients not recognized.";
+            }
+        }
+
+        return result;
     }
 
     /**
