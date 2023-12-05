@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 
 class MilestoneTwoIntegrationTest {
@@ -73,7 +74,7 @@ class MilestoneTwoIntegrationTest {
         assertEquals("hex of eggs and bacon", recipe.getImageHex());
         recipeList.addRecipe(recipe);
     }
-
+  
     /*
      * Integration test for Iteration 1 scenario-based system test
      * entitled "Our own test scenario"
@@ -108,6 +109,45 @@ class MilestoneTwoIntegrationTest {
         // user story 3 scenario 2
         assertEquals(1, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
         assertEquals("hex of salmon and rice", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getImageHex());
+    }
+  
+    /*
+     * Integration test based on scenario-based system test
+     * entitled "Our own test scenario" for Iteration 2
+     *
+     * Covers user stories 4, 5, 6, 7, 8, 9, 10
+     */
+    @Test
+    void testOurOwnTestScenarioTwo() throws IOException, InterruptedException, URISyntaxException {
+        assertTrue(accountList.addAccount("Caitlin", "password123"));
+        assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+        assertTrue(accountList.attemptLogin("Caitlin", "password123"));
+        assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
+        // set up recipes for testing
+        RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
+        whisperMock.setMockScenario("lunch.wav", "lunch");
+        builder.getMealTypeElement().specify(new File("lunch.wav"));
+        whisperMock.setMockScenario("lettuce-and-chicken.wav", "Lettuce and chicken");
+        builder.getIngredientsElement().specify(new File("lettuce-and-chicken.wav"));
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a lunch recipe with the following ingredients: Lettuce and chicken", "Title: Lettuce and chicken\nToss");
+        dallEMock.setMockScenario("Lettuce and chicken", "hex of lettuce and chicken");
+        Recipe oldRecipe = builder.returnRecipe("Caitlin");
+        
+        // regenerate recipe
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a lunch recipe with the following ingredients: Lettuce and chicken", "Title: Lettuce and chicken 2\nToss but diferent");
+        dallEMock.setMockScenario("Lettuce and chicken 2", "hex of lettuce and chicken but different");
+        Recipe newRecipe = builder.returnRecipe("Caitlin");
+
+        // user story 6 scenario 1
+        assertNotEquals(oldRecipe.getTitle(), newRecipe.getTitle());
+        assertNotEquals(oldRecipe.getInstructions(), newRecipe.getInstructions());
+        assertNotEquals(oldRecipe.getImageHex(), newRecipe.getImageHex());
+        assertEquals("hex of lettuce and chicken but different", newRecipe.getImageHex());
+
+        // user story 6 scenario 2
+        recipeList.addRecipe(newRecipe);
+        assertEquals("Lettuce and chicken 2", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getTitle());
     }
   
   
