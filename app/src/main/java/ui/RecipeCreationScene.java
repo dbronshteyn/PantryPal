@@ -190,7 +190,7 @@ class RecipeCreationScene extends VBox {
                 // send recording to the server and display the response
                 audioRecorder.stopRecordingAudio();
                 String result = controller.specifyRecipeCreatorElement(recipeID, elementName, audioFile);
-                System.out.println(result);
+                // System.out.println(result);
                 if (result == null) {
                     label.setText(invalidTypeMessage);
                 } else {
