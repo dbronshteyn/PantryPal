@@ -75,6 +75,12 @@ class MilestoneTwoIntegrationTest {
         recipeList.addRecipe(recipe);
     }
 
+    /*
+     * Integration test based on scenario-based system test
+     * entitled "Our own test scenario" for Iteration 2
+     *
+     * Covers user stories 4, 5, 6, 7, 8, 9, 10
+     */
     @Test
     void testOurOwnTestScenarioTwo() throws IOException, InterruptedException, URISyntaxException {
         assertTrue(accountList.addAccount("Caitlin", "password123"));
