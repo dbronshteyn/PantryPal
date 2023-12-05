@@ -73,4 +73,31 @@ class MilestoneTwoIntegrationTest {
         assertEquals("hex of eggs and bacon", recipe.getImageHex());
         recipeList.addRecipe(recipe);
     }
+
+    @Test
+    void testCaitlinEnjoysNewFeaturesOfPantryPalTwo() throws IOException, InterruptedException, URISyntaxException {
+        accountList.addAccount("Caitlin", "password123");
+        assertTrue(accountList.attemptLogin("Caitlin", "password123"));
+
+        RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
+        whisperMock.setMockScenario("breakfast.wav", "breakfast");
+        builder.getMealTypeElement().specify(new File("breakfast.wav"));
+        whisperMock.setMockScenario("eggs-and-cheese.wav", "Eggs and cheese");
+        builder.getIngredientsElement().specify(new File("eggs-and-cheese.wav"));
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Eggs and cheese", "Title: Eggs and cheese\nFry eggs and add cheese");
+        dallEMock.setMockScenario("Eggs and cheese", "hex of eggs and cheese");
+        recipeList.addRecipe(builder.returnRecipe("Caitlin"));
+
+        builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
+        whisperMock.setMockScenario("dinner.wav", "dinner");
+        builder.getMealTypeElement().specify(new File("dinner.wav"));
+        whisperMock.setMockScenario("pasta-and-tomato-sauce.wav", "Pasta and tomato sauce");
+        builder.getIngredientsElement().specify(new File("pasta-and-tomato-sauce.wav"));
+        chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a dinner recipe with the following ingredients: Pasta and tomato sauce", "Title: Pasta and tomato sauce\nBoil pasta and add tomato sauce");
+        dallEMock.setMockScenario("Pasta and tomato sauce", "hex of pasta and tomato sauce");
+        recipeList.addRecipe(builder.returnRecipe("Caitlin"));
+
+        assertEquals("dinner", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getMealType());
+        assertEquals("breakfast", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(1)).getMealType());
+    }
 }
