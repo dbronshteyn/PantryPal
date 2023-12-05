@@ -74,12 +74,25 @@ class MilestoneTwoIntegrationTest {
         recipeList.addRecipe(recipe);
     }
 
+    /*
+     * Integration test for Iteration 1 scenario-based system test
+     * entitled "Our own test scenario"
+     * 
+     * Covers user stories 1, 2, 3
+     */
     @Test
     void testOurOwnTestScenario() throws IOException, InterruptedException, URISyntaxException {
+        // user story 2 scenario 1
         assertTrue(accountList.addAccount("Caitlin", "password123"));
         assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
+        // user story 2 scenario 3
         assertFalse(accountList.attemptLogin("Caitlin", "chefcaitlin"));
+
+        // user story 1 scenario 3
         assertFalse(accountList.addAccount("Caitlin", "chefcaitlin123"));
+
+        // user story 2 scenario 2
         assertTrue(accountList.attemptLogin("Caitlin", "password123"));
         RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         whisperMock.setMockScenario("dinner.wav", "dinner");
@@ -91,6 +104,8 @@ class MilestoneTwoIntegrationTest {
         Recipe recipe = builder.returnRecipe("Caitlin");
         assertEquals("hex of salmon and rice", recipe.getImageHex());
         recipeList.addRecipe(recipe);
+
+        // user story 3 scenario 2
         assertEquals(1, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
         assertEquals("hex of salmon and rice", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getImageHex());
     }
