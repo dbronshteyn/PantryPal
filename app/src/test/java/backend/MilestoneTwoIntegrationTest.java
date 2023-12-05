@@ -55,13 +55,22 @@ class MilestoneTwoIntegrationTest {
         }
     }
 
+    /*
+     * Integration test based on scenario-based system test
+     * entitled "Caitlin starts using PantryPal 2" (in our
+     * MS2 planning document)
+     * 
+     * Tests user stories 1, 2, 3
+     */
     @Test
     void testCaitlinStartsUsingPantryPalTwo() throws IOException, InterruptedException, URISyntaxException {
+        // user story 1 scenario 1
         assertTrue(accountList.addAccount("Caitlin", "password123"));
         assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
         assertTrue(accountList.attemptLogin("Caitlin", "password123"));
         assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
 
+        // user story 3 scenario 1
         RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         whisperMock.setMockScenario("breakfast.wav", "breakfast");
         builder.getMealTypeElement().specify(new File("breakfast.wav"));
