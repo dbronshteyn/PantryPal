@@ -190,10 +190,25 @@ class RecipeCreationScene extends VBox {
                 // send recording to the server and display the response
                 audioRecorder.stopRecordingAudio();
                 String result = controller.specifyRecipeCreatorElement(recipeID, elementName, audioFile);
+                // System.out.println(result);
                 if (result == null) {
                     label.setText(invalidTypeMessage);
                 } else {
-                    label.setText(String.format(successMessage, result));
+                    if (result.contains("error")) {
+                        label.setText("Error, button pressed too early. Please try again.");
+                        button.setText("Record " + elementName);
+                        return;
+                    } else if (result.contains("Audio file is too short")) { // Switch this to no audio found
+                        label.setText("Error, button pressed too early. Please try again.");
+                        button.setText("Record " + elementName);
+                        return;
+                    } else if (result.contains("No ingredients specified")) {
+                        label.setText("No ingredients specified. Please try again.");
+                        button.setText("Record " + elementName);
+                        return;
+                    } else {
+                        label.setText(String.format(successMessage, result));
+                    }
                 }
                 button.setDisable(false);
                 button.setText(originalText);

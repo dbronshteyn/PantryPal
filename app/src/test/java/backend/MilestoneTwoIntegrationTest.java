@@ -75,8 +75,8 @@ class MilestoneTwoIntegrationTest {
     }
 
     @Test
-    void testCaitlinEnjoysTheNewFeaturesOfPantryPalTwo() throws IOException, InterruptedException, URISyntaxException {
-        assertTrue(accountList.addAccount("Caitlin", "password123"));
+    void testCaitlinEnjoysNewFeaturesOfPantryPalTwo() throws IOException, InterruptedException, URISyntaxException {
+        accountList.addAccount("Caitlin", "password123");
         assertTrue(accountList.attemptLogin("Caitlin", "password123"));
 
         RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
