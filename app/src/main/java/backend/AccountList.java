@@ -201,13 +201,4 @@ public class AccountList {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Returns the list of accounts.
-     * 
-     * @return the list of accounts
-     */
-    public List<Account> getList() {
-        return accounts;
-    }
 }
