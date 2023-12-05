@@ -330,7 +330,7 @@ class RequestHandler implements HttpHandler {
             if (out == null) {
                 out = "invalid";
             }
-            return out;
+            return "." + out;
         } catch (Exception e) {
             e.printStackTrace();
             return FAILURE_MESSAGE;
