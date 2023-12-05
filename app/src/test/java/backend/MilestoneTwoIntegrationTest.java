@@ -77,6 +77,8 @@ class MilestoneTwoIntegrationTest {
     /*
      * Integration test based on scenario-based system test
      * entitled "Caitlin enjoys the new features of PantryPal 2"
+     * 
+     * Covers user stories 4, 5, 6, 7, 8, 9, 10
      */
     @Test
     void testCaitlinEnjoysTheNewFeaturesOfPantryPalTwo() throws IOException, InterruptedException, URISyntaxException {
