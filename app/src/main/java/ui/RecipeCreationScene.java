@@ -193,7 +193,13 @@ class RecipeCreationScene extends VBox {
                 if (result == null) {
                     label.setText(invalidTypeMessage);
                 } else {
-                    label.setText(String.format(successMessage, result));
+                    if (result.contains("error")) {
+                        label.setText("Error, button pressed too early. Please try again.");
+                        button.setText("Record " + elementName);
+                        return;
+                    } else {
+                        label.setText(String.format(successMessage, result));
+                    }
                 }
                 button.setDisable(false);
                 button.setText(originalText);
