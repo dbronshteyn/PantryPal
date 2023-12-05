@@ -60,6 +60,7 @@ class RecipeTest {
         assertEquals(new Date(0), recipe.getDateCreated());
         assertEquals("username 1", recipe.getAccountUsername());
         assertEquals("hex 1", recipe.getImageHex());
+        assertEquals("breakfast", recipe.getMealType());
     }
 
     /**
