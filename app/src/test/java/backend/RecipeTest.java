@@ -22,8 +22,8 @@ class RecipeTest {
     @BeforeEach
     public void setUp() {
         dateCreated = new Date(0);
-        recipe = new Recipe("id 1", "Chocolate Cake", "Mix ingredients and bake for 30 minutes.", dateCreated, "", "",
-                "");
+        recipe = new Recipe("id 1", "Chocolate Cake", "Mix ingredients and bake for 30 minutes.", dateCreated, "Caitlin", "image hex test",
+                "dinner");
     }
 
     /**
@@ -60,6 +60,7 @@ class RecipeTest {
         assertEquals(new Date(0), recipe.getDateCreated());
         assertEquals("username 1", recipe.getAccountUsername());
         assertEquals("hex 1", recipe.getImageHex());
+        assertEquals("breakfast", recipe.getMealType());
     }
 
     /**
@@ -101,5 +102,13 @@ class RecipeTest {
                 recipe.getInstructions());
         assertEquals("id 1", recipe.getRecipeID());
         assertEquals(dateCreated, recipe.getDateCreated());
+    }
+
+    /**
+     * Tests retrieving recipe HTML
+     */
+    @Test
+    void testToHTML() {
+        assertEquals("<html><body style=\"background-color: #e7ffe6; font-family: Arial;\"><h1>Chocolate Cake</h1><img src=\"data:image/png;base64,75/f/u/+7w==\" alt=\"Recipe Image\"><p>Mix ingredients and bake for 30 minutes.</p></body></html>", recipe.toHTML());
     }
 }

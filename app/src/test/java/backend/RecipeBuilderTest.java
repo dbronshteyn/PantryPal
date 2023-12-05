@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -119,5 +120,35 @@ class RecipeBuilderTest {
         assertEquals("Test Title", recipe.getTitle());
         assertEquals("Ingredient 1 and ingredient 2", recipe.getInstructions());
         assertEquals(recipeID, recipe.getRecipeID());
+    }
+
+    /**
+     * Tests that the recipe is refreshed when the user provides a new recipe
+     * 
+     * @throws IOException
+     */
+    @Test
+    void testRefreshRecipe() throws IOException, InterruptedException, URISyntaxException {
+        chatGPTMock.setMockScenario(
+                "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2",
+                "Title: Test Title\n\nIngredient 1 and ingredient 2");
+        dallEMock.setMockScenario("Test Title", "hex 1");
+        recipeBuilder.getMealTypeElement().setValue("breakfast");
+        recipeBuilder.getIngredientsElement().setValue("Ingredient 1 and ingredient 2");
+        Recipe oldRecipe = recipeBuilder.returnRecipe("");
+        
+        chatGPTMock.setMockScenario(
+                "Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a breakfast recipe with the following ingredients: Ingredient 1 and ingredient 2",
+                "Title: Test Title 2\n\nIngredient 1 and ingredient 2 but different");
+        dallEMock.setMockScenario("Test Title 2", "hex 2");
+        recipeBuilder.getMealTypeElement().setValue("breakfast");
+        recipeBuilder.getIngredientsElement().setValue("Ingredient 1 and ingredient 2");
+        Recipe newRecipe = recipeBuilder.returnRecipe("");
+
+        assertEquals(oldRecipe.getRecipeID(), newRecipe.getRecipeID());
+        assertNotEquals(oldRecipe.getTitle(), newRecipe.getTitle());
+        assertNotEquals(oldRecipe.getInstructions(), newRecipe.getInstructions());
+        assertEquals("Test Title 2", newRecipe.getTitle());
+        assertEquals("Ingredient 1 and ingredient 2 but different", newRecipe.getInstructions());
     }
 }

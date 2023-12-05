@@ -170,8 +170,7 @@ public class Recipe {
      * @return HTML representation of the recipe.
      * @throws IOException
      */
-    public String toHTML() throws IOException {
-
+    public String toHTML() {
         String hexType = this.imageHex;
         String base64String = HexUtils.hexToBase64(hexType);
 
