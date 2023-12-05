@@ -192,6 +192,21 @@ class MilestoneTwoIntegrationTest {
         assertEquals("dinner", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getMealType());
         assertEquals("breakfast", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(1)).getMealType());
 
+        assertEquals("Pasta Marinara", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getTitle());
+
+        assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "a-z", "all").get(0)).getTitle());
+
+        assertEquals("Pasta Marinara", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "z-a", "all").get(0)).getTitle());
+
+        assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "least-recent", "all").get(0)).getTitle());
+
+        assertEquals(2, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
+        assertEquals(1, recipeList.getRecipeIDs("Caitlin", "most-recent", "breakfast").size());
+        assertEquals("Eggs and cheese", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "breakfast").get(0)).getTitle());
+
+        assertEquals(2, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
+
         // user story 8 scenario 1
         assertEquals("Pasta Marinara", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getTitle());
 
