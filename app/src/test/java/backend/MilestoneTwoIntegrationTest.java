@@ -88,6 +88,7 @@ class MilestoneTwoIntegrationTest {
         assertTrue(accountList.attemptLogin("Caitlin", "password123"));
         assertEquals(0, recipeList.getRecipeIDs("Caitlin", "most-recent", "all").size());
 
+        // set up recipes for testing
         RecipeBuilder builder = new RecipeBuilder(chatGPTMock, whisperMock, dallEMock);
         whisperMock.setMockScenario("lunch.wav", "lunch");
         builder.getMealTypeElement().specify(new File("lunch.wav"));
@@ -97,15 +98,18 @@ class MilestoneTwoIntegrationTest {
         dallEMock.setMockScenario("Lettuce and chicken", "hex of lettuce and chicken");
         Recipe oldRecipe = builder.returnRecipe("Caitlin");
         
+        // regenerate recipe
         chatGPTMock.setMockScenario("Please provide a recipe with a title denoted with \"Title:\", a new line, and then a detailed recipe. Create a lunch recipe with the following ingredients: Lettuce and chicken", "Title: Lettuce and chicken 2\nToss but diferent");
         dallEMock.setMockScenario("Lettuce and chicken 2", "hex of lettuce and chicken but different");
         Recipe newRecipe = builder.returnRecipe("Caitlin");
 
+        // user story 6 scenario 1
         assertNotEquals(oldRecipe.getTitle(), newRecipe.getTitle());
         assertNotEquals(oldRecipe.getInstructions(), newRecipe.getInstructions());
         assertNotEquals(oldRecipe.getImageHex(), newRecipe.getImageHex());
         assertEquals("hex of lettuce and chicken but different", newRecipe.getImageHex());
 
+        // user story 6 scenario 2
         recipeList.addRecipe(newRecipe);
         assertEquals("Lettuce and chicken 2", recipeList.getRecipeByID(recipeList.getRecipeIDs("Caitlin", "most-recent", "all").get(0)).getTitle());
     }
