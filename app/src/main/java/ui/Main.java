@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import middleware.Controller;
-import middleware.ServerCommunicator;
 
 import java.io.File;
 
@@ -26,7 +25,7 @@ public class Main extends Application {
         File ingredientsAudioFile = new File("ingredients.wav");
         File mealTypeAudioFile = new File("mealType.wav");
 
-        Controller controller = new Controller(new ServerCommunicator());
+        Controller controller = new Controller();
         SceneManager sceneManager = new SceneManager(controller, ingredientsAudioFile, mealTypeAudioFile);
 
         // this is a circular dependency, but the controller only

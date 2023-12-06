@@ -10,7 +10,7 @@ import middleware.Controller;
  * This class represents the scene manager that manages the scenes of the
  * application.
  */
-public class SceneManager extends BorderPane implements ISceneManager {
+public class SceneManager extends BorderPane {
 
     public static final String FONT = "Arial";
 
@@ -51,10 +51,6 @@ public class SceneManager extends BorderPane implements ISceneManager {
             return;
         }
         recipeScene.displayRecipeDetails(recipeID);
-        if (isPaused) {
-            this.setTop(null);
-            this.setBottom(null);
-        }
     }
 
     /**
@@ -67,10 +63,6 @@ public class SceneManager extends BorderPane implements ISceneManager {
             return;
         }
         recipeScene.displayNewlyCreatedRecipe(recipeID);
-        if (isPaused) {
-            this.setTop(null);
-            this.setBottom(null);
-        }
     }
 
     /**
@@ -81,10 +73,6 @@ public class SceneManager extends BorderPane implements ISceneManager {
             return;
         }
         listScene.displayRecipeList();
-        if (isPaused) {
-            this.setTop(null);
-            this.setBottom(null);
-        }
     }
 
     /**
@@ -95,10 +83,6 @@ public class SceneManager extends BorderPane implements ISceneManager {
             return;
         }
         recipeCreationScene.displayRecipeCreationScene(controller.generateNewRecipeBuilder());
-        if (isPaused) {
-            this.setTop(null);
-            this.setBottom(null);
-        }
     }
 
     /**
@@ -111,10 +95,6 @@ public class SceneManager extends BorderPane implements ISceneManager {
             return;
         }
         loginScene.displayLoginScene();
-        if (isPaused) {
-            this.setTop(null);
-            this.setBottom(null);
-        }
     }
 
     /**
@@ -125,10 +105,6 @@ public class SceneManager extends BorderPane implements ISceneManager {
             return;
         }
         accountCreationScene.displayAccountCreationScene();
-        if (isPaused) {
-            this.setTop(null);
-            this.setBottom(null);
-        }
     }
 
     /**

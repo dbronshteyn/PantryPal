@@ -167,7 +167,9 @@ public class LoginScene extends VBox {
      * @param password
      */
     private void setAutomaticLogin(String username, String password) {
-        JSONObject out = controller.getAccountJSON(username, password);
+        JSONObject out = new JSONObject();
+        out.put("username", username);
+        out.put("password", password);
         try {
             FileWriter fw = new FileWriter(automaticLoginFile);
             fw.write(out.toString());

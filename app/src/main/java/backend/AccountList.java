@@ -142,21 +142,6 @@ public class AccountList {
     }
 
     /**
-     * Gets the JSON for the account with the specified username and password
-     * @param username
-     * @param password
-     * @return
-     */
-    public JSONObject getAccountJSON(String username, String password) {
-        for (Account account : this.accounts) {
-            if (account.matchesCredentials(username, password)) {
-                return account.toJSON();
-            }
-        }
-        return null;
-    }
-
-    /**
      * Attempts to logout the specified user.
      * 
      * @param username the username to logout
