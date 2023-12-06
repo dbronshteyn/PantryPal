@@ -66,7 +66,7 @@ public class HexUtils {
      * @param base64String the base64 string
      * @return the hexadecimal string
      */
-    private static byte[] hexStringToByteArray(String hexString) {
+    public static byte[] hexStringToByteArray(String hexString) {
         int len = hexString.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
