@@ -107,4 +107,44 @@ class AccountListTest {
         jsonAccount = accountList.getAccountJSON("test username", "test password 2");
         assertNull(jsonAccount);
     }
+
+    @Test
+    public void testValidateUsername() {
+        // Test empty username
+        assertFalse(accountList.validateUsername(""));
+
+        // Test username with space
+        assertFalse(accountList.validateUsername("my username"));
+
+        // Test username with non-ASCII character
+        assertFalse(accountList.validateUsername("usernåme"));
+
+        // Test valid username
+        assertTrue(accountList.validateUsername("username"));
+    }
+
+    @Test
+    public void testValidatePassword() {
+        // Test empty password
+        assertFalse(accountList.validatePassword(""));
+
+        // Test password with space
+        assertFalse(accountList.validatePassword("my password"));
+
+        // Test password with non-ASCII character
+        assertFalse(accountList.validatePassword("påssword"));
+
+        // Test valid password
+        assertTrue(accountList.validatePassword("password"));
+    }
+
+    @Test
+    public void testPasswordsMatch() {
+        // Test matching passwords
+        assertTrue(accountList.passwordsMatch("password", "password"));
+
+        // Test non-matching passwords
+        assertFalse(accountList.passwordsMatch("password", "password123"));
+    }
+
 }
