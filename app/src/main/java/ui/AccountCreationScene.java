@@ -137,6 +137,7 @@ public class AccountCreationScene extends VBox {
             if (response == null) {
                 this.getChildren().add(new Label("Username already in use, try another"));
             } else {
+                sceneManager.getLoginScene().resetLabel();
                 sceneManager.displayRecipeList();
             }
         });

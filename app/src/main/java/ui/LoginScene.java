@@ -61,6 +61,10 @@ public class LoginScene extends VBox {
         this.setStyle("-fx-background-color: #e7ffe6;");
     }
 
+    public void resetLabel() {
+        statusLabel.setText("");
+    }
+
     /**
      * Displays the login scene, or automatically logs in if file is present
      */

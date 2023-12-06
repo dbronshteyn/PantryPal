@@ -41,6 +41,10 @@ public class SceneManager extends BorderPane implements ISceneManager {
         this.serverErrorScene = new ServerErrorScene(this);
     }
 
+    public LoginScene getLoginScene() {
+        return loginScene;
+    }
+
     /**
      * Displays the recipe details.
      * 
