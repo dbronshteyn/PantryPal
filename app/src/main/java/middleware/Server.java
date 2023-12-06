@@ -29,7 +29,7 @@ import backend.HexUtils;
 public class Server {
 
     private static final int SERVER_PORT = 8100;
-    private static final String SERVER_HOSTNAME = "localhost";
+    private static final String SERVER_HOSTNAME = "0.0.0.0";
     private static final String RECIPE_DATABASE_FILENAME = "database.json";
     private static final String ACCOUNT_DATABASE_FILENAME = "accounts.json";
 

@@ -5,16 +5,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import backend.HexUtils;
-import ui.SceneManager;
+import ui.ISceneManager;
 
 /**
  * This class represents a controller that handles requests from the frontend
@@ -23,29 +18,24 @@ import ui.SceneManager;
  */
 public class Controller {
 
-    // variables
     private String accountUsername;
     private String sortBy;
     private String filterBy;
-    private SceneManager sceneManager;
-    private static final String SERVER_URL = "http://localhost:8100";
+    private ISceneManager sceneManager;
+    private ServerCommunicator serverCommunicator;
 
     /**
      * Constructs a new Controller.
      */
-    public Controller() {
+    public Controller(ServerCommunicator serverCommunicator) {
         this.accountUsername = null;
         this.sortBy = "most-recent";
         this.filterBy = "all";
+        this.serverCommunicator = serverCommunicator;
     }
 
-    /**
-     * Returns the server URL.
-     * 
-     * @return the server URL
-     */
-    public static String getServerURL() {
-        return SERVER_URL;
+    public ServerCommunicator getServerCommunicator() {
+        return this.serverCommunicator;
     }
 
     /**
@@ -53,9 +43,9 @@ public class Controller {
      * 
      * @param sceneManager
      */
-    public void setSceneManager(SceneManager sceneManager) {
+    public void setSceneManager(ISceneManager sceneManager) {
         this.sceneManager = sceneManager;
-        sendRequest("/status", null, "GET"); // makes sure server is up
+        sendRequestWithCheck("/status", null, "GET"); // makes sure server is up
     }
 
     /**
@@ -64,7 +54,7 @@ public class Controller {
      * @return
      */
     public String generateNewRecipeBuilder() {
-        return sendRequest("/generate-new-recipe-builder", null, "GET");
+        return sendRequestWithCheck("/generate-new-recipe-builder", null, "GET");
     }
 
     /**
@@ -74,7 +64,7 @@ public class Controller {
      * @return the meal type
      */
     public String getRecipeMealType(String recipeID) {
-        return sendRequest("/get-recipe-meal-type", "recipeID=" + recipeID, "GET");
+        return sendRequestWithCheck("/get-recipe-meal-type", "recipeID=" + recipeID, "GET");
     }
 
     /**
@@ -84,7 +74,7 @@ public class Controller {
      * @return the recipe title
      */
     public String getRecipeTitle(String recipeID) {
-        return sendRequest("/get-recipe-title", "recipeID=" + recipeID, "GET");
+        return sendRequestWithCheck("/get-recipe-title", "recipeID=" + recipeID, "GET");
     }
 
     /**
@@ -95,7 +85,7 @@ public class Controller {
      */
 
     public String getRecipeDate(String recipeID) {
-        return sendRequest("/get-recipe-date", "recipeID=" + recipeID, "GET");
+        return sendRequestWithCheck("/get-recipe-date", "recipeID=" + recipeID, "GET");
     }
 
     /**
@@ -106,7 +96,7 @@ public class Controller {
      */
     public String getRecipeInstructions(String recipeID) {
         try {
-            return URLDecoder.decode(sendRequest("/get-recipe-instructions", "recipeID=" + recipeID, "GET").substring(1),
+            return URLDecoder.decode(sendRequestWithCheck("/get-recipe-instructions", "recipeID=" + recipeID, "GET").substring(1),
                     "UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,7 +111,7 @@ public class Controller {
      * @return the image
      */
     public File getRecipeImage(String recipeID) {
-        String response = sendRequest("/get-recipe-image", "recipeID=" + recipeID, "GET");
+        String response = sendRequestWithCheck("/get-recipe-image", "recipeID=" + recipeID, "GET");
         File imageFile = new File("generated-image.png");
         try {
             HexUtils.hexToFile(response, imageFile);
@@ -137,7 +127,7 @@ public class Controller {
      * @return list of recipe IDs
      */
     public List<String> getRecipeIDs() {
-        String response = sendRequest("/get-recipe-ids",
+        String response = sendRequestWithCheck("/get-recipe-ids",
                 "accountUsername=" + accountUsername + "&sortBy=" + sortBy + "&filterBy=" + filterBy, "GET");
         if (response.equals(".")) {
             return new ArrayList<>();
@@ -152,7 +142,7 @@ public class Controller {
      * @param elementName
      */
     public void resetRecipeCreatorElement(String recipeID, String elementName) {
-        sendRequest("/reset-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName,
+        sendRequestWithCheck("/reset-recipe-creator-element", "recipeID=" + recipeID + "&elementName=" + elementName,
                 "PUT");
     }
 
@@ -166,7 +156,7 @@ public class Controller {
      */
     public String specifyRecipeCreatorElement(String recipeID, String elementName, File audioFile) {
         String hex = HexUtils.fileToHex(audioFile);
-        String response = sendRequest("/specify-recipe-creator-element",
+        String response = sendRequestWithCheck("/specify-recipe-creator-element",
                 "recipeID=" + recipeID + "&elementName=" + elementName + "&hex=" + hex, "POST").substring(1);
         if (response.equals("invalid")) {
             return null;
@@ -181,7 +171,7 @@ public class Controller {
      * @return true if the recipe builder is completed, false otherwise
      */
     public boolean isRecipeCreatorCompleted(String recipeID) {
-        String response = sendRequest("/is-recipe-creator-completed", "recipeID=" + recipeID, "GET");
+        String response = sendRequestWithCheck("/is-recipe-creator-completed", "recipeID=" + recipeID, "GET");
         return response.equals("true");
     }
 
@@ -191,7 +181,7 @@ public class Controller {
      * @param recipeID
      */
     public void generateRecipe(String recipeID) {
-        sendRequest("/generate-recipe", "recipeID=" + recipeID + "&accountUsername=" + this.accountUsername, "PUT");
+        sendRequestWithCheck("/generate-recipe", "recipeID=" + recipeID + "&accountUsername=" + this.accountUsername, "PUT");
     }
 
     /**
@@ -200,7 +190,7 @@ public class Controller {
      * @param recipeID
      */
     public void removeRecipe(String recipeID) {
-        sendRequest("/remove-recipe", "recipeID=" + recipeID, "DELETE");
+        sendRequestWithCheck("/remove-recipe", "recipeID=" + recipeID, "DELETE");
     }
 
     /**
@@ -209,7 +199,7 @@ public class Controller {
      * @param recipeID
      */
     public void saveRecipe(String recipeID) {
-        sendRequest("/save-recipe", "recipeID=" + recipeID, "GET");
+        sendRequestWithCheck("/save-recipe", "recipeID=" + recipeID, "GET");
     }
 
     /**
@@ -221,7 +211,7 @@ public class Controller {
     public void editRecipe(String recipeID, String newInstructions) {
         try {
             // we add the dot to make sure the query string is not empty
-            sendRequest("/edit-recipe",
+            sendRequestWithCheck("/edit-recipe",
                     "recipeID=" + recipeID + "&newInstructions=." + URLEncoder.encode(newInstructions, "UTF-8"), "PUT");
         } catch (Exception e) {
             e.printStackTrace();
@@ -236,7 +226,7 @@ public class Controller {
      * @return the username of the account if it was created, otherwise null
      */
     public String addAccount(String username, String password) {
-        String response = sendRequest("/add-account", "username=" + username + "&password=" + password, "POST");
+        String response = sendRequestWithCheck("/add-account", "username=" + username + "&password=" + password, "POST");
         if (response.equals("created")) {
             this.accountUsername = username;
             return username;
@@ -254,7 +244,7 @@ public class Controller {
      *         password of the account
      */
     public boolean login(String username, String password) {
-        String response = sendRequest("/login", "username=" + username + "&password=" + password, "GET");
+        String response = sendRequestWithCheck("/login", "username=" + username + "&password=" + password, "GET");
         if (response.equals("success")) {
             this.accountUsername = username;
             this.sortBy = "most-recent";
@@ -271,7 +261,7 @@ public class Controller {
      * @return true if the user is logged in, false otherwise
      */
     public void logout() {
-        String response = sendRequest("/logout", "accountUsername=" + accountUsername, "GET");
+        String response = sendRequestWithCheck("/logout", "accountUsername=" + accountUsername, "GET");
         if (response.equals("success")) {
             this.accountUsername = null;
         }
@@ -316,28 +306,17 @@ public class Controller {
     }
 
     /**
-     * Sends a request to the server and returns the response.
+     * Sends a request to the server and returns the response. If the server is
+     * down, displays the server error scene.
      * 
      * @param path
      * @param query
      * @param method
      * @return the response from the server
      */
-    private String sendRequest(String path, String query, String method) {
+    public String sendRequestWithCheck(String path, String query, String method) {
         try {
-            String urlString = SERVER_URL + path;
-            if (query != null) {
-                urlString += "?" + query;
-            }
-            URL url = new URI(urlString).toURL();
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(method);
-            conn.setDoOutput(true);
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String response = in.readLine();
-            in.close();
-            return response;
+            return serverCommunicator.sendRequest(path, query, method);
         } catch (Exception e) {
             sceneManager.displayServerErrorScene();
             return null;

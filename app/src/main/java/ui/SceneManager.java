@@ -10,7 +10,7 @@ import middleware.Controller;
  * This class represents the scene manager that manages the scenes of the
  * application.
  */
-public class SceneManager extends BorderPane {
+public class SceneManager extends BorderPane implements ISceneManager {
 
     public static final String FONT = "Arial";
 
