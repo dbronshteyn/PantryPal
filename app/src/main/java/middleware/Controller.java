@@ -249,20 +249,30 @@ public class Controller {
      *         password of the account
      */
     public boolean login(String username, String password) {
-        String response = sendRequestWithCheck("/login", "username=" + username + "&password=" + password, "GET");
-        if (response.equals("success")) {
-            this.accountUsername = username;
-            this.sortBy = "most-recent";
-            this.filterBy = "all";
-            return true;
+        try {
+            String response = sendRequestWithCheck("/login", "username=" + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8"), "GET");
+            if (response.equals("success")) {
+                this.accountUsername = username;
+                this.sortBy = "most-recent";
+                this.filterBy = "all";
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     public boolean passwordsMatch(String password1, String password2) {
-        String response = sendRequestWithCheck("/passwords-match", "password1=" + password1 + "&password2=" + password2,
-                "GET");
-        return response.equals("true");
+        try {
+            String response = sendRequestWithCheck("/passwords-match", "password1=" + URLEncoder.encode(password1, "UTF-8") + "&password2=" + URLEncoder.encode(password2, "UTF-8"),
+                    "GET");
+            return response.equals("true");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean validateUsername(String username) {

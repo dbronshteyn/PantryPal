@@ -193,10 +193,7 @@ public class AccountList {
     }
 
     public boolean passwordsMatch(String password, String reEnter) {
-        if (!password.equals(reEnter)) {
-            return false;
-        }
-        return true;
+        return password.equals(reEnter);
     }
 
     /**

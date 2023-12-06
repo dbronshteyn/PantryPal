@@ -509,9 +509,9 @@ class RequestHandler implements HttpHandler {
      * @return true if passwords match, false otherwise
      */
     private String handlePasswordsMatch(Map<String, String> query) {
-        String password = query.get("password");
-        String reEnterPassword = query.get("reEnterPassword");
-        return Boolean.toString(this.accountList.passwordsMatch(password, reEnterPassword));
+        String password1 = query.get("password1");
+        String password2 = query.get("password2");
+        return Boolean.toString(this.accountList.passwordsMatch(password1, password2));
     }
 
     /**
