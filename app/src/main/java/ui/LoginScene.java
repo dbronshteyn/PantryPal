@@ -97,6 +97,33 @@ public class LoginScene extends VBox {
         Button loginButton = createStyledButton("Login");
         loginButton.setDisable(true);
         loginButton.setOnAction(e -> {
+            // Check that all fields contain text
+            if (usernameField.getText().length() == 0 || passwordField.getText().length() == 0) {
+                this.getChildren().add(new Label("Please fill out all fields"));
+                return;
+            }
+
+            // Check that username and password do not contain spaces
+            if (usernameField.getText().contains(" ") || passwordField.getText().contains(" ")) {
+                this.getChildren().add(new Label("No spaces allowed in username or password"));
+                return;
+            }
+
+            // Make sure that all characters are ASCII characters
+            for (int i = 0; i < usernameField.getText().length(); i++) {
+                if (usernameField.getText().charAt(i) > 127) {
+                    this.getChildren().add(new Label("Username must contain only ASCII characters"));
+                    return;
+                }
+            }
+
+            for (int i = 0; i < passwordField.getText().length(); i++) {
+                if (passwordField.getText().charAt(i) > 127) {
+                    this.getChildren().add(new Label("Password must contain only ASCII characters"));
+                    return;
+                }
+            }
+
             if (controller.login(usernameField.getText(), passwordField.getText())) {
                 statusLabel.setText("");
                 if (autoLogin.isSelected()) {
