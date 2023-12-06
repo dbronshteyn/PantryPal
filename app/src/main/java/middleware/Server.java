@@ -434,12 +434,17 @@ class RequestHandler implements HttpHandler {
      *         is already in use
      */
     private String handleAddAccount(Map<String, String> query) {
-        String username = query.get("username");
-        String password = query.get("password");
-        if (this.accountList.addAccount(username, password)) {
-            return "created";
+        try {
+            String username = URLDecoder.decode(query.get("username"), "UTF-8");
+            String password = URLDecoder.decode(query.get("password"), "UTF-8");
+            if (this.accountList.addAccount(username, password)) {
+                return "created";
+            }
+            return "in use";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return FAILURE_MESSAGE;
         }
-        return "in use";
     }
 
     /**
