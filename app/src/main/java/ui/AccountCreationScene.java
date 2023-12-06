@@ -95,21 +95,16 @@ public class AccountCreationScene extends VBox {
                 return;
             }
 
-            if (!controller.validUsername(usernameField.getText())) {
+            if (!controller.validateUsername(usernameField.getText())) {
                 this.getChildren().add(new Label("Invalid username"));
                 return;
             }
 
-            if (!controller.validPassword(passwordField.getText())) {
+            if (!controller.validatePassword(passwordField.getText()) || !controller.validatePassword(reEnterPassword.getText())) {
                 this.getChildren().add(new Label("Invalid password"));
                 return;
             }
-
-            if (!controller.validPassword(reEnterPassword.getText())) {
-                this.getChildren().add(new Label("Invalid password"));
-                return;
-            }
-
+            
             // Checks that username is not already in use [username uniqueness]
             String response = controller.addAccount(usernameField.getText(), passwordField.getText());
             if (response == null) {

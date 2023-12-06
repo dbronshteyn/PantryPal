@@ -162,14 +162,13 @@ class RequestHandler implements HttpHandler {
                     response = this.handleGetRecipeHTML(query);
                     break;
                 case "/passwords-match":
-                    response = Boolean.toString(this.accountList.passwordsMatch(query.get("password"),
-                            query.get("reEnterPassword")));
+                    response = this.handlePasswordsMatch(query);
                     break;
                 case "/valid-username":
-                    response = Boolean.toString(this.accountList.validateUsername(query.get("username")));
+                    response =this.handleValidUsername(query);
                     break;
                 case "/valid-password":
-                    response = Boolean.toString(this.accountList.validatePassword(query.get("password")));
+                    response = this.handleValidPassword(query);
                     break;
                 default:
                     response = "Invalid path";
@@ -502,5 +501,46 @@ class RequestHandler implements HttpHandler {
         String username = query.get("username");
         String password = query.get("password");
         return this.accountList.getAccountJSON(username, password).toString();
+    }
+
+    /**
+     * Validate that passwords match
+     * @param query
+     * @return true if passwords match, false otherwise
+     */
+    private String handlePasswordsMatch(Map<String, String> query) {
+        String password = query.get("password");
+        String reEnterPassword = query.get("reEnterPassword");
+        return Boolean.toString(this.accountList.passwordsMatch(password, reEnterPassword));
+    }
+
+    /**
+     * Validate the username
+     * @param query
+     * @return true if the username is valid, false otherwise
+     */
+    private String handleValidUsername(Map<String, String> query) {
+        try {
+            String username = URLDecoder.decode(query.get("username"), "UTF-8");
+            return Boolean.toString(this.accountList.validateUsername(username));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "FALSE";
+        }
+    }
+
+    /**
+     * Validate the password
+     * @param query
+     * @return true if the password is valid, false otherwise
+     */
+    private String handleValidPassword(Map<String, String> query) {
+        try {
+            String password = URLDecoder.decode(query.get("password"), "UTF-8");
+            return Boolean.toString(this.accountList.validatePassword(password));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "FALSE";
+        }
     }
 }

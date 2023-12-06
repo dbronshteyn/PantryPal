@@ -263,17 +263,26 @@ public class Controller {
         String response = sendRequestWithCheck("/passwords-match", "password1=" + password1 + "&password2=" + password2,
                 "GET");
         return response.equals("true");
-
     }
 
-    public boolean validUsername(String username) {
-        String response = sendRequestWithCheck("/valid-username", "username=" + username, "GET");
-        return response.equals("true");
+    public boolean validateUsername(String username) {
+        try {
+            String response = sendRequestWithCheck("/valid-username", "username=" + URLEncoder.encode(username, "UTF-8"), "GET");
+            return response.equals("true");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public boolean validPassword(String password) {
-        String response = sendRequestWithCheck("/valid-password", "password=" + password, "GET");
-        return response.equals("true");
+    public boolean validatePassword(String password) {
+        try {
+            String response = sendRequestWithCheck("/valid-password", "password=" + URLEncoder.encode(password, "UTF-8"), "GET");
+            return response.equals("true");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
