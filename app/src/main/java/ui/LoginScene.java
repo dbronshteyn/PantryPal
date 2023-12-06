@@ -65,6 +65,7 @@ public class LoginScene extends VBox {
      * Displays the login scene, or automatically logs in if file is present
      */
     public void displayLoginScene() {
+        statusLabel.setText("");
         if (automaticLoginFile.exists()) {
             try {
                 JSONObject in = new JSONObject(
