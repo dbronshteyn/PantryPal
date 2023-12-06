@@ -152,6 +152,9 @@ class RequestHandler implements HttpHandler {
                 case "/login":
                     response = this.handleLogin(query);
                     break;
+                case "/get-account-json":
+                    response = this.handleGetAccountJSON(query);
+                    break;
                 case "/logout":
                     response = this.handleLogout(query);
                     break;
@@ -477,5 +480,17 @@ class RequestHandler implements HttpHandler {
             e.printStackTrace();
             return FAILURE_MESSAGE;
         }
+    }
+
+    /**
+     * Gets the JSON for the account with the specified username and password
+     * 
+     * @param query
+     * @return JSON for the account if successful, otherwise failure message
+     */
+    private String handleGetAccountJSON(Map<String, String> query) {
+        String username = query.get("username");
+        String password = query.get("password");
+        return this.accountList.getAccountJSON(username, password).toString();
     }
 }

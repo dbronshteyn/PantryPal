@@ -93,4 +93,18 @@ class AccountListTest {
         assertEquals("test username 2", jsonObject.getString("username"));
         assertEquals("test password 2", jsonObject.getString("password"));
     }
+
+    @Test
+    void testGetAccountJSON() {
+        accountList.addAccount("test username", "test password");
+        accountList.addAccount("test username 2", "test password 2");
+        JSONObject jsonAccount = accountList.getAccountJSON("test username", "test password");
+        assertEquals("test username", jsonAccount.getString("username"));
+        assertEquals("test password", jsonAccount.getString("password"));
+        jsonAccount = accountList.getAccountJSON("test username 2", "test password 2");
+        assertEquals("test username 2", jsonAccount.getString("username"));
+        assertEquals("test password 2", jsonAccount.getString("password"));
+        jsonAccount = accountList.getAccountJSON("test username", "test password 2");
+        assertNull(jsonAccount);
+    }
 }
