@@ -71,7 +71,7 @@ class RecipeScene extends ScrollPane {
             shareButton.setOnAction(e -> {
                 shareButton.setDisable(true);
                 shareButton.setText("Copied to clipboard!");
-                clipboardContent.putString(Controller.getServerURL() + "/recipe?recipeID=" + recipeID);
+                clipboardContent.putString(controller.getServerCommunicator().getURL() + "/recipe?recipeID=" + recipeID);
                 clipboard.setContent(clipboardContent);
                 pause.playFromStart();
             });
