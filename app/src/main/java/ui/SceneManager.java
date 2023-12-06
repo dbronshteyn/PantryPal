@@ -10,7 +10,7 @@ import middleware.Controller;
  * This class represents the scene manager that manages the scenes of the
  * application.
  */
-public class SceneManager extends BorderPane {
+public class SceneManager extends BorderPane implements ISceneManager {
 
     public static final String FONT = "Arial";
 
@@ -51,6 +51,10 @@ public class SceneManager extends BorderPane {
             return;
         }
         recipeScene.displayRecipeDetails(recipeID);
+        if (isPaused) {
+            this.setTop(null);
+            this.setBottom(null);
+        }
     }
 
     /**
@@ -63,6 +67,10 @@ public class SceneManager extends BorderPane {
             return;
         }
         recipeScene.displayNewlyCreatedRecipe(recipeID);
+        if (isPaused) {
+            this.setTop(null);
+            this.setBottom(null);
+        }
     }
 
     /**
@@ -73,6 +81,10 @@ public class SceneManager extends BorderPane {
             return;
         }
         listScene.displayRecipeList();
+        if (isPaused) {
+            this.setTop(null);
+            this.setBottom(null);
+        }
     }
 
     /**
@@ -83,6 +95,10 @@ public class SceneManager extends BorderPane {
             return;
         }
         recipeCreationScene.displayRecipeCreationScene(controller.generateNewRecipeBuilder());
+        if (isPaused) {
+            this.setTop(null);
+            this.setBottom(null);
+        }
     }
 
     /**
@@ -95,6 +111,10 @@ public class SceneManager extends BorderPane {
             return;
         }
         loginScene.displayLoginScene();
+        if (isPaused) {
+            this.setTop(null);
+            this.setBottom(null);
+        }
     }
 
     /**
@@ -105,6 +125,10 @@ public class SceneManager extends BorderPane {
             return;
         }
         accountCreationScene.displayAccountCreationScene();
+        if (isPaused) {
+            this.setTop(null);
+            this.setBottom(null);
+        }
     }
 
     /**

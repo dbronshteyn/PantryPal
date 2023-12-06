@@ -29,7 +29,7 @@ import backend.HexUtils;
 public class Server {
 
     private static final int SERVER_PORT = 8100;
-    private static final String SERVER_HOSTNAME = "localhost";
+    private static final String SERVER_HOSTNAME = "0.0.0.0";
     private static final String RECIPE_DATABASE_FILENAME = "database.json";
     private static final String ACCOUNT_DATABASE_FILENAME = "accounts.json";
 
@@ -151,6 +151,9 @@ class RequestHandler implements HttpHandler {
                     break;
                 case "/login":
                     response = this.handleLogin(query);
+                    break;
+                case "/get-account-json":
+                    response = this.handleGetAccountJSON(query);
                     break;
                 case "/logout":
                     response = this.handleLogout(query);
@@ -477,5 +480,17 @@ class RequestHandler implements HttpHandler {
             e.printStackTrace();
             return FAILURE_MESSAGE;
         }
+    }
+
+    /**
+     * Gets the JSON for the account with the specified username and password
+     * 
+     * @param query
+     * @return JSON for the account if successful, otherwise failure message
+     */
+    private String handleGetAccountJSON(Map<String, String> query) {
+        String username = query.get("username");
+        String password = query.get("password");
+        return this.accountList.getAccountJSON(username, password).toString();
     }
 }
