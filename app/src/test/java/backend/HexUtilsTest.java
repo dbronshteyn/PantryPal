@@ -19,6 +19,9 @@ public class HexUtilsTest {
     private String testHexString;
     private String testBase64String;
 
+    /**
+     * Sets up HexUtils for testing.
+     */
     @BeforeEach
     public void setUp() throws IOException {
         // Create a temporary test file
@@ -32,6 +35,9 @@ public class HexUtilsTest {
         testBase64String = "SGVsbG8sIFdvcmxkIQ==";
     }
 
+    /**
+     * Deletes test files after done with testing
+     */
     @AfterEach
     public void tearDown() {
         // Delete the temporary test file
@@ -39,12 +45,18 @@ public class HexUtilsTest {
             testFile.delete();
     }
 
+    /**
+     * Tests the fileToHex() function
+     */
     @Test
     public void testFileToHex() {
         String hexResult = HexUtils.fileToHex(testFile);
         assertEquals(testHexString, hexResult);
     }
 
+    /**
+     * Tests the hexToFile() function
+     */
     @Test
     public void testHexToFile() throws IOException {
         File tempFile = File.createTempFile("testHexToFile", ".txt");
@@ -56,12 +68,18 @@ public class HexUtilsTest {
         assertArrayEquals(originalBytes, resultBytes);
     }
 
+    /**
+     * Tests the hexToBase64() function
+     */
     @Test
     public void testHexToBase64() {
         String base64Result = HexUtils.hexToBase64(testHexString);
         assertEquals(testBase64String, base64Result);
     }
 
+    /**
+     * Tests the hexStringToByteArray() function
+     */
     @Test
     public void testHexStringToByteArray() {
         byte[] resultBytes = HexUtils.hexStringToByteArray(testHexString);
