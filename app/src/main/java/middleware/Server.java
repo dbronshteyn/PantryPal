@@ -443,7 +443,7 @@ class RequestHandler implements HttpHandler {
             return "in use";
         } catch (Exception e) {
             e.printStackTrace();
-            return FAILURE_MESSAGE;
+            return "in use";
         }
     }
 
