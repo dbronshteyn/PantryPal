@@ -211,21 +211,6 @@ public class AccountList {
     }
 
     /**
-     * Attempts to logout the specified user.
-     * 
-     * @param username the username to logout
-     * @return true if the logout was successful, false otherwise
-     */
-    public boolean attemptLogout(String username) {
-        File automaticLoginFile = new File("automaticLogin.json");
-        if (automaticLoginFile.exists()) {
-            automaticLoginFile.delete();
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Returns the list of accounts.
      * 
      * @return the list of accounts
