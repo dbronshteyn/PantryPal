@@ -315,9 +315,10 @@ public class Controller {
      * @return true if the user is logged in, false otherwise
      */
     public void logout() {
-        String response = sendRequestWithCheck("/logout", "accountUsername=" + accountUsername, "GET");
-        if (response.equals("success")) {
-            this.accountUsername = null;
+        this.accountUsername = null;
+        File automaticLoginFile = new File("automaticLogin.json");
+        if (automaticLoginFile.exists()) {
+            automaticLoginFile.delete();
         }
         this.sortBy = "most-recent";
         this.filterBy = "all";
