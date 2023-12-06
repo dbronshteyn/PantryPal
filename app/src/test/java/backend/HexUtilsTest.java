@@ -9,6 +9,10 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Files;
 
+/**
+ * Test for HexUtils.java
+ * Justin
+ */
 public class HexUtilsTest {
 
     private File testFile;
