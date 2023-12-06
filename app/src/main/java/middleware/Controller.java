@@ -13,6 +13,8 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import org.json.JSONObject;
+
 import backend.HexUtils;
 import ui.SceneManager;
 
@@ -262,6 +264,18 @@ public class Controller {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns the JSON for the account with the specified username and password.
+     * 
+     * @param username
+     * @param password
+     * @return the JSON for the account with the specified username and password
+     */
+    public JSONObject getAccountJSON(String username, String password) {
+        String response = sendRequest("/get-account-json", "username=" + username + "&password=" + password, "GET");
+        return new JSONObject(response);
     }
 
     /**
