@@ -155,6 +155,9 @@ class RequestHandler implements HttpHandler {
                 case "/get-account-json":
                     response = this.handleGetAccountJSON(query);
                     break;
+                case "/logout":
+                    response = this.handleLogout(query);
+                    break;
                 case "/recipe":
                     response = this.handleGetRecipeHTML(query);
                     break;
@@ -452,6 +455,20 @@ class RequestHandler implements HttpHandler {
         String username = query.get("username");
         String password = query.get("password");
         if (this.accountList.attemptLogin(username, password)) {
+            return SUCCESS_MESSAGE;
+        }
+        return FAILURE_MESSAGE;
+    }
+
+    /**
+     * Attempts to logout with the specified username.
+     * 
+     * @param query
+     * @return success message if the logout was successful, otherwise failure
+     */
+    private String handleLogout(Map<String, String> query) {
+        String username = query.get("username");
+        if (this.accountList.attemptLogout(username)) {
             return SUCCESS_MESSAGE;
         }
         return FAILURE_MESSAGE;
