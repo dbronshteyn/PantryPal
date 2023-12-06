@@ -6,12 +6,24 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+
 public class ServerCommunicator {
 
-    private static final String SERVER_URL = "http://localhost:8100";
+    private String server_url;
+
+    public ServerCommunicator() {
+        try {
+            server_url = Files.readString(Paths.get("server_url.txt"));
+        } catch (Exception e) {
+            server_url = "http://localhost:8100";
+        }
+    }
 
     public String getURL() {
-        return SERVER_URL;
+        return server_url;
     }
 
     /**
@@ -23,7 +35,7 @@ public class ServerCommunicator {
      * @return the response from the server
      */
     public String sendRequest(String path, String query, String method) throws Exception {
-        String urlString = SERVER_URL + path;
+        String urlString = server_url + path;
         if (query != null) {
             urlString += "?" + query;
         }
