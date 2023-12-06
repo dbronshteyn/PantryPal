@@ -161,6 +161,16 @@ class RequestHandler implements HttpHandler {
                 case "/recipe":
                     response = this.handleGetRecipeHTML(query);
                     break;
+                case "/passwords-match":
+                    response = Boolean.toString(this.accountList.passwordsMatch(query.get("password"),
+                            query.get("reEnterPassword")));
+                    break;
+                case "/valid-username":
+                    response = Boolean.toString(this.accountList.validateUsername(query.get("username")));
+                    break;
+                case "/valid-password":
+                    response = Boolean.toString(this.accountList.validatePassword(query.get("password")));
+                    break;
                 default:
                     response = "Invalid path";
                     break;

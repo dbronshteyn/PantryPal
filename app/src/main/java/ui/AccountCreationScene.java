@@ -90,46 +90,24 @@ public class AccountCreationScene extends VBox {
         createAccountButton.setDisable(true);
 
         createAccountButton.setOnAction(e -> {
-            // Checks that passwords match [password confirmation]
-            if (!passwordField.getText().equals(reEnterPassword.getText())) {
+            if (!controller.passwordsMatch(passwordField.getText(), reEnterPassword.getText())) {
                 this.getChildren().add(new Label("Passwords do not match"));
                 return;
             }
 
-            // Check that all fields contain text
-            if (usernameField.getText().length() == 0 || passwordField.getText().length() == 0
-                    || reEnterPassword.getText().length() == 0) {
-                this.getChildren().add(new Label("Please fill out all fields"));
+            if (!controller.validUsername(usernameField.getText())) {
+                this.getChildren().add(new Label("Invalid username"));
                 return;
             }
 
-            // Check that username and password do not contain spaces
-            if (usernameField.getText().contains(" ") || passwordField.getText().contains(" ")
-                    || reEnterPassword.getText().contains(" ")) {
-                this.getChildren().add(new Label("No spaces allowed in username or password"));
+            if (!controller.validPassword(passwordField.getText())) {
+                this.getChildren().add(new Label("Invalid password"));
                 return;
             }
 
-            // Make sure that all characters are ASCII characters
-            for (int i = 0; i < usernameField.getText().length(); i++) {
-                if (usernameField.getText().charAt(i) > 127) {
-                    this.getChildren().add(new Label("Username must contain only ASCII characters"));
-                    return;
-                }
-            }
-
-            for (int i = 0; i < passwordField.getText().length(); i++) {
-                if (passwordField.getText().charAt(i) > 127) {
-                    this.getChildren().add(new Label("Password must contain only ASCII characters"));
-                    return;
-                }
-            }
-
-            for (int i = 0; i < reEnterPassword.getText().length(); i++) {
-                if (reEnterPassword.getText().charAt(i) > 127) {
-                    this.getChildren().add(new Label("Password must contain only ASCII characters"));
-                    return;
-                }
+            if (!controller.validPassword(reEnterPassword.getText())) {
+                this.getChildren().add(new Label("Invalid password"));
+                return;
             }
 
             // Checks that username is not already in use [username uniqueness]

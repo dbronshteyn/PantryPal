@@ -98,7 +98,8 @@ public class Controller {
      */
     public String getRecipeInstructions(String recipeID) {
         try {
-            return URLDecoder.decode(sendRequestWithCheck("/get-recipe-instructions", "recipeID=" + recipeID, "GET").substring(1),
+            return URLDecoder.decode(
+                    sendRequestWithCheck("/get-recipe-instructions", "recipeID=" + recipeID, "GET").substring(1),
                     "UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,7 +184,8 @@ public class Controller {
      * @param recipeID
      */
     public void generateRecipe(String recipeID) {
-        sendRequestWithCheck("/generate-recipe", "recipeID=" + recipeID + "&accountUsername=" + this.accountUsername, "PUT");
+        sendRequestWithCheck("/generate-recipe", "recipeID=" + recipeID + "&accountUsername=" + this.accountUsername,
+                "PUT");
     }
 
     /**
@@ -228,7 +230,8 @@ public class Controller {
      * @return the username of the account if it was created, otherwise null
      */
     public String addAccount(String username, String password) {
-        String response = sendRequestWithCheck("/add-account", "username=" + username + "&password=" + password, "POST");
+        String response = sendRequestWithCheck("/add-account", "username=" + username + "&password=" + password,
+                "POST");
         if (response.equals("created")) {
             this.accountUsername = username;
             return username;
@@ -256,6 +259,23 @@ public class Controller {
         return false;
     }
 
+    public boolean passwordsMatch(String password1, String password2) {
+        String response = sendRequestWithCheck("/passwords-match", "password1=" + password1 + "&password2=" + password2,
+                "GET");
+        return response.equals("true");
+
+    }
+
+    public boolean validUsername(String username) {
+        String response = sendRequestWithCheck("/valid-username", "username=" + username, "GET");
+        return response.equals("true");
+    }
+
+    public boolean validPassword(String password) {
+        String response = sendRequestWithCheck("/valid-password", "password=" + password, "GET");
+        return response.equals("true");
+    }
+
     /**
      * Returns the JSON for the account with the specified username and password.
      * 
@@ -264,7 +284,8 @@ public class Controller {
      * @return the JSON for the account with the specified username and password
      */
     public JSONObject getAccountJSON(String username, String password) {
-        String response = sendRequestWithCheck("/get-account-json", "username=" + username + "&password=" + password, "GET");
+        String response = sendRequestWithCheck("/get-account-json", "username=" + username + "&password=" + password,
+                "GET");
         return new JSONObject(response);
     }
 
