@@ -264,7 +264,7 @@ public class Controller {
      * @return the JSON for the account with the specified username and password
      */
     public JSONObject getAccountJSON(String username, String password) {
-        String response = sendRequest("/get-account-json", "username=" + username + "&password=" + password, "GET");
+        String response = sendRequestWithCheck("/get-account-json", "username=" + username + "&password=" + password, "GET");
         return new JSONObject(response);
     }
 
