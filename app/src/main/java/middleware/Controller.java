@@ -230,13 +230,18 @@ public class Controller {
      * @return the username of the account if it was created, otherwise null
      */
     public String addAccount(String username, String password) {
-        String response = sendRequestWithCheck("/add-account", "username=" + username + "&password=" + password,
-                "POST");
-        if (response.equals("created")) {
-            this.accountUsername = username;
-            return username;
+        try {
+            String response = sendRequestWithCheck("/add-account", "username=" + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8"),
+                    "POST");
+            if (response.equals("created")) {
+                this.accountUsername = username;
+                return username;
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     /**
@@ -315,9 +320,10 @@ public class Controller {
      * @return true if the user is logged in, false otherwise
      */
     public void logout() {
-        String response = sendRequestWithCheck("/logout", "accountUsername=" + accountUsername, "GET");
-        if (response.equals("success")) {
-            this.accountUsername = null;
+        this.accountUsername = null;
+        File automaticLoginFile = new File("automaticLogin.json");
+        if (automaticLoginFile.exists()) {
+            automaticLoginFile.delete();
         }
         this.sortBy = "most-recent";
         this.filterBy = "all";

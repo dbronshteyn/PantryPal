@@ -155,9 +155,6 @@ class RequestHandler implements HttpHandler {
                 case "/get-account-json":
                     response = this.handleGetAccountJSON(query);
                     break;
-                case "/logout":
-                    response = this.handleLogout(query);
-                    break;
                 case "/recipe":
                     response = this.handleGetRecipeHTML(query);
                     break;
@@ -437,12 +434,17 @@ class RequestHandler implements HttpHandler {
      *         is already in use
      */
     private String handleAddAccount(Map<String, String> query) {
-        String username = query.get("username");
-        String password = query.get("password");
-        if (this.accountList.addAccount(username, password)) {
-            return "created";
+        try {
+            String username = URLDecoder.decode(query.get("username"), "UTF-8");
+            String password = URLDecoder.decode(query.get("password"), "UTF-8");
+            if (this.accountList.addAccount(username, password)) {
+                return "created";
+            }
+            return "in use";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "in use";
         }
-        return "in use";
     }
 
     /**
@@ -455,20 +457,6 @@ class RequestHandler implements HttpHandler {
         String username = query.get("username");
         String password = query.get("password");
         if (this.accountList.attemptLogin(username, password)) {
-            return SUCCESS_MESSAGE;
-        }
-        return FAILURE_MESSAGE;
-    }
-
-    /**
-     * Attempts to logout with the specified username.
-     * 
-     * @param query
-     * @return success message if the logout was successful, otherwise failure
-     */
-    private String handleLogout(Map<String, String> query) {
-        String username = query.get("username");
-        if (this.accountList.attemptLogout(username)) {
             return SUCCESS_MESSAGE;
         }
         return FAILURE_MESSAGE;
