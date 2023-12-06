@@ -3,6 +3,7 @@ package backend;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.io.FileWriter;
@@ -142,7 +143,60 @@ public class AccountList {
     }
 
     /**
+     * Checks if the specified username is valid.
+     * 
+     * @param username the username to check
+     * @return true if the username is valid, false otherwise
+     */
+    public boolean validateUsername(String username) {
+        // Check that username is not empty, contains no spaces, and contains only ASCII
+        // characters
+
+        if (username.length() == 0) {
+            return false;
+        }
+
+        if (username.contains(" ")) {
+            return false;
+        }
+
+        for (int i = 0; i < username.length(); i++) {
+            if (username.charAt(i) > 127) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean validatePassword(String password) {
+        // Check that username is not empty, contains no spaces, and contains only ASCII
+        // characters
+
+        if (password.length() == 0) {
+            return false;
+        }
+
+        if (password.contains(" ")) {
+            return false;
+        }
+
+        for (int i = 0; i < password.length(); i++) {
+            if (password.charAt(i) > 127) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean passwordsMatch(String password, String reEnter) {
+        return password.equals(reEnter);
+    }
+
+    /**
      * Gets the JSON for the account with the specified username and password
+     * 
      * @param username
      * @param password
      * @return
